@@ -38,4 +38,31 @@ describe('window light cosmetics', () => {
     expect(descriptor.ambientLights[0].color).toBe(stationTheme.utilityBlue);
     expect(descriptor.accentColor).toBe(stationTheme.lampAmber);
   });
+
+  it('exposes windowLightColor on the descriptor so the shell can render it', () => {
+    const state = {
+      ...buyModuleLevel(createInitialState(1_000), 'tenant_capsule'),
+      windowLightColor: 'red' as const
+    };
+
+    const descriptor = createRoomSceneDescriptor(state, 'tenant_capsule');
+
+    expect(descriptor.windowLightColor).toBe(stationTheme.signalRed);
+  });
+
+  it('changes the descriptor windowLightColor for each cosmetic option', () => {
+    const base = buyModuleLevel(createInitialState(1_000), 'tenant_capsule');
+
+    const amber = createRoomSceneDescriptor({ ...base, windowLightColor: 'amber' }, 'tenant_capsule');
+    const green = createRoomSceneDescriptor({ ...base, windowLightColor: 'green' }, 'tenant_capsule');
+    const red = createRoomSceneDescriptor({ ...base, windowLightColor: 'red' }, 'tenant_capsule');
+    const blue = createRoomSceneDescriptor({ ...base, windowLightColor: 'blue' }, 'tenant_capsule');
+
+    expect(amber.windowLightColor).toBe(stationTheme.lampAmber);
+    expect(green.windowLightColor).toBe(stationTheme.enamelGreen);
+    expect(red.windowLightColor).toBe(stationTheme.signalRed);
+    expect(blue.windowLightColor).toBe(stationTheme.utilityBlue);
+    // All four must be distinct.
+    expect(new Set([amber, green, red, blue].map((d) => d.windowLightColor)).size).toBe(4);
+  });
 });

@@ -49,6 +49,7 @@ export interface RoomSceneDescriptor {
   level: number;
   tier: RoomDetailTier;
   accentColor: number;
+  windowLightColor: number;
   props: RoomSceneProp[];
   ambientLights: Array<{ x: number; y: number; radius: number; color: number }>;
 }
@@ -236,6 +237,7 @@ export function createRoomSceneDescriptor(gameState: GameState, selectedRoomId: 
     level,
     tier,
     accentColor,
+    windowLightColor: windowLight,
     props,
     ambientLights
   };
@@ -262,20 +264,30 @@ function createRoomBackground(): Graphics {
 
 function createRoomShell(descriptor: RoomSceneDescriptor): Graphics {
   const shell = new Graphics();
+  const light = descriptor.windowLightColor;
 
   shell.roundRect(92, 74, 656, 334, 28).fill(stationTheme.ink);
   shell.roundRect(108, 90, 624, 302, 24).stroke({ color: descriptor.accentColor, width: 4, alpha: 0.8 });
   shell.roundRect(134, 122, 572, 224, 18).fill(stationTheme.warmPanel);
   shell.roundRect(134, 308, 572, 38, 10).fill(stationTheme.enamelGreen);
   shell.roundRect(162, 324, 516, 8, 4).fill(stationTheme.softWhite);
+
+  // Left window panel — the porthole frames now glow with the window light color.
   shell.roundRect(172, 146, 166, 78, 18).fill(stationTheme.spaceNavy);
-  shell.circle(228, 184, 18).stroke({ color: stationTheme.utilityBlue, width: 4, alpha: 0.9 });
+  // Window light fill inside the portholes (visible glow).
+  shell.circle(228, 184, 14).fill({ color: light, alpha: 0.82 });
+  shell.circle(282, 184, 14).fill({ color: light, alpha: 0.82 });
+  // Porthole frames.
+  shell.circle(228, 184, 18).stroke({ color: stationTheme.ink, width: 4, alpha: 0.9 });
   shell.circle(282, 184, 18).stroke({ color: descriptor.accentColor, width: 4, alpha: 0.85 });
 
   if (descriptor.tier !== 'basic' && descriptor.tier !== 'locked') {
+    // Right window panel for higher tiers — also tinted by the window light.
     shell.roundRect(506, 144, 126, 60, 14).fill(stationTheme.spaceNavy);
-    shell.circle(548, 174, 13).fill(descriptor.accentColor);
-    shell.circle(590, 174, 13).fill(stationTheme.enamelGreen);
+    shell.circle(548, 174, 11).fill({ color: light, alpha: 0.78 });
+    shell.circle(590, 174, 11).fill({ color: light, alpha: 0.78 });
+    shell.circle(548, 174, 13).stroke({ color: descriptor.accentColor, width: 3, alpha: 0.9 });
+    shell.circle(590, 174, 13).stroke({ color: stationTheme.enamelGreen, width: 3, alpha: 0.9 });
   }
 
   return shell;
@@ -295,7 +307,7 @@ function createRoomPlate(descriptor: RoomSceneDescriptor): Graphics {
 function createAmbientLight(light: RoomSceneDescriptor['ambientLights'][number]): Graphics {
   const ambientLight = new Graphics();
 
-  ambientLight.circle(light.x, light.y, light.radius).fill({ color: light.color, alpha: 0.34 });
+  ambientLight.circle(light.x, light.y, light.radius).fill({ color: light.color, alpha: 0.5 });
 
   return markAmbientLight(ambientLight);
 }
