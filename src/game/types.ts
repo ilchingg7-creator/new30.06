@@ -113,4 +113,10 @@ export interface GameState {
   lastLoginDay?: number;
   dailyStreak?: number;
   unlockedAchievements?: AchievementId[];
+  /**
+   * Save schema version. Injected by `serializeGameState` and validated by
+   * `parseGameState`. Not set on fresh in-memory states created by
+   * `createInitialState`; it only appears on serialized/parsed states.
+   */
+  schemaVersion?: number;
 }
