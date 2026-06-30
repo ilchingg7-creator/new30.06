@@ -1,4 +1,4 @@
-import { HelpCircle, Volume2, VolumeX } from 'lucide-react';
+import { HelpCircle, Settings, Volume2, VolumeX } from 'lucide-react';
 import { useState } from 'react';
 import { useGameState } from './ui/useGameState';
 import { DesktopLayout } from './ui/layouts/DesktopLayout';
@@ -7,6 +7,7 @@ import { DailyLoginDialog } from './ui/screens/DailyLoginDialog';
 import { HelpOverlay } from './ui/screens/HelpOverlay';
 import { LoadingScreen } from './ui/screens/LoadingScreen';
 import { OfflineRewardDialog } from './ui/screens/OfflineRewardDialog';
+import { SettingsDialog } from './ui/screens/SettingsDialog';
 import { VisitorDialog } from './ui/screens/VisitorDialog';
 
 const HELP_SEEN_KEY = 'cosmic-communalka-help-seen';
@@ -28,6 +29,7 @@ function markHelpSeen(): void {
 export function App() {
   const game = useGameState();
   const [showHelp, setShowHelp] = useState(() => !hasSeenHelp());
+  const [showSettings, setShowSettings] = useState(false);
 
   const closeHelp = () => {
     markHelpSeen();
@@ -52,6 +54,15 @@ export function App() {
             title="Как играть"
           >
             <HelpCircle aria-hidden="true" size={18} />
+          </button>
+          <button
+            type="button"
+            className="sound-toggle"
+            onClick={() => setShowSettings(true)}
+            aria-label="Настройки"
+            title="Настройки"
+          >
+            <Settings aria-hidden="true" size={18} />
           </button>
           <button
             type="button"
@@ -96,6 +107,9 @@ export function App() {
         />
       )}
       {showHelp && <HelpOverlay onClose={closeHelp} />}
+      {showSettings && (
+        <SettingsDialog onClose={() => setShowSettings(false)} onResetSave={game.resetSave} />
+      )}
     </main>
   );
 }

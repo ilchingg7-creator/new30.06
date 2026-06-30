@@ -59,6 +59,7 @@ export interface UseGameStateResult {
   soundMuted: boolean;
   acceptVisitor(): void;
   declineVisitor(): void;
+  resetSave(): void;
 }
 
 export function useGameState(
@@ -428,6 +429,17 @@ export function useGameState(
     playSound('click');
   }, []);
 
+  const resetSave = useCallback(() => {
+    const fresh = createInitialState();
+    setGameState(fresh);
+    setOfflineReward(null);
+    setDailyReward(null);
+    setSelectedRoomId('tenant_capsule');
+    void storage.save(SAVE_KEY, serializeGameState(fresh));
+    void platformRef.current.saveCloud(SAVE_KEY, serializeGameState(fresh));
+    playSound('prestige');
+  }, [storage]);
+
   return {
     gameState,
     incomePerSecond: calculateIncomePerSecond(gameState),
@@ -450,6 +462,7 @@ export function useGameState(
     toggleSound,
     soundMuted,
     acceptVisitor: handleAcceptVisitor,
-    declineVisitor: handleDeclineVisitor
+    declineVisitor: handleDeclineVisitor,
+    resetSave
   };
 }
