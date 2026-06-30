@@ -713,6 +713,25 @@ input {
   font-size: 1.15rem;
 }
 
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.panel-heading h2 {
+  margin: 0;
+}
+
+.panel-empty {
+  margin: 0 0 10px;
+  color: var(--color-utility-blue);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
 .component-list,
 .compact-list {
   display: grid;
@@ -813,6 +832,43 @@ input {
   color: var(--color-signal-red);
   flex: 0 0 auto;
   margin-top: 2px;
+}
+
+.compact-card.resident-locked {
+  opacity: 0.72;
+}
+
+.compact-card.resident-settled {
+  border-color: color-mix(in srgb, var(--color-enamel-green), transparent 42%);
+}
+
+.compact-card.resident-settled svg {
+  color: var(--color-enamel-green);
+}
+
+.resident-card-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.resident-status {
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.resident-status.settled {
+  background: color-mix(in srgb, var(--color-enamel-green), transparent 72%);
+  color: var(--color-ink);
+}
+
+.resident-status.locked {
+  background: rgb(39 49 63 / 12%);
+  color: var(--color-utility-blue);
 }
 
 .compact-card strong,
