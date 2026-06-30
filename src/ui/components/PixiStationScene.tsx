@@ -1,29 +1,31 @@
 import { Application, type Container, type Ticker } from 'pixi.js';
 import { useEffect, useRef } from 'react';
-import type { GameState } from '../../game/types';
-import { buildStationContainer, calculateStationSceneFit } from '../../station/stationScene';
+import type { GameState, ModuleId } from '../../game/types';
+import { buildRoomContainer, calculateRoomSceneFit } from '../../station/roomScenes';
 import { stationTheme } from '../../station/stationTheme';
 
 interface PixiStationSceneProps {
   gameState: GameState;
+  selectedRoomId: ModuleId;
 }
 
-export function PixiStationScene({ gameState }: PixiStationSceneProps) {
+export function PixiStationScene({ gameState, selectedRoomId }: PixiStationSceneProps) {
   const hostRef = useRef<HTMLElement | null>(null);
   const appRef = useRef<Application | null>(null);
   const gameStateRef = useRef(gameState);
+  const selectedRoomIdRef = useRef(selectedRoomId);
   const sceneRef = useRef<Container | null>(null);
   const pulseTimeRef = useRef(0);
 
   function applySceneFit(app: Application, scene: Container) {
-    const fit = calculateStationSceneFit(app.renderer.width, app.renderer.height);
+    const fit = calculateRoomSceneFit(app.renderer.width, app.renderer.height);
 
     scene.scale.set(fit.scale);
     scene.position.set(fit.x, fit.y);
   }
 
-  function setScene(app: Application, nextGameState: GameState) {
-    const scene = buildStationContainer(nextGameState);
+  function setScene(app: Application, nextGameState: GameState, nextSelectedRoomId: ModuleId) {
+    const scene = buildRoomContainer(nextGameState, nextSelectedRoomId);
 
     app.stage.removeChildren();
     app.stage.addChild(scene);
@@ -33,6 +35,7 @@ export function PixiStationScene({ gameState }: PixiStationSceneProps) {
 
   useEffect(() => {
     gameStateRef.current = gameState;
+    selectedRoomIdRef.current = selectedRoomId;
 
     const app = appRef.current;
 
@@ -40,8 +43,8 @@ export function PixiStationScene({ gameState }: PixiStationSceneProps) {
       return;
     }
 
-    setScene(app, gameState);
-  }, [gameState]);
+    setScene(app, gameState, selectedRoomId);
+  }, [gameState, selectedRoomId]);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -89,7 +92,7 @@ export function PixiStationScene({ gameState }: PixiStationSceneProps) {
         }
 
         host.appendChild(app.canvas);
-        setScene(app, gameStateRef.current);
+        setScene(app, gameStateRef.current, selectedRoomIdRef.current);
         app.ticker.add(animateAmbientLights);
       });
 

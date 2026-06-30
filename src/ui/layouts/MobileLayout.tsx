@@ -29,7 +29,7 @@ export function MobileLayout({ game }: MobileLayoutProps) {
     <section className="mobile-layout" aria-label="Mobile layout">
       <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} />
       <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} />
-      <PixiStationScene gameState={game.gameState} />
+      <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} />
       <div className="mobile-tab-content">
         {activeTab === 'modules' && <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} />}
         {activeTab === 'goals' && <GoalPanel gameState={game.gameState} />}

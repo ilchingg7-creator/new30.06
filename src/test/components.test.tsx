@@ -17,7 +17,7 @@ describe('core UI components', () => {
       <>
         <TopBar gameState={gameState} incomePerSecond={calculateIncomePerSecond(gameState)} />
         <RoomSelector gameState={gameState} selectedRoomId="tenant_capsule" onSelectRoom={vi.fn()} />
-        <PixiStationScene gameState={gameState} />
+        <PixiStationScene gameState={gameState} selectedRoomId="tenant_capsule" />
         <ModuleList gameState={gameState} onBuyLevel={vi.fn()} />
         <GoalPanel gameState={gameState} />
         <BonusPanel onIncomeBoost={vi.fn()} onVipResident={vi.fn()} />
