@@ -24,7 +24,9 @@ export interface RoomSceneProp {
     | 'window_seat'
     | 'dock_clamp'
     | 'lamp'
-    | 'patch';
+    | 'patch'
+    | 'radiator'
+    | 'mail_tube';
   x: number;
   y: number;
   color: number;
@@ -65,7 +67,9 @@ const roomAccentColors: Record<ModuleId, number> = {
   teleport_entry: stationTheme.utilityBlue,
   antigrav_gym: stationTheme.signalRed,
   panorama_dome: stationTheme.lampAmber,
-  saucer_dock: stationTheme.utilityBlue
+  saucer_dock: stationTheme.utilityBlue,
+  radiator_balcony: stationTheme.signalRed,
+  mail_tube_office: stationTheme.utilityBlue
 };
 
 export function getRoomDetailTier(level: number): RoomDetailTier {
@@ -149,6 +153,10 @@ function createBaseProps(moduleId: ModuleId, accentColor: number): RoomSceneProp
       return [lamp, patch, { kind: 'window_seat', x: 420, y: 292, color: accentColor }];
     case 'saucer_dock':
       return [lamp, patch, { kind: 'dock_clamp', x: 420, y: 268, color: accentColor }];
+    case 'radiator_balcony':
+      return [lamp, patch, { kind: 'radiator', x: 420, y: 260, color: accentColor }];
+    case 'mail_tube_office':
+      return [lamp, patch, { kind: 'mail_tube', x: 420, y: 260, color: accentColor }];
   }
 }
 
@@ -368,6 +376,36 @@ function createPatch(prop: RoomSceneProp): Graphics {
   return patch;
 }
 
+function createRadiator(prop: RoomSceneProp): Graphics {
+  const radiator = new Graphics();
+
+  radiator.roundRect(prop.x - 96, prop.y + 30, 192, 24, 8).fill(stationTheme.ink);
+  // Vertical radiator fins
+  for (let offset = -84; offset <= 84; offset += 12) {
+    radiator.roundRect(prop.x + offset, prop.y - 40, 6, 70, 3).fill(prop.color);
+  }
+  radiator.circle(prop.x - 84, prop.y + 42, 6).fill(stationTheme.lampAmber);
+  radiator.circle(prop.x + 84, prop.y + 42, 6).fill(stationTheme.lampAmber);
+
+  return markAmbientLight(radiator);
+}
+
+function createMailTube(prop: RoomSceneProp): Graphics {
+  const tube = new Graphics();
+
+  // Horizontal pneumatic tube
+  tube.roundRect(prop.x - 110, prop.y - 18, 220, 36, 18).fill(stationTheme.ink);
+  tube.roundRect(prop.x - 100, prop.y - 10, 200, 20, 10).fill(prop.color);
+  // Mail capsule inside
+  tube.roundRect(prop.x - 26, prop.y - 12, 52, 24, 12).fill(stationTheme.lampAmber);
+  tube.circle(prop.x, prop.y, 6).fill(stationTheme.ink);
+  // End caps
+  tube.circle(prop.x - 110, prop.y, 14).fill(stationTheme.softWhite);
+  tube.circle(prop.x + 110, prop.y, 14).fill(stationTheme.softWhite);
+
+  return markAmbientLight(tube);
+}
+
 function createRoomProp(prop: RoomSceneProp): Graphics {
   switch (prop.kind) {
     case 'bed':
@@ -390,6 +428,10 @@ function createRoomProp(prop: RoomSceneProp): Graphics {
       return createLamp(prop);
     case 'patch':
       return createPatch(prop);
+    case 'radiator':
+      return createRadiator(prop);
+    case 'mail_tube':
+      return createMailTube(prop);
   }
 }
 

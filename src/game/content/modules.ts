@@ -80,5 +80,25 @@ export const modules: ModuleDefinition[] = [
     comfortBonus: 12,
     unlockAtCredits: 10000000,
     visualKey: 'saucer-dock'
+  },
+  {
+    id: 'radiator_balcony',
+    name: 'Радиаторный балкон',
+    role: 'Тепло и комфорт',
+    baseCost: 18000000,
+    baseIncomePerSecond: 60000,
+    comfortBonus: 15,
+    unlockAtCredits: 100000000,
+    visualKey: 'radiator-balcony'
+  },
+  {
+    id: 'mail_tube_office',
+    name: 'Почтовая труба-контора',
+    role: 'Пневмопочта станции',
+    baseCost: 50000000,
+    baseIncomePerSecond: 150000,
+    comfortBonus: 8,
+    unlockAtCredits: 200000000,
+    visualKey: 'mail-tube'
   }
 ];

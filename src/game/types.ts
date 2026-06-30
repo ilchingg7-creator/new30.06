@@ -6,7 +6,9 @@ export type ModuleId =
   | 'teleport_entry'
   | 'antigrav_gym'
   | 'panorama_dome'
-  | 'saucer_dock';
+  | 'saucer_dock'
+  | 'radiator_balcony'
+  | 'mail_tube_office';
 
 export type ResidentId =
   | 'sleepy_engineer'

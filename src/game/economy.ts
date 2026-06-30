@@ -21,7 +21,9 @@ function createEmptyModuleLevels(): ModuleLevels {
     teleport_entry: 0,
     antigrav_gym: 0,
     panorama_dome: 0,
-    saucer_dock: 0
+    saucer_dock: 0,
+    radiator_balcony: 0,
+    mail_tube_office: 0
   };
 }
 

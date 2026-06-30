@@ -11,7 +11,9 @@ const unlockTargets: Record<ModuleId, { minSeconds: number; maxSeconds: number }
   teleport_entry: { minSeconds: 18 * 60, maxSeconds: 28 * 60 },
   antigrav_gym: { minSeconds: 30 * 60, maxSeconds: 45 * 60 },
   panorama_dome: { minSeconds: 45 * 60, maxSeconds: 65 * 60 },
-  saucer_dock: { minSeconds: 60 * 60, maxSeconds: 90 * 60 }
+  saucer_dock: { minSeconds: 60 * 60, maxSeconds: 90 * 60 },
+  radiator_balcony: { minSeconds: 90 * 60, maxSeconds: 115 * 60 },
+  mail_tube_office: { minSeconds: 100 * 60, maxSeconds: 125 * 60 }
 };
 
 function getUnlockedModuleIds(state: GameState): ModuleId[] {
@@ -84,7 +86,7 @@ describe('MVP room unlock pacing', () => {
   });
 
   it('keeps room unlocks inside target windows', () => {
-    const unlockTimes = simulateUnlocks(90 * 60);
+    const unlockTimes = simulateUnlocks(125 * 60);
 
     for (const module of modules) {
       const target = unlockTargets[module.id];

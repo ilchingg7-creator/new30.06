@@ -4,8 +4,8 @@ import { modules } from '../game/content/modules';
 import { residents } from '../game/content/residents';
 
 describe('game content', () => {
-  it('defines 8 MVP modules with increasing base prices', () => {
-    expect(modules).toHaveLength(8);
+  it('defines 10 modules with increasing base prices', () => {
+    expect(modules).toHaveLength(10);
 
     const prices = modules.map((module) => module.baseCost);
     expect(prices).toEqual([...prices].sort((a, b) => a - b));
