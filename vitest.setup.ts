@@ -24,6 +24,13 @@ if (typeof HTMLCanvasElement !== 'undefined') {
       rotate: () => undefined,
       arc: () => undefined,
       rect: () => undefined,
+      roundRect: () => undefined,
+      quadraticCurveTo: () => undefined,
+      bezierCurveTo: () => undefined,
+      createLinearGradient: () => ({ addColorStop: () => undefined }) as unknown as CanvasGradient,
+      createRadialGradient: () => ({ addColorStop: () => undefined }) as unknown as CanvasGradient,
+      createPattern: () => null,
+      setLineDash: () => undefined,
       measureText: () => ({ width: 0 }),
       fillText: () => undefined,
       strokeText: () => undefined
