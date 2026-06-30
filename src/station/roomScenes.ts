@@ -49,6 +49,7 @@ export interface RoomSceneDescriptor {
   level: number;
   tier: RoomDetailTier;
   accentColor: number;
+  windowLightColor: number;
   props: RoomSceneProp[];
   ambientLights: Array<{ x: number; y: number; radius: number; color: number }>;
 }
@@ -176,18 +177,29 @@ function addTierProps(props: RoomSceneProp[], tier: RoomDetailTier, accentColor:
     return props;
   }
 
-  const nextProps = [...props, { kind: 'lamp' as const, x: 238, y: 150, color: stationTheme.lampAmber }];
+  // Working tier: first extra lamp + a side patch.
+  const nextProps = [
+    ...props,
+    { kind: 'lamp' as const, x: 238, y: 150, color: stationTheme.lampAmber },
+    { kind: 'patch' as const, x: 568, y: 330, color: stationTheme.enamelGreen }
+  ];
 
+  // Cozy tier: warmer accent lamp + a decorative ceiling patch.
   if (tier === 'cozy' || tier === 'busy' || tier === 'complete') {
-    nextProps.push({ kind: 'patch', x: 568, y: 330, color: stationTheme.enamelGreen });
+    nextProps.push({ kind: 'lamp' as const, x: 600, y: 180, color: accentColor });
+    nextProps.push({ kind: 'patch' as const, x: 340, y: 110, color: stationTheme.warmPanel });
   }
 
+  // Busy tier: extra work lamp + second side patch for density.
   if (tier === 'busy' || tier === 'complete') {
-    nextProps.push({ kind: 'lamp', x: 600, y: 180, color: accentColor });
+    nextProps.push({ kind: 'lamp' as const, x: 148, y: 200, color: stationTheme.lampAmber });
+    nextProps.push({ kind: 'patch' as const, x: 690, y: 300, color: accentColor });
   }
 
+  // Complete tier: premium ceiling detail + final accent patch.
   if (tier === 'complete') {
-    nextProps.push({ kind: 'patch', x: 420, y: 118, color: stationTheme.softWhite });
+    nextProps.push({ kind: 'patch' as const, x: 420, y: 118, color: stationTheme.softWhite });
+    nextProps.push({ kind: 'lamp' as const, x: 740, y: 140, color: stationTheme.lampAmber });
   }
 
   return nextProps;
@@ -201,17 +213,33 @@ export function createRoomSceneDescriptor(gameState: GameState, selectedRoomId: 
   const windowLight = resolveWindowLightColor(gameState);
   const props = addTierProps(createBaseProps(moduleId, accentColor), tier, accentColor);
 
+  const ambientLights: RoomSceneDescriptor['ambientLights'] = [
+    { x: 660, y: 132, radius: tier === 'locked' ? 12 : 22, color: windowLight },
+    { x: 420, y: 246, radius: tier === 'complete' ? 28 : 18, color: accentColor }
+  ];
+
+  // Higher tiers get additional ambient light sources for a warmer, busier feel.
+  if (tier === 'cozy' || tier === 'busy' || tier === 'complete') {
+    ambientLights.push({ x: 238, y: 150, radius: 14, color: windowLight });
+  }
+
+  if (tier === 'busy' || tier === 'complete') {
+    ambientLights.push({ x: 600, y: 180, radius: 16, color: accentColor });
+  }
+
+  if (tier === 'complete') {
+    ambientLights.push({ x: 148, y: 200, radius: 12, color: windowLight });
+  }
+
   return {
     moduleId,
     name: getModuleName(moduleId),
     level,
     tier,
     accentColor,
+    windowLightColor: windowLight,
     props,
-    ambientLights: [
-      { x: 660, y: 132, radius: tier === 'locked' ? 12 : 22, color: windowLight },
-      { x: 420, y: 246, radius: tier === 'complete' ? 28 : 18, color: accentColor }
-    ]
+    ambientLights
   };
 }
 
@@ -236,20 +264,30 @@ function createRoomBackground(): Graphics {
 
 function createRoomShell(descriptor: RoomSceneDescriptor): Graphics {
   const shell = new Graphics();
+  const light = descriptor.windowLightColor;
 
   shell.roundRect(92, 74, 656, 334, 28).fill(stationTheme.ink);
   shell.roundRect(108, 90, 624, 302, 24).stroke({ color: descriptor.accentColor, width: 4, alpha: 0.8 });
   shell.roundRect(134, 122, 572, 224, 18).fill(stationTheme.warmPanel);
   shell.roundRect(134, 308, 572, 38, 10).fill(stationTheme.enamelGreen);
   shell.roundRect(162, 324, 516, 8, 4).fill(stationTheme.softWhite);
+
+  // Left window panel — the porthole frames now glow with the window light color.
   shell.roundRect(172, 146, 166, 78, 18).fill(stationTheme.spaceNavy);
-  shell.circle(228, 184, 18).stroke({ color: stationTheme.utilityBlue, width: 4, alpha: 0.9 });
+  // Window light fill inside the portholes (visible glow).
+  shell.circle(228, 184, 14).fill({ color: light, alpha: 0.82 });
+  shell.circle(282, 184, 14).fill({ color: light, alpha: 0.82 });
+  // Porthole frames.
+  shell.circle(228, 184, 18).stroke({ color: stationTheme.ink, width: 4, alpha: 0.9 });
   shell.circle(282, 184, 18).stroke({ color: descriptor.accentColor, width: 4, alpha: 0.85 });
 
   if (descriptor.tier !== 'basic' && descriptor.tier !== 'locked') {
+    // Right window panel for higher tiers — also tinted by the window light.
     shell.roundRect(506, 144, 126, 60, 14).fill(stationTheme.spaceNavy);
-    shell.circle(548, 174, 13).fill(descriptor.accentColor);
-    shell.circle(590, 174, 13).fill(stationTheme.enamelGreen);
+    shell.circle(548, 174, 11).fill({ color: light, alpha: 0.78 });
+    shell.circle(590, 174, 11).fill({ color: light, alpha: 0.78 });
+    shell.circle(548, 174, 13).stroke({ color: descriptor.accentColor, width: 3, alpha: 0.9 });
+    shell.circle(590, 174, 13).stroke({ color: stationTheme.enamelGreen, width: 3, alpha: 0.9 });
   }
 
   return shell;
@@ -269,7 +307,7 @@ function createRoomPlate(descriptor: RoomSceneDescriptor): Graphics {
 function createAmbientLight(light: RoomSceneDescriptor['ambientLights'][number]): Graphics {
   const ambientLight = new Graphics();
 
-  ambientLight.circle(light.x, light.y, light.radius).fill({ color: light.color, alpha: 0.34 });
+  ambientLight.circle(light.x, light.y, light.radius).fill({ color: light.color, alpha: 0.5 });
 
   return markAmbientLight(ambientLight);
 }

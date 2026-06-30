@@ -11,6 +11,7 @@ import { PrestigePanel } from '../components/PrestigePanel';
 import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
+import { StatsPanel } from '../components/StatsPanel';
 import { TopBar } from '../components/TopBar';
 
 type MobileTab = 'modules' | 'goals' | 'bonuses' | 'prestige';
@@ -41,6 +42,7 @@ export function MobileLayout({ game }: MobileLayoutProps) {
             <GoalPanel gameState={game.gameState} />
             <ResidentsPanel gameState={game.gameState} />
             <AchievementsPanel gameState={game.gameState} />
+            <StatsPanel gameState={game.gameState} />
           </>
         )}
         {activeTab === 'bonuses' && (
