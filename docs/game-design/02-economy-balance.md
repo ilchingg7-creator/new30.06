@@ -105,3 +105,17 @@
 ## Защита от тупика
 
 Если игрок потратил кредиты неэффективно, он все равно должен получать доход. Никакой апгрейд не может снижать базовый доход. Обслуживание и ремонт могут быть темой, но не должны создавать отрицательный баланс в MVP.
+
+## Goal Rewards
+
+Goals should not grant credits in the MVP. Credits already come from room income, offline rewards and voluntary rewarded bonuses, so credit goal rewards do not create a meaningful decision.
+
+Use goals for progression guidance and non-credit rewards:
+
+- comfort;
+- room visual detail unlocks;
+- resident-related scene details;
+- temporary income boosts;
+- prestige education or acknowledgement.
+
+Completed goals must be applied once and then removed from the active visible goal list. They may remain in save data as `completedGoals` for persistence and analytics, but the main goal panel should show only incomplete next goals.

@@ -59,3 +59,29 @@ The Pixi scene receives plain data and never mutates game economy. It may emit U
 - Do not make Pixi a dependency of economy or save code.
 - If the scene requires new colors, module silhouettes or motion rules, update `07-visual-style.md` first.
 - If Pixi causes build size or mobile performance issues, fall back to a simpler renderer before changing the economy or UI architecture.
+
+## Focused Room Scene Architecture
+
+The Pixi station surface should render one selected room scene at a time instead of a full exterior station map.
+
+Data flow:
+
+```text
+GameState + selectedRoomId -> PixiStationScene -> focused room container
+```
+
+Responsibilities:
+
+- React owns `selectedRoomId` because room selection is UI state.
+- A successful room upgrade should set `selectedRoomId` to the upgraded module id.
+- Pixi receives `gameState` and `selectedRoomId`, then renders the matching room at the correct detail tier.
+- Pure station helpers should expose room descriptors for tests before constructing Pixi graphics.
+- Economy and goal completion logic must stay in `src/game`.
+
+Recommended file split:
+
+- `src/station/roomScenes.ts`: room descriptors, detail tier mapping and Pixi room construction helpers;
+- `src/ui/components/RoomSelector.tsx`: React room selector for desktop and mobile;
+- `src/game/goals.ts`: pure goal eligibility, completion and visible-goal helpers.
+
+The existing `PixiStationScene` lifecycle can remain, but its scene-building input changes from global station overview to focused room descriptor.

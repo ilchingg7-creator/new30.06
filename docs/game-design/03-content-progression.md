@@ -102,3 +102,39 @@
 - "Прачечная нашла носки, потерянные в прошлом цикле."
 
 Копирайтинг не должен объяснять механику вместо интерфейса. Механика должна быть ясна по числам, кнопкам и прогрессу.
+
+## Focused Room Progression
+
+MVP progression should be visible through separate focused room scenes rather than only through one exterior station overview.
+
+Each module owns one room scene:
+
+- `tenant_capsule`: rented capsule;
+- `cosmo_kitchen`: communal space kitchen;
+- `oxygen_garden`: oxygen garden;
+- `zero_g_laundry`: zero-g laundry;
+- `teleport_entry`: teleport entry hall;
+- `antigrav_gym`: antigrav gym;
+- `panorama_dome`: panorama dome;
+- `saucer_dock`: mini-saucer dock.
+
+Detail tiers:
+
+- level `0`: locked, not selectable as a scene;
+- levels `1-9`: basic room;
+- levels `10-24`: working room with first resident/work detail;
+- levels `25-49`: cozy room with comfort props;
+- levels `50-99`: busy room with service details;
+- level `100+`: complete prestige-ready room.
+
+Room switching:
+
+- the player can manually select any unlocked room;
+- buying a module level automatically focuses that room;
+- after prestige or invalid saved selection, focus returns to the first unlocked room, then to the capsule.
+
+Goal behavior:
+
+- completed goals are removed from the active goal list;
+- goals should guide the next action and should not remain as permanent completed entries in the main panel;
+- goal rewards should no longer be credits in MVP. Use comfort, visual detail unlocks, resident-related details or temporary boosts.

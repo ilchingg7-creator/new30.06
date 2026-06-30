@@ -224,3 +224,18 @@ Screenshots:
 - Visual style must be documented before creating final assets.
 - If plan or implementation changes colors, module silhouettes, typography, UI density or promo direction, update this file first.
 - Do not use AI-generated art directly in final build without checking rights and consistency; generated images can be used for mood exploration and internal references.
+
+## Focused Room Scenes
+
+The main station canvas should evolve from a wide exterior overview into a focused room scene. The player should see one detailed room at a time: capsule, kitchen, garden, laundry, teleport entry, gym, panorama dome or saucer dock.
+
+Rules:
+
+- each room has a distinct readable function at mobile size;
+- room detail grows at module levels `1`, `10`, `25`, `50` and `100`;
+- upgrades add props, light, repaired panels and small motion instead of only changing numbers;
+- locked rooms are shown in the React selector as unavailable future rooms, not as full Pixi scenes;
+- readable text, room names and controls stay in React;
+- Pixi may show non-readable signs, icons, lights, windows, props and ambient motion.
+
+The preferred interaction is manual room selection with automatic focus after upgrade: buying a module level switches the scene to that room, while the player can still choose any unlocked room manually.
