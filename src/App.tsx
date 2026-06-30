@@ -1,9 +1,15 @@
 import { useGameState } from './ui/useGameState';
 import { DesktopLayout } from './ui/layouts/DesktopLayout';
 import { MobileLayout } from './ui/layouts/MobileLayout';
+import { LoadingScreen } from './ui/screens/LoadingScreen';
+import { OfflineRewardDialog } from './ui/screens/OfflineRewardDialog';
 
 export function App() {
   const game = useGameState();
+
+  if (!game.ready) {
+    return <LoadingScreen />;
+  }
 
   return (
     <main className="app-shell">
@@ -17,6 +23,13 @@ export function App() {
       <div className="mobile-only">
         <MobileLayout game={game} />
       </div>
+      {game.offlineReward && (
+        <OfflineRewardDialog
+          seconds={game.offlineReward.seconds}
+          credits={game.offlineReward.credits}
+          onCollect={game.dismissOfflineReward}
+        />
+      )}
     </main>
   );
 }

@@ -245,6 +245,89 @@ input {
   background: var(--color-lamp-amber);
 }
 
+.loading-screen {
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 24px;
+  text-align: center;
+}
+
+.loading-screen h1 {
+  margin: 0;
+  font-size: 2.75rem;
+  line-height: 1;
+}
+
+.loading-screen strong {
+  color: var(--color-lamp-amber);
+  font-size: 1.2rem;
+}
+
+.loading-screen p {
+  margin: 0;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(23 32 51 / 72%);
+  padding: 16px;
+  z-index: 10;
+}
+
+.dialog-panel {
+  width: min(100%, 360px);
+  background: var(--color-warm-panel);
+  color: var(--color-ink);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  padding: 18px;
+}
+
+.dialog-panel h2 {
+  margin: 0 0 14px;
+  font-size: 1.25rem;
+}
+
+.dialog-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.dialog-stats div {
+  background: var(--color-soft-white);
+  border-radius: var(--radius-control);
+  padding: 10px;
+}
+
+.dialog-stats dt {
+  color: var(--color-utility-blue);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.dialog-stats dd {
+  margin: 4px 0 0;
+  font-weight: 800;
+}
+
+.dialog-panel button {
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-signal-red);
+  color: var(--color-soft-white);
+  font-weight: 800;
+}
+
 .top-bar {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
