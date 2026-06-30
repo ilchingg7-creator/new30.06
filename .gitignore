@@ -2,3 +2,6 @@ node_modules/
 dist/
 *.tsbuildinfo
 .vscode/
+# bun.lock is generated when running bun install in this npm-based project;
+# keep package-lock.json as the source of truth.
+bun.lock
