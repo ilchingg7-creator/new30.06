@@ -252,7 +252,7 @@ input {
   min-width: 0;
   display: grid;
   align-content: start;
-  gap: 10px;
+  gap: 4px;
 }
 
 .room-selector {
@@ -739,7 +739,8 @@ input {
 
 /* Room condition bar */
 .room-condition-bar {
-  margin-top: 6px;
+  margin-top: 0;
+  padding: 4px 8px;
 }
 
 .room-condition-header {
@@ -807,7 +808,8 @@ input {
 
 .station-task-panel {
   display: grid;
-  gap: 10px;
+  gap: 6px;
+  padding: 10px;
 }
 
 .station-task-heading {
