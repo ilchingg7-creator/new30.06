@@ -52,6 +52,43 @@ export interface ResidentDefinition {
 
 export type WindowLightColor = 'amber' | 'green' | 'red' | 'blue';
 
+/**
+ * Granular room detail level: 0 (locked) through 10 (complete, level 100+).
+ * Each step corresponds to 10 module levels and unlocks one new sprite layer.
+ */
+export type RoomDetailLevel = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+
+/**
+ * Programmatic animation applied to a sprite layer via the PixiJS ticker.
+ * Keeps animations consistent (no frame-to-frame AI jitter) and cheap.
+ */
+export interface RoomSpriteAnimation {
+  kind: 'bob' | 'rotate' | 'pulse' | 'flicker' | 'drift';
+  /** Amplitude in pixels (bob/drift), radians (rotate), or 0..1 scale (pulse/flicker). */
+  amplitude: number;
+  /** Animation speed in radians per second. */
+  speed: number;
+  axis?: 'x' | 'y';
+}
+
+/**
+ * One sprite layer in a room scene. Layers stack from back to front.
+ * Each layer unlocks at a specific module level (1, 10, 20, ..., 100).
+ */
+export interface RoomSpriteLayer {
+  id: string;
+  texture: string;
+  x: number;
+  y: number;
+  anchor: { x: number; y: number };
+  scale: number;
+  /** Module level at which this layer appears. */
+  unlockLevel: number;
+  animation?: RoomSpriteAnimation;
+  /** Render order: higher z is drawn on top. Defaults to unlockLevel. */
+  z?: number;
+}
+
 export interface VisitorRequest {
   id: string;
   name: string;

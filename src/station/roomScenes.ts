@@ -1,7 +1,8 @@
 import { Container, Graphics } from 'pixi.js';
 import { modules } from '../game/content/modules';
-import type { GameState, ModuleId, WindowLightColor } from '../game/types';
+import type { GameState, ModuleId, RoomDetailLevel, RoomSpriteLayer, WindowLightColor } from '../game/types';
 import { stationTheme } from './stationTheme';
+import { roomSpriteManifests } from './roomSpriteManifests';
 
 const windowLightColorMap: Record<WindowLightColor, number> = {
   amber: stationTheme.lampAmber,
@@ -106,6 +107,37 @@ export function getRoomDetailTier(level: number): RoomDetailTier {
   }
 
   return 'basic';
+}
+
+/**
+ * Granular detail level (0..10) used by the sprite system. Each step
+ * corresponds to 10 module levels and unlocks one new sprite layer.
+ *
+ * Level 0 = locked (detail 0), levels 1-10 = detail 1, 11-20 = detail 2,
+ * ..., 91-100 = detail 10. So detail = ceil(level / 10), capped at 10.
+ */
+export function getRoomDetailLevel(level: number): RoomDetailLevel {
+  if (level <= 0) {
+    return 0;
+  }
+
+  if (level >= 100) {
+    return 10;
+  }
+
+  return Math.ceil(level / 10) as RoomDetailLevel;
+}
+
+/**
+ * Returns the ordered list of sprite layers that should be visible for a room
+ * at the given module level. Layers are sorted by z (render order).
+ */
+export function getRoomSpriteLayers(moduleId: ModuleId, level: number): RoomSpriteLayer[] {
+  const manifest = roomSpriteManifests[moduleId] ?? [];
+
+  return manifest
+    .filter((layer) => layer.unlockLevel <= level)
+    .sort((a, b) => (a.z ?? a.unlockLevel) - (b.z ?? b.unlockLevel));
 }
 
 export function createRoomSelectorItems(gameState: GameState): RoomSelectorItem[] {
