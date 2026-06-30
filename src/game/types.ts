@@ -52,6 +52,15 @@ export interface ResidentDefinition {
 
 export type WindowLightColor = 'amber' | 'green' | 'red' | 'blue';
 
+export interface VisitorRequest {
+  id: string;
+  name: string;
+  flavor: string;
+  cost: number;
+  rewardComfort: number;
+  expiresAt: number;
+}
+
 export type AchievementId =
   | 'first_purchase'
   | 'ten_module_levels'
@@ -119,6 +128,8 @@ export interface GameState {
   totalModulesBought?: number;
   /** Number of prestige renovations performed. */
   prestigeCount?: number;
+  /** Active visitor request, if any. Cleared on accept/decline/expire. */
+  activeVisitor?: VisitorRequest | null;
   /**
    * Save schema version. Injected by `serializeGameState` and validated by
    * `parseGameState`. Not set on fresh in-memory states created by

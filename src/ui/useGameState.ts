@@ -11,6 +11,12 @@ import {
 } from '../game/economy';
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
 import type { GameState, ModuleId, PrestigeUpgradeId, WindowLightColor } from '../game/types';
+import {
+  acceptVisitor,
+  declineVisitor,
+  generateVisitorRequest,
+  isVisitorExpired
+} from '../game/visitors';
 import { createLocalStoragePort, type StoragePort } from '../platform/storage';
 import { playSound, toggleMuted, isMuted } from '../platform/sound';
 import {
@@ -51,6 +57,8 @@ export interface UseGameStateResult {
   buyPrestigeUpgrade(upgradeId: PrestigeUpgradeId): void;
   toggleSound(): void;
   soundMuted: boolean;
+  acceptVisitor(): void;
+  declineVisitor(): void;
 }
 
 export function useGameState(
@@ -172,6 +180,39 @@ export function useGameState(
     const intervalId = window.setInterval(() => {
       setGameState((current) => advanceGame(current, 1));
     }, 1_000);
+
+    return () => window.clearInterval(intervalId);
+  }, [ready]);
+
+  // Visitor request system: periodically spawn a visitor and clear expired ones.
+  useEffect(() => {
+    if (!ready) {
+      return undefined;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setGameState((current) => {
+        // Clear expired visitor first.
+        if (current.activeVisitor && isVisitorExpired(current)) {
+          return { ...current, activeVisitor: null };
+        }
+
+        // 50% chance every check, but only if no active visitor.
+        if (current.activeVisitor) {
+          return current;
+        }
+
+        if (Math.random() < 0.5) {
+          const visitor = generateVisitorRequest(current);
+
+          if (visitor) {
+            return { ...current, activeVisitor: visitor };
+          }
+        }
+
+        return current;
+      });
+    }, 2 * 60 * 1_000); // check every 2 minutes
 
     return () => window.clearInterval(intervalId);
   }, [ready]);
@@ -362,6 +403,31 @@ export function useGameState(
     }
   }, []);
 
+  const handleAcceptVisitor = useCallback(() => {
+    let accepted = false;
+
+    setGameState((current) => {
+      const next = acceptVisitor(current);
+
+      if (next !== current && !next.activeVisitor) {
+        accepted = true;
+      }
+
+      return next;
+    });
+
+    if (accepted) {
+      playSound('reward');
+    } else {
+      playSound('error');
+    }
+  }, []);
+
+  const handleDeclineVisitor = useCallback(() => {
+    setGameState((current) => declineVisitor(current));
+    playSound('click');
+  }, []);
+
   return {
     gameState,
     incomePerSecond: calculateIncomePerSecond(gameState),
@@ -382,6 +448,8 @@ export function useGameState(
     setWindowLightColor,
     buyPrestigeUpgrade: buyUpgrade,
     toggleSound,
-    soundMuted
+    soundMuted,
+    acceptVisitor: handleAcceptVisitor,
+    declineVisitor: handleDeclineVisitor
   };
 }

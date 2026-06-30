@@ -5,6 +5,7 @@ import { MobileLayout } from './ui/layouts/MobileLayout';
 import { DailyLoginDialog } from './ui/screens/DailyLoginDialog';
 import { LoadingScreen } from './ui/screens/LoadingScreen';
 import { OfflineRewardDialog } from './ui/screens/OfflineRewardDialog';
+import { VisitorDialog } from './ui/screens/VisitorDialog';
 
 export function App() {
   const game = useGameState();
@@ -51,6 +52,14 @@ export function App() {
           streak={game.dailyReward.streak}
           credits={game.dailyReward.credits}
           onCollect={game.dismissDailyReward}
+        />
+      )}
+      {game.gameState.activeVisitor && (
+        <VisitorDialog
+          visitor={game.gameState.activeVisitor}
+          canAfford={game.gameState.credits >= game.gameState.activeVisitor.cost}
+          onAccept={game.acceptVisitor}
+          onDecline={game.declineVisitor}
         />
       )}
     </main>
