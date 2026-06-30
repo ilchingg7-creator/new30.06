@@ -2,6 +2,7 @@ import { Gift, Home, RotateCcw, Target } from 'lucide-react';
 import { useState } from 'react';
 import type { UseGameStateResult } from '../useGameState';
 import type { Translation } from '../../platform/i18n';
+import { getStationGuidance } from '../../game/stationDirector';
 import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
 import { CosmeticsPanel } from '../components/CosmeticsPanel';
@@ -12,6 +13,7 @@ import { PrestigePanel } from '../components/PrestigePanel';
 import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
+import { StationTaskPanel } from '../components/StationTaskPanel';
 import { StatsPanel } from '../components/StatsPanel';
 import { TopBar } from '../components/TopBar';
 
@@ -24,6 +26,11 @@ interface MobileLayoutProps {
 
 export function MobileLayout({ game, t }: MobileLayoutProps) {
   const [activeTab, setActiveTab] = useState<MobileTab>('modules');
+  const stationGuidance = getStationGuidance({
+    state: game.gameState,
+    incomePerSecond: game.incomePerSecond,
+    hasPendingDailyReward: Boolean(game.dailyReward)
+  });
 
   const tabs: Array<{ id: MobileTab; label: string; icon: typeof Home }> = [
     { id: 'modules', label: t.rooms, icon: Home },
@@ -35,6 +42,12 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
   return (
     <section className="mobile-layout" aria-label="Mobile layout">
       <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} t={t} />
+      <StationTaskPanel
+        guidance={stationGuidance}
+        onSelectRoom={game.selectRoom}
+        onRenovate={game.renovateOrbit}
+        t={t}
+      />
       <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} t={t} />
       <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} ariaLabel={t.stationView} />
       <div className="mobile-tab-content">

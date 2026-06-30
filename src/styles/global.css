@@ -724,6 +724,75 @@ input {
   font-size: 1.15rem;
 }
 
+.station-task-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.station-task-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.station-task-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.station-task-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.station-task-body strong,
+.station-task-body p {
+  margin: 0 0 6px;
+}
+
+.station-task-body p {
+  color: var(--color-utility-blue);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.station-task-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+.station-task-meta div {
+  display: inline-flex;
+  gap: 4px;
+  align-items: baseline;
+}
+
+.station-task-meta dt,
+.station-task-meta dd {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.station-task-meta dt {
+  color: var(--color-utility-blue);
+  font-weight: 700;
+}
+
+.station-task-meta dd {
+  color: var(--color-ink);
+  font-weight: 800;
+}
+
+.station-task-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .panel-heading {
   display: flex;
   align-items: center;
@@ -978,6 +1047,18 @@ input {
 
   .component-card {
     grid-template-columns: 1fr;
+  }
+
+  .station-task-body {
+    grid-template-columns: 1fr;
+  }
+
+  .station-task-actions {
+    justify-content: stretch;
+  }
+
+  .station-task-actions button {
+    width: 100%;
   }
 }
 

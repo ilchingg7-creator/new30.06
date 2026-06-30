@@ -1,5 +1,6 @@
 import type { UseGameStateResult } from '../useGameState';
 import type { Translation } from '../../platform/i18n';
+import { getStationGuidance } from '../../game/stationDirector';
 import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
 import { CosmeticsPanel } from '../components/CosmeticsPanel';
@@ -10,6 +11,7 @@ import { PrestigePanel } from '../components/PrestigePanel';
 import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
+import { StationTaskPanel } from '../components/StationTaskPanel';
 import { StatsPanel } from '../components/StatsPanel';
 import { TopBar } from '../components/TopBar';
 
@@ -19,11 +21,23 @@ interface DesktopLayoutProps {
 }
 
 export function DesktopLayout({ game, t }: DesktopLayoutProps) {
+  const stationGuidance = getStationGuidance({
+    state: game.gameState,
+    incomePerSecond: game.incomePerSecond,
+    hasPendingDailyReward: Boolean(game.dailyReward)
+  });
+
   return (
     <section className="desktop-layout" aria-label="Desktop layout">
       <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} t={t} />
       <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} t={t} />
       <div className="station-stack">
+        <StationTaskPanel
+          guidance={stationGuidance}
+          onSelectRoom={game.selectRoom}
+          onRenovate={game.renovateOrbit}
+          t={t}
+        />
         <RoomSelector
           gameState={game.gameState}
           selectedRoomId={game.selectedRoomId}

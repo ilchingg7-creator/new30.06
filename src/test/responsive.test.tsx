@@ -88,6 +88,15 @@ describe('responsive layout rendering', () => {
     expect(screen.getByRole('button', { name: t.renovation })).toBeInTheDocument();
   });
 
+  it('renders station director guidance in the active responsive layout', async () => {
+    setViewportWidth(390);
+    render(<App />);
+
+    await screen.findAllByText(t.content.modules.tenant_capsule.name);
+
+    expect(screen.getAllByRole('heading', { name: t.currentTask })).toHaveLength(1);
+  });
+
   it('renders one room selector navigation for the active layout', async () => {
     setViewportWidth(1200);
     render(<App />);
