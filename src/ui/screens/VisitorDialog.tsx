@@ -1,15 +1,17 @@
 import { UserRound } from 'lucide-react';
 import { formatCredits } from '../../game/format';
 import type { VisitorRequest } from '../../game/types';
+import type { Translation } from '../../platform/i18n';
 
 interface VisitorDialogProps {
   visitor: VisitorRequest;
   canAfford: boolean;
   onAccept(): void;
   onDecline(): void;
+  t: Translation;
 }
 
-export function VisitorDialog({ visitor, canAfford, onAccept, onDecline }: VisitorDialogProps) {
+export function VisitorDialog({ visitor, canAfford, onAccept, onDecline, t }: VisitorDialogProps) {
   return (
     <div className="dialog-backdrop" role="presentation">
       <section className="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="visitor-title">
@@ -29,10 +31,10 @@ export function VisitorDialog({ visitor, canAfford, onAccept, onDecline }: Visit
         </dl>
         <div className="visitor-actions">
           <button type="button" className="dialog-double" onClick={onAccept} disabled={!canAfford}>
-            Принять
+            {t.accept}
           </button>
           <button type="button" onClick={onDecline}>
-            Отказать
+            {t.decline}
           </button>
         </div>
       </section>

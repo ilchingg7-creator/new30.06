@@ -24,7 +24,7 @@ export const goals: GoalDefinition[] = [
   },
   {
     id: 'earn_credits_10000',
-    title: 'Заработать 10 000 кредитов',
+    title: 'Заработать 10 000 копеек',
     rewardComfort: 2,
     rewardKind: 'prestige_hint',
     rewardLabel: '+2 комфорт, подсказка к реновации'

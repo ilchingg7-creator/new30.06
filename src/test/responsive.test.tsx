@@ -33,8 +33,8 @@ describe('responsive layout rendering', () => {
     setViewportWidth(1200);
     render(<App />);
 
-    await screen.findAllByText('Кредиты');
-    expect(screen.getAllByText('Кредиты').length).toBeGreaterThanOrEqual(1);
+    await screen.findAllByText('Копейки');
+    expect(screen.getAllByText('Копейки').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Доход').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Комфорт').length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText('Репутация').length).toBeGreaterThanOrEqual(1);
@@ -89,7 +89,7 @@ describe('responsive layout rendering', () => {
     setViewportWidth(1200);
     render(<App />);
 
-    await screen.findAllByRole('navigation', { name: 'Комнаты станции' });
-    expect(screen.getAllByRole('navigation', { name: 'Комнаты станции' })).toHaveLength(1);
+    await screen.findAllByRole('navigation', { name: 'Комнаты' });
+    expect(screen.getAllByRole('navigation', { name: 'Комнаты' })).toHaveLength(1);
   });
 });

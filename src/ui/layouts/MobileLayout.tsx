@@ -1,6 +1,7 @@
 import { Gift, Home, RotateCcw, Target } from 'lucide-react';
 import { useState } from 'react';
 import type { UseGameStateResult } from '../useGameState';
+import type { Translation } from '../../platform/i18n';
 import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
 import { CosmeticsPanel } from '../components/CosmeticsPanel';
@@ -18,31 +19,32 @@ type MobileTab = 'modules' | 'goals' | 'bonuses' | 'prestige';
 
 interface MobileLayoutProps {
   game: UseGameStateResult;
+  t: Translation;
 }
 
-const tabs: Array<{ id: MobileTab; label: string; icon: typeof Home }> = [
-  { id: 'modules', label: 'Комнаты', icon: Home },
-  { id: 'goals', label: 'Цели', icon: Target },
-  { id: 'bonuses', label: 'Бонусы', icon: Gift },
-  { id: 'prestige', label: 'Реновация', icon: RotateCcw }
-];
-
-export function MobileLayout({ game }: MobileLayoutProps) {
+export function MobileLayout({ game, t }: MobileLayoutProps) {
   const [activeTab, setActiveTab] = useState<MobileTab>('modules');
+
+  const tabs: Array<{ id: MobileTab; label: string; icon: typeof Home }> = [
+    { id: 'modules', label: t.rooms, icon: Home },
+    { id: 'goals', label: t.goals, icon: Target },
+    { id: 'bonuses', label: t.bonuses, icon: Gift },
+    { id: 'prestige', label: t.renovation, icon: RotateCcw }
+  ];
 
   return (
     <section className="mobile-layout" aria-label="Mobile layout">
-      <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} />
-      <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} />
-      <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} />
+      <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} t={t} />
+      <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} t={t} />
+      <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} />
       <div className="mobile-tab-content">
-        {activeTab === 'modules' && <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} />}
+        {activeTab === 'modules' && <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} t={t} />}
         {activeTab === 'goals' && (
           <>
-            <GoalPanel gameState={game.gameState} />
-            <ResidentsPanel gameState={game.gameState} />
-            <AchievementsPanel gameState={game.gameState} />
-            <StatsPanel gameState={game.gameState} />
+            <GoalPanel gameState={game.gameState} t={t} />
+            <ResidentsPanel gameState={game.gameState} t={t} />
+            <AchievementsPanel gameState={game.gameState} t={t} />
+            <StatsPanel gameState={game.gameState} t={t} />
           </>
         )}
         {activeTab === 'bonuses' && (
@@ -51,15 +53,17 @@ export function MobileLayout({ game }: MobileLayoutProps) {
             onVipResident={game.activateVipResident}
             adsAvailable={game.adsAvailable}
             adPending={game.adPending}
+            t={t}
           />
         )}
         {activeTab === 'prestige' && (
           <>
-            <PrestigePanel reputation={game.gameState.reputation} onRenovate={game.renovateOrbit} />
-            <PrestigeUpgradesPanel gameState={game.gameState} onBuyUpgrade={game.buyPrestigeUpgrade} />
+            <PrestigePanel reputation={game.gameState.reputation} onRenovate={game.renovateOrbit} t={t} />
+            <PrestigeUpgradesPanel gameState={game.gameState} onBuyUpgrade={game.buyPrestigeUpgrade} t={t} />
             <CosmeticsPanel
               windowLightColor={game.gameState.windowLightColor ?? 'amber'}
               onWindowLightColor={game.setWindowLightColor}
+              t={t}
             />
           </>
         )}

@@ -3,6 +3,7 @@
 import { Target } from 'lucide-react';
 import { getVisibleGoals } from '../../game/goals';
 import type { GameState } from '../../game/types';
+import type { Translation } from '../../platform/i18n';
 
 const rewardKindLabels: Record<string, string> = {
   comfort: 'Бонус комфорта',
@@ -13,21 +14,22 @@ const rewardKindLabels: Record<string, string> = {
 
 interface GoalPanelProps {
   gameState: GameState;
+  t: Translation;
 }
 
-export function GoalPanel({ gameState }: GoalPanelProps) {
+export function GoalPanel({ gameState, t }: GoalPanelProps) {
   const visibleGoals = getVisibleGoals(gameState, 4);
 
   return (
     <section className="panel" aria-labelledby="goal-panel-title">
-      <h2 id="goal-panel-title">Цели</h2>
+      <h2 id="goal-panel-title">{t.goals}</h2>
       <ul className="compact-list">
         {visibleGoals.length === 0 && (
           <li className="compact-card">
             <Target aria-hidden="true" size={16} />
             <div>
-              <strong>Все ближайшие цели выполнены</strong>
-              <span>Продолжайте улучшать комнаты</span>
+              <strong>{t.allGoalsDone}</strong>
+              <span>{t.allGoalsDoneHint}</span>
             </div>
           </li>
         )}

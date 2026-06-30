@@ -29,7 +29,7 @@ export const achievements: AchievementDefinition[] = [
   {
     id: 'credits_million',
     title: 'Миллионер орбиты',
-    description: 'Заработать 1 000 000 кредитов суммарно.'
+    description: 'Заработать 1 000 000 копеек суммарно.'
   },
   {
     id: 'all_rooms_unlocked',

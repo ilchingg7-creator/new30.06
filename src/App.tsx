@@ -1,6 +1,7 @@
 import { HelpCircle, Settings, Volume2, VolumeX } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useGameState } from './ui/useGameState';
+import { useLanguage } from './ui/useLanguage';
 import { DesktopLayout } from './ui/layouts/DesktopLayout';
 import { MobileLayout } from './ui/layouts/MobileLayout';
 import { DailyLoginDialog } from './ui/screens/DailyLoginDialog';
@@ -42,6 +43,7 @@ function getIsMobileViewport() {
 
 export function App() {
   const game = useGameState();
+  const { language, t, changeLanguage } = useLanguage();
   const [isMobileViewport, setIsMobileViewport] = useState(getIsMobileViewport);
   const [showHelp, setShowHelp] = useState(() => !hasSeenHelp());
   const [showSettings, setShowSettings] = useState(false);
@@ -81,21 +83,21 @@ export function App() {
   };
 
   if (!game.ready) {
-    return <LoadingScreen />;
+    return <LoadingScreen t={t} />;
   }
 
   return (
     <main className="app-shell">
       <header className="app-title">
-        <p className="eyebrow">Retro Soviet Space Cozy</p>
+        <p className="eyebrow">{t.eyebrow}</p>
         <div className="title-row">
-          <h1>Космическая коммуналка</h1>
+          <h1>{t.appTitle}</h1>
           <button
             type="button"
             className="sound-toggle"
             onClick={() => setShowHelp(true)}
-            aria-label="Как играть"
-            title="Как играть"
+            aria-label={t.howToPlay}
+            title={t.howToPlay}
           >
             <HelpCircle aria-hidden="true" size={18} />
           </button>
@@ -103,8 +105,8 @@ export function App() {
             type="button"
             className="sound-toggle"
             onClick={() => setShowSettings(true)}
-            aria-label="Настройки"
-            title="Настройки"
+            aria-label={t.settings}
+            title={t.settings}
           >
             <Settings aria-hidden="true" size={18} />
           </button>
@@ -112,14 +114,18 @@ export function App() {
             type="button"
             className="sound-toggle"
             onClick={game.toggleSound}
-            aria-label={game.soundMuted ? 'Включить звук' : 'Выключить звук'}
-            title={game.soundMuted ? 'Включить звук' : 'Выключить звук'}
+            aria-label={game.soundMuted ? t.soundOn : t.soundOff}
+            title={game.soundMuted ? t.soundOn : t.soundOff}
           >
             {game.soundMuted ? <VolumeX aria-hidden="true" size={18} /> : <Volume2 aria-hidden="true" size={18} />}
           </button>
         </div>
       </header>
-      {isMobileViewport ? <MobileLayout game={game} /> : <DesktopLayout game={game} />}
+      {isMobileViewport ? (
+        <MobileLayout game={game} t={t} />
+      ) : (
+        <DesktopLayout game={game} t={t} />
+      )}
       {game.offlineReward && (
         <OfflineRewardDialog
           seconds={game.offlineReward.seconds}
@@ -128,6 +134,7 @@ export function App() {
           onDouble={game.doubleOfflineReward}
           adsAvailable={game.adsAvailable}
           adPending={game.adPending}
+          t={t}
         />
       )}
       {game.dailyReward && (
@@ -135,6 +142,7 @@ export function App() {
           streak={game.dailyReward.streak}
           credits={game.dailyReward.credits}
           onCollect={game.dismissDailyReward}
+          t={t}
         />
       )}
       {game.gameState.activeVisitor && (
@@ -143,10 +151,19 @@ export function App() {
           canAfford={game.gameState.credits >= game.gameState.activeVisitor.cost}
           onAccept={game.acceptVisitor}
           onDecline={game.declineVisitor}
+          t={t}
         />
       )}
-      {showHelp && <HelpOverlay onClose={closeHelp} />}
-      {showSettings && <SettingsDialog onClose={() => setShowSettings(false)} onResetSave={game.resetSave} />}
+      {showHelp && <HelpOverlay onClose={closeHelp} t={t} />}
+      {showSettings && (
+        <SettingsDialog
+          onClose={() => setShowSettings(false)}
+          onResetSave={game.resetSave}
+          t={t}
+          language={language}
+          onLanguageChange={changeLanguage}
+        />
+      )}
     </main>
   );
 }

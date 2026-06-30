@@ -1,10 +1,16 @@
-export function LoadingScreen() {
+import type { Translation } from '../../platform/i18n';
+
+interface LoadingScreenProps {
+  t: Translation;
+}
+
+export function LoadingScreen({ t }: LoadingScreenProps) {
   return (
     <main className="loading-screen">
-      <p className="eyebrow">Retro Soviet Space Cozy</p>
-      <h1>Космическая коммуналка</h1>
-      <strong>Греем шлюзы</strong>
-      <p>Станция готовит первый жилой модуль.</p>
+      <p className="eyebrow">{t.eyebrow}</p>
+      <h1>{t.appTitle}</h1>
+      <strong>{t.loadingHint}</strong>
+      <p>{t.loadingBody}</p>
     </main>
   );
 }

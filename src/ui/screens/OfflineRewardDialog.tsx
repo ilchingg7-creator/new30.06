@@ -1,5 +1,6 @@
 import { Gift } from 'lucide-react';
 import { formatCredits, formatDuration } from '../../game/format';
+import type { Translation } from '../../platform/i18n';
 
 interface OfflineRewardDialogProps {
   seconds: number;
@@ -8,6 +9,7 @@ interface OfflineRewardDialogProps {
   onDouble?(): void;
   adsAvailable?: boolean;
   adPending?: boolean;
+  t: Translation;
 }
 
 export function OfflineRewardDialog({
@@ -16,32 +18,33 @@ export function OfflineRewardDialog({
   onCollect,
   onDouble,
   adsAvailable = false,
-  adPending = false
+  adPending = false,
+  t
 }: OfflineRewardDialogProps) {
   const showDouble = Boolean(onDouble) && adsAvailable;
 
   return (
     <div className="dialog-backdrop" role="presentation">
       <section className="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="offline-reward-title">
-        <h2 id="offline-reward-title">Станция поработала без вас</h2>
+        <h2 id="offline-reward-title">{t.offlineTitle}</h2>
         <dl className="dialog-stats">
           <div>
-            <dt>Время</dt>
+            <dt>{t.time}</dt>
             <dd>{formatDuration(seconds)}</dd>
           </div>
           <div>
-            <dt>Кредиты</dt>
+            <dt>{t.kopeks}</dt>
             <dd>{formatCredits(credits)}</dd>
           </div>
         </dl>
         {showDouble && (
           <button type="button" className="dialog-double" onClick={onDouble} disabled={adPending}>
             <Gift aria-hidden="true" size={16} />
-            {adPending ? 'Реклама...' : 'Удвоить за рекламу'}
+            {adPending ? t.adPending : t.doubleViaAd}
           </button>
         )}
         <button type="button" onClick={onCollect} disabled={adPending}>
-          Забрать
+          {t.collect}
         </button>
       </section>
     </div>

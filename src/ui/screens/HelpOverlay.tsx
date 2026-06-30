@@ -1,39 +1,45 @@
 import { HelpCircle, Home, RotateCcw, Sparkles, Target, X } from 'lucide-react';
+import type { Translation } from '../../platform/i18n';
 
 interface HelpOverlayProps {
   onClose(): void;
+  t: Translation;
 }
 
-const helpSections = [
-  {
-    icon: Home,
-    title: 'Комнаты',
-    body: 'Покупайте уровни модулей за кредиты. Каждый модуль дает доход в секунду и повышает комфорт станции. На уровнях 10, 25, 50 и 100 модуль получает множитель дохода.'
-  },
-  {
-    icon: Target,
-    title: 'Цели',
-    body: 'Цели направляют развитие станции. Награды: комфорт, визуальные детали или временные бусты. Завершенные цели исчезают из списка.'
-  },
-  {
-    icon: Sparkles,
-    title: 'Бонусы',
-    body: 'На Yandex Games бонусы включаются за просмотр рекламы: x2 аренда на 5 минут или VIP-жилец на 10 минут. Локально они включаются сразу.'
-  },
-  {
-    icon: RotateCcw,
-    title: 'Реновация орбиты',
-    body: 'Сбрасывает кредиты и модули, но сохраняет репутацию. Репутация покупает постоянные улучшения: жильцы выживают, теплый старт и больший офлайн-лимит.'
-  }
-];
+function buildHelpSections(t: Translation) {
+  return [
+    {
+      icon: Home,
+      title: t.helpRooms,
+      body: t.helpRoomsBody
+    },
+    {
+      icon: Target,
+      title: t.helpGoals,
+      body: t.helpGoalsBody
+    },
+    {
+      icon: Sparkles,
+      title: t.helpBonuses,
+      body: t.helpBonusesBody
+    },
+    {
+      icon: RotateCcw,
+      title: t.helpRenovation,
+      body: t.helpRenovationBody
+    }
+  ];
+}
 
-export function HelpOverlay({ onClose }: HelpOverlayProps) {
+export function HelpOverlay({ onClose, t }: HelpOverlayProps) {
+  const helpSections = buildHelpSections(t);
+
   return (
     <div className="dialog-backdrop" role="presentation">
       <section className="dialog-panel help-panel" role="dialog" aria-modal="true" aria-labelledby="help-title">
         <header className="help-header">
           <h2 id="help-title">
-            <HelpCircle aria-hidden="true" size={18} style={{ verticalAlign: 'middle' }} /> Как играть
+            <HelpCircle aria-hidden="true" size={18} style={{ verticalAlign: 'middle' }} /> {t.helpTitle}
           </h2>
           <button type="button" className="help-close" onClick={onClose} aria-label="Закрыть">
             <X aria-hidden="true" size={18} />
@@ -55,7 +61,7 @@ export function HelpOverlay({ onClose }: HelpOverlayProps) {
           })}
         </ul>
         <button type="button" onClick={onClose} className="help-start">
-          Понятно, начать играть
+          {t.helpStart}
         </button>
       </section>
     </div>

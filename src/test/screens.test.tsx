@@ -1,18 +1,21 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { translations } from '../platform/i18n';
 import { LoadingScreen } from '../ui/screens/LoadingScreen';
 import { OfflineRewardDialog } from '../ui/screens/OfflineRewardDialog';
 
+const t = translations.ru;
+
 describe('game screens', () => {
   it('renders a nonblank loading screen', () => {
-    render(<LoadingScreen />);
+    render(<LoadingScreen t={t} />);
 
     expect(screen.getByRole('heading', { name: 'Космическая коммуналка' })).toBeInTheDocument();
     expect(screen.getByText('Греем шлюзы')).toBeInTheDocument();
   });
 
   it('renders an offline reward dialog', () => {
-    render(<OfflineRewardDialog seconds={3_660} credits={12_400} onCollect={vi.fn()} />);
+    render(<OfflineRewardDialog seconds={3_660} credits={12_400} onCollect={vi.fn()} t={t} />);
 
     expect(screen.getByRole('heading', { name: 'Станция поработала без вас' })).toBeInTheDocument();
     expect(screen.getByText('1ч 1м')).toBeInTheDocument();
@@ -28,6 +31,7 @@ describe('game screens', () => {
         onCollect={vi.fn()}
         onDouble={vi.fn()}
         adsAvailable={false}
+        t={t}
       />
     );
 
@@ -42,6 +46,7 @@ describe('game screens', () => {
         onCollect={vi.fn()}
         onDouble={vi.fn()}
         adsAvailable
+        t={t}
       />
     );
 

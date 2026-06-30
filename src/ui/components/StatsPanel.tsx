@@ -3,31 +3,33 @@
 import { BarChart3, Clock, Home, RotateCcw, Trophy } from 'lucide-react';
 import { formatCredits, formatDuration } from '../../game/format';
 import type { GameState } from '../../game/types';
+import type { Translation } from '../../platform/i18n';
 
 interface StatsPanelProps {
   gameState: GameState;
+  t: Translation;
 }
 
-export function StatsPanel({ gameState }: StatsPanelProps) {
+export function StatsPanel({ gameState, t }: StatsPanelProps) {
   const stats = [
     {
       icon: Clock,
-      label: 'Время в игре',
+      label: t.playTime,
       value: formatDuration(gameState.totalPlaySeconds ?? 0)
     },
     {
       icon: Home,
-      label: 'Куплено модулей',
+      label: t.modulesBought,
       value: String(gameState.totalModulesBought ?? 0)
     },
     {
       icon: RotateCcw,
-      label: 'Реноваций',
+      label: t.renovations,
       value: String(gameState.prestigeCount ?? 0)
     },
     {
       icon: Trophy,
-      label: 'Заработано всего',
+      label: t.totalEarned,
       value: formatCredits(gameState.totalEarnedCredits)
     }
   ];
@@ -35,7 +37,7 @@ export function StatsPanel({ gameState }: StatsPanelProps) {
   return (
     <section className="panel" aria-labelledby="stats-panel-title">
       <h2 id="stats-panel-title">
-        <BarChart3 aria-hidden="true" size={16} style={{ verticalAlign: 'middle' }} /> Статистика
+        <BarChart3 aria-hidden="true" size={16} style={{ verticalAlign: 'middle' }} /> {t.statistics}
       </h2>
       <ul className="stats-grid">
         {stats.map((stat) => {

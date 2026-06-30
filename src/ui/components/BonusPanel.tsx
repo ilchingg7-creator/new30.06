@@ -1,30 +1,31 @@
 'use client';
 
 import { Sparkles, Star } from 'lucide-react';
+import type { Translation } from '../../platform/i18n';
 
 interface BonusPanelProps {
   onIncomeBoost(): void;
   onVipResident(): void;
   adsAvailable?: boolean;
   adPending?: boolean;
+  t: Translation;
 }
 
 export function BonusPanel({
   onIncomeBoost,
   onVipResident,
   adsAvailable = false,
-  adPending = false
+  adPending = false,
+  t
 }: BonusPanelProps) {
-  const boostLabel = adsAvailable ? 'x2 аренда (реклама)' : 'x2 аренда';
-  const vipLabel = adsAvailable ? 'VIP-жилец (реклама)' : 'VIP-жилец';
+  const boostLabel = adsAvailable ? `${t.boost2x} (реклама)` : t.boost2x;
+  const vipLabel = adsAvailable ? `${t.vipResident} (реклама)` : t.vipResident;
 
   return (
     <section className="panel" aria-labelledby="bonus-panel-title">
-      <h2 id="bonus-panel-title">Бонусы</h2>
+      <h2 id="bonus-panel-title">{t.bonuses}</h2>
       {!adsAvailable && (
-        <p className="panel-copy">
-          Рекламные бонусы доступны на Yandex Games. Локально бонусы включаются сразу.
-        </p>
+        <p className="panel-copy">{t.adBonusesHint}</p>
       )}
       <div className="button-stack">
         <button
@@ -34,7 +35,7 @@ export function BonusPanel({
           title="Удваивает доход станции на 5 минут. На Yandex Games требует просмотра рекламы."
         >
           <Sparkles aria-hidden="true" size={16} />
-          {adPending ? 'Реклама...' : boostLabel}
+          {adPending ? t.adPending : boostLabel}
         </button>
         <button
           type="button"
@@ -43,7 +44,7 @@ export function BonusPanel({
           title="Заселяет VIP-жильца: x2 доход на 10 минут. На Yandex Games требует просмотра рекламы."
         >
           <Star aria-hidden="true" size={16} />
-          {adPending ? 'Реклама...' : vipLabel}
+          {adPending ? t.adPending : vipLabel}
         </button>
       </div>
     </section>

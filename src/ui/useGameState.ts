@@ -60,6 +60,7 @@ export interface UseGameStateResult {
   acceptVisitor(): void;
   declineVisitor(): void;
   resetSave(): void;
+  clickRoom(): void;
 }
 
 export function useGameState(
@@ -426,6 +427,21 @@ export function useGameState(
     playSound('prestige');
   }, [storage]);
 
+  const clickRoom = useCallback(() => {
+    // Clicker mechanic: each click on the room gives 1 kopek + a fraction
+    // of the current per-second income so it stays relevant late-game.
+    setGameState((current) => {
+      const bonus = 1 + Math.floor(calculateIncomePerSecond(current) * 0.5);
+
+      return {
+        ...current,
+        credits: current.credits + bonus,
+        totalEarnedCredits: current.totalEarnedCredits + bonus
+      };
+    });
+    playSound('click');
+  }, []);
+
   return {
     gameState,
     incomePerSecond: calculateIncomePerSecond(gameState),
@@ -449,6 +465,7 @@ export function useGameState(
     soundMuted,
     acceptVisitor: handleAcceptVisitor,
     declineVisitor: handleDeclineVisitor,
-    resetSave
+    resetSave,
+    clickRoom
   };
 }

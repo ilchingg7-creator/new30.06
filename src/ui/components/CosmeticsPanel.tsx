@@ -2,24 +2,30 @@
 
 import { Palette } from 'lucide-react';
 import type { WindowLightColor } from '../../game/types';
+import type { Translation } from '../../platform/i18n';
 
 interface CosmeticsPanelProps {
   windowLightColor: WindowLightColor;
   onWindowLightColor(color: WindowLightColor): void;
+  t: Translation;
 }
 
-const colorOptions: Array<{ id: WindowLightColor; label: string; swatch: string }> = [
-  { id: 'amber', label: 'Янтарный', swatch: 'var(--color-lamp-amber)' },
-  { id: 'green', label: 'Эмалевый', swatch: 'var(--color-enamel-green)' },
-  { id: 'red', label: 'Сигнальный', swatch: 'var(--color-signal-red)' },
-  { id: 'blue', label: 'Сервисный', swatch: 'var(--color-utility-blue)' }
-];
+function buildColorOptions(t: Translation): Array<{ id: WindowLightColor; label: string; swatch: string }> {
+  return [
+    { id: 'amber', label: t.amber, swatch: 'var(--color-lamp-amber)' },
+    { id: 'green', label: t.green, swatch: 'var(--color-enamel-green)' },
+    { id: 'red', label: t.red, swatch: 'var(--color-signal-red)' },
+    { id: 'blue', label: t.blue, swatch: 'var(--color-utility-blue)' }
+  ];
+}
 
-export function CosmeticsPanel({ windowLightColor, onWindowLightColor }: CosmeticsPanelProps) {
+export function CosmeticsPanel({ windowLightColor, onWindowLightColor, t }: CosmeticsPanelProps) {
+  const colorOptions = buildColorOptions(t);
+
   return (
     <section className="panel" aria-labelledby="cosmetics-panel-title">
-      <h2 id="cosmetics-panel-title">Косметика станции</h2>
-      <p className="panel-copy">Цвет света в окнах</p>
+      <h2 id="cosmetics-panel-title">{t.cosmeticsTitle}</h2>
+      <p className="panel-copy">{t.windowLightColor}</p>
       <div className="cosmetics-grid">
         {colorOptions.map((option) => (
           <button

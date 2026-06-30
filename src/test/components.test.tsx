@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { buyModuleLevel, calculateIncomePerSecond, createInitialState } from '../game/economy';
+import { translations } from '../platform/i18n';
 import { BonusPanel } from '../ui/components/BonusPanel';
 import { GoalPanel } from '../ui/components/GoalPanel';
 import { ModuleList } from '../ui/components/ModuleList';
@@ -10,29 +11,32 @@ import { ResidentsPanel } from '../ui/components/ResidentsPanel';
 import { RoomSelector } from '../ui/components/RoomSelector';
 import { TopBar } from '../ui/components/TopBar';
 
+const t = translations.ru;
+
 describe('core UI components', () => {
   it('renders station, resources, modules, room selector, goals, bonuses and prestige panels', () => {
     const gameState = buyModuleLevel(createInitialState(1_000), 'tenant_capsule');
 
     render(
       <>
-        <TopBar gameState={gameState} incomePerSecond={calculateIncomePerSecond(gameState)} />
-        <RoomSelector gameState={gameState} selectedRoomId="tenant_capsule" onSelectRoom={vi.fn()} />
+        <TopBar gameState={gameState} incomePerSecond={calculateIncomePerSecond(gameState)} t={t} />
+        <RoomSelector gameState={gameState} selectedRoomId="tenant_capsule" onSelectRoom={vi.fn()} t={t} />
         <PixiStationScene gameState={gameState} selectedRoomId="tenant_capsule" />
-        <ModuleList gameState={gameState} onBuyLevel={vi.fn()} />
-        <GoalPanel gameState={gameState} />
+        <ModuleList gameState={gameState} onBuyLevel={vi.fn()} t={t} />
+        <GoalPanel gameState={gameState} t={t} />
         <BonusPanel
           onIncomeBoost={vi.fn()}
           onVipResident={vi.fn()}
           adsAvailable={false}
           adPending={false}
+          t={t}
         />
-        <PrestigePanel reputation={gameState.reputation} onRenovate={vi.fn()} />
+        <PrestigePanel reputation={gameState.reputation} onRenovate={vi.fn()} t={t} />
       </>
     );
 
-    expect(screen.getByText('Кредиты')).toBeInTheDocument();
-    expect(screen.getByRole('navigation', { name: 'Комнаты станции' })).toBeInTheDocument();
+    expect(screen.getByText('Копейки')).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: 'Комнаты' })).toBeInTheDocument();
     expect(screen.getByLabelText('Визуальный вид станции')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Комнаты' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Цели' })).toBeInTheDocument();
@@ -42,14 +46,14 @@ describe('core UI components', () => {
 
   it('does not mark locked rooms as active in the selector', () => {
     const { container } = render(
-      <RoomSelector gameState={createInitialState(1_000)} selectedRoomId="tenant_capsule" onSelectRoom={vi.fn()} />
+      <RoomSelector gameState={createInitialState(1_000)} selectedRoomId="tenant_capsule" onSelectRoom={vi.fn()} t={t} />
     );
 
     expect(container.querySelector('.room-selector button.active')).toBeNull();
   });
 
   it('shows whether the station has settled residents yet', () => {
-    render(<ResidentsPanel gameState={createInitialState(1_000)} />);
+    render(<ResidentsPanel gameState={createInitialState(1_000)} t={t} />);
 
     expect(screen.getByText('0/8 заселено')).toBeInTheDocument();
     expect(screen.getByText('Пока жильцов нет')).toBeInTheDocument();
@@ -63,6 +67,7 @@ describe('core UI components', () => {
           ...createInitialState(1_000),
           unlockedResidents: ['sleepy_engineer']
         }}
+        t={t}
       />
     );
 

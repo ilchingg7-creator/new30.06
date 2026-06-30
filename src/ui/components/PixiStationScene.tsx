@@ -7,13 +7,15 @@ import { stationTheme } from '../../station/stationTheme';
 interface PixiStationSceneProps {
   gameState: GameState;
   selectedRoomId: ModuleId;
+  onRoomClick?: () => void;
 }
 
-export function PixiStationScene({ gameState, selectedRoomId }: PixiStationSceneProps) {
+export function PixiStationScene({ gameState, selectedRoomId, onRoomClick }: PixiStationSceneProps) {
   const hostRef = useRef<HTMLElement | null>(null);
   const appRef = useRef<Application | null>(null);
   const gameStateRef = useRef(gameState);
   const selectedRoomIdRef = useRef(selectedRoomId);
+  const onRoomClickRef = useRef(onRoomClick);
   const sceneRef = useRef<Container | null>(null);
   const pulseTimeRef = useRef(0);
 
@@ -36,6 +38,7 @@ export function PixiStationScene({ gameState, selectedRoomId }: PixiStationScene
   useEffect(() => {
     gameStateRef.current = gameState;
     selectedRoomIdRef.current = selectedRoomId;
+    onRoomClickRef.current = onRoomClick;
 
     const app = appRef.current;
 
@@ -44,7 +47,7 @@ export function PixiStationScene({ gameState, selectedRoomId }: PixiStationScene
     }
 
     setScene(app, gameState, selectedRoomId);
-  }, [gameState, selectedRoomId]);
+  }, [gameState, selectedRoomId, onRoomClick]);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -94,6 +97,14 @@ export function PixiStationScene({ gameState, selectedRoomId }: PixiStationScene
         host.appendChild(app.canvas);
         setScene(app, gameStateRef.current, selectedRoomIdRef.current);
         app.ticker.add(animateAmbientLights);
+
+        // Clicker mechanic: clicking the room canvas gives kopeks.
+        const canvas = app.canvas;
+
+        canvas.style.cursor = 'pointer';
+        canvas.addEventListener('pointerdown', () => {
+          onRoomClickRef.current?.();
+        });
       });
 
     return () => {

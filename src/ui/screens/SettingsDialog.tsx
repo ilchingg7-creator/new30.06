@@ -1,12 +1,16 @@
 import { Info, RotateCcw, Settings, X } from 'lucide-react';
 import { useState } from 'react';
+import type { Language, Translation } from '../../platform/i18n';
 
 interface SettingsDialogProps {
   onClose(): void;
   onResetSave(): void;
+  t: Translation;
+  language: Language;
+  onLanguageChange(lang: Language): void;
 }
 
-export function SettingsDialog({ onClose, onResetSave }: SettingsDialogProps) {
+export function SettingsDialog({ onClose, onResetSave, t, language, onLanguageChange }: SettingsDialogProps) {
   const [confirmReset, setConfirmReset] = useState(false);
 
   const handleReset = () => {
@@ -25,7 +29,7 @@ export function SettingsDialog({ onClose, onResetSave }: SettingsDialogProps) {
       <section className="dialog-panel help-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
         <header className="help-header">
           <h2 id="settings-title">
-            <Settings aria-hidden="true" size={18} style={{ verticalAlign: 'middle' }} /> Настройки
+            <Settings aria-hidden="true" size={18} style={{ verticalAlign: 'middle' }} /> {t.settingsTitle}
           </h2>
           <button type="button" className="help-close" onClick={onClose} aria-label="Закрыть">
             <X aria-hidden="true" size={18} />
@@ -34,29 +38,47 @@ export function SettingsDialog({ onClose, onResetSave }: SettingsDialogProps) {
 
         <div className="settings-section">
           <h3>
-            <RotateCcw aria-hidden="true" size={16} /> Сбросить сохранение
+            <RotateCcw aria-hidden="true" size={16} /> {t.resetSave}
           </h3>
-          <p className="panel-copy">
-            Полностью стирает прогресс: кредиты, модули, жильцов, достижения и репутацию. Действие необратимо.
-          </p>
+          <p className="panel-copy">{t.resetSaveDesc}</p>
           <button
             type="button"
             className={confirmReset ? 'settings-confirm' : 'settings-reset'}
             onClick={handleReset}
           >
-            {confirmReset ? 'Нажмите еще раз для подтверждения' : 'Сбросить прогресс'}
+            {confirmReset ? t.confirmReset : t.resetProgress}
           </button>
         </div>
 
         <div className="settings-section">
+          <h3>{t.language}</h3>
+          <div className="language-switcher">
+            <button
+              type="button"
+              className={language === 'ru' ? 'language-option active' : 'language-option'}
+              onClick={() => onLanguageChange('ru')}
+              aria-pressed={language === 'ru'}
+            >
+              Русский
+            </button>
+            <button
+              type="button"
+              className={language === 'en' ? 'language-option active' : 'language-option'}
+              onClick={() => onLanguageChange('en')}
+              aria-pressed={language === 'en'}
+            >
+              English
+            </button>
+          </div>
+        </div>
+
+        <div className="settings-section">
           <h3>
-            <Info aria-hidden="true" size={16} /> Об игре
+            <Info aria-hidden="true" size={16} /> {t.about}
           </h3>
-          <p className="panel-copy">
-            <strong>Космическая коммуналка</strong> - уютная idle-игра про старую орбитальную коммуналку.
-          </p>
-          <p className="panel-copy">Стиль: Retro Soviet Space Cozy. Платформа: Yandex Games.</p>
-          <p className="panel-copy">Версия: 0.2.0 · Стек: Vite + React 19 + PixiJS 8 + TypeScript</p>
+          <p className="panel-copy">{t.aboutText}</p>
+          <p className="panel-copy">{t.aboutStyle} {t.aboutPlatform}</p>
+          <p className="panel-copy">{t.aboutVersion}</p>
         </div>
       </section>
     </div>

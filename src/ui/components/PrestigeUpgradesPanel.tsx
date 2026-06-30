@@ -3,19 +3,21 @@
 import { Check, Lock } from 'lucide-react';
 import { prestigeUpgrades } from '../../game/content/prestigeUpgrades';
 import type { GameState, PrestigeUpgradeId } from '../../game/types';
+import type { Translation } from '../../platform/i18n';
 
 interface PrestigeUpgradesPanelProps {
   gameState: GameState;
   onBuyUpgrade(upgradeId: PrestigeUpgradeId): void;
+  t: Translation;
 }
 
-export function PrestigeUpgradesPanel({ gameState, onBuyUpgrade }: PrestigeUpgradesPanelProps) {
+export function PrestigeUpgradesPanel({ gameState, onBuyUpgrade, t }: PrestigeUpgradesPanelProps) {
   const owned = new Set(gameState.purchasedPrestigeUpgrades ?? []);
 
   return (
     <section className="panel" aria-labelledby="prestige-upgrades-title">
-      <h2 id="prestige-upgrades-title">Улучшения реновации</h2>
-      <p className="panel-copy">Репутация: {gameState.reputation}</p>
+      <h2 id="prestige-upgrades-title">{t.upgradesTitle}</h2>
+      <p className="panel-copy">{t.reputationStation}: {gameState.reputation}</p>
       <ul className="compact-list">
         {prestigeUpgrades.map((upgrade) => {
           const purchased = owned.has(upgrade.id);
@@ -32,14 +34,14 @@ export function PrestigeUpgradesPanel({ gameState, onBuyUpgrade }: PrestigeUpgra
               <div>
                 <strong>{upgrade.name}</strong>
                 <span>{upgrade.description}</span>
-                <small>Стоимость: {upgrade.reputationCost} репутации</small>
+                <small>{t.cost}: {upgrade.reputationCost} {t.reputation.toLowerCase()}</small>
               </div>
               <button
                 type="button"
                 disabled={!canBuy}
                 onClick={() => onBuyUpgrade(upgrade.id)}
               >
-                {purchased ? 'Куплено' : `Купить (${upgrade.reputationCost})`}
+                {purchased ? t.bought : `${t.buy} (${upgrade.reputationCost})`}
               </button>
             </li>
           );
