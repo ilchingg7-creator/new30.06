@@ -1,7 +1,14 @@
 import { modules } from './content/modules';
 import type { GameState } from './types';
 
-export const SAVE_KEY = 'cosmic-communalka-save-v1';
+/**
+ * Current save schema version. Bump when an incompatible change is made to
+ * GameState and add a migration in `migrateGameState`. Saves with a version
+ * higher than CURRENT are rejected (forward-incompatible) to avoid corrupting
+ * newer saves when a user rolls back to an older client.
+ */
+export const CURRENT_SCHEMA_VERSION = 2;
+export const SAVE_KEY = 'cosmic-communalka-save-v2';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -81,7 +88,43 @@ function hasOptionalNumber(value: unknown): boolean {
   return value === undefined || isNumber(value);
 }
 
-function isGameState(value: unknown): value is GameState {
+/**
+ * Pre-versioned saves (no schemaVersion field) are treated as version 1.
+ * They predate cosmetics, prestige upgrades, daily login and achievements.
+ * The v1->v2 migration backfills the optional fields with their defaults so
+ * the rest of the app sees a fully-shaped state.
+ */
+function migrateV1ToV2(value: UnknownRecord): UnknownRecord {
+  return {
+    ...value,
+    schemaVersion: 2,
+    windowLightColor: value.windowLightColor ?? 'amber',
+    purchasedPrestigeUpgrades: value.purchasedPrestigeUpgrades ?? [],
+    lastLoginDay: value.lastLoginDay,
+    dailyStreak: value.dailyStreak,
+    unlockedAchievements: value.unlockedAchievements ?? []
+  };
+}
+
+/**
+ * Apply the chain of migrations to bring a parsed save up to CURRENT_SCHEMA_VERSION.
+ * Each migration takes a record and returns a record one version higher.
+ * Unknown/missing fields are tolerated here; strict validation happens after.
+ */
+function migrateGameState(value: UnknownRecord): UnknownRecord {
+  let current = value;
+  const startVersion = typeof current.schemaVersion === 'number' ? current.schemaVersion : 1;
+
+  if (startVersion < 2) {
+    current = migrateV1ToV2(current);
+  }
+
+  // Future migrations (2 -> 3, 3 -> 4, ...) go here.
+
+  return current;
+}
+
+function isGameStateShape(value: unknown): value is GameState {
   if (!isRecord(value)) {
     return false;
   }
@@ -105,7 +148,7 @@ function isGameState(value: unknown): value is GameState {
 }
 
 export function serializeGameState(state: GameState): string {
-  return JSON.stringify(state);
+  return JSON.stringify({ ...state, schemaVersion: CURRENT_SCHEMA_VERSION });
 }
 
 export function parseGameState(raw: string | null): GameState | null {
@@ -116,7 +159,20 @@ export function parseGameState(raw: string | null): GameState | null {
   try {
     const parsed: unknown = JSON.parse(raw);
 
-    return isGameState(parsed) ? parsed : null;
+    if (!isRecord(parsed)) {
+      return null;
+    }
+
+    const declaredVersion = typeof parsed.schemaVersion === 'number' ? parsed.schemaVersion : 1;
+
+    // Reject saves from a newer client to avoid silent data loss.
+    if (declaredVersion > CURRENT_SCHEMA_VERSION) {
+      return null;
+    }
+
+    const migrated = migrateGameState(parsed);
+
+    return isGameStateShape(migrated) ? (migrated as GameState) : null;
   } catch {
     return null;
   }
