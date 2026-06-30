@@ -10,6 +10,7 @@ describe('format helpers', () => {
 
   it('formats income rates', () => {
     expect(formatRate(12.34)).toBe('12.3/сек');
+    expect(formatRate(12.34, '/sec')).toBe('12.3/sec');
   });
 
   it('formats durations as hours and minutes', () => {

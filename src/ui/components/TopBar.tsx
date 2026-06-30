@@ -17,7 +17,7 @@ export function TopBar({ gameState, incomePerSecond, t }: TopBarProps) {
       </div>
       <div>
         <span>{t.income}</span>
-        <strong>{formatRate(incomePerSecond)}</strong>
+        <strong>{formatRate(incomePerSecond, t.perSecond)}</strong>
       </div>
       <div className="metric-pulse" key={`comfort-${gameState.comfort}`}>
         <span>{t.comfort}</span>

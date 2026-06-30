@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
+import { translations } from '../platform/i18n';
+
+const t = translations.ru;
 
 function setViewportWidth(width: number) {
   Object.defineProperty(window, 'innerWidth', {
@@ -34,17 +37,17 @@ describe('responsive layout rendering', () => {
     render(<App />);
 
     await screen.findAllByText('Копейки');
-    expect(screen.getAllByText('Копейки').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('Доход').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('Комфорт').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText('Репутация').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(t.kopeks).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(t.income).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(t.comfort).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(t.reputation).length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders only the desktop layout above the mobile breakpoint', async () => {
     setViewportWidth(1200);
     const { container } = render(<App />);
 
-    await screen.findAllByText('Капсула арендатора');
+    await screen.findAllByText(t.content.modules.tenant_capsule.name);
 
     expect(container.querySelector('.desktop-layout')).not.toBeNull();
     expect(container.querySelector('.mobile-layout')).toBeNull();
@@ -54,7 +57,7 @@ describe('responsive layout rendering', () => {
     setViewportWidth(390);
     const { container } = render(<App />);
 
-    await screen.findAllByText('Капсула арендатора');
+    await screen.findAllByText(t.content.modules.tenant_capsule.name);
 
     expect(container.querySelector('.desktop-layout')).toBeNull();
     expect(container.querySelector('.mobile-layout')).not.toBeNull();
@@ -66,7 +69,7 @@ describe('responsive layout rendering', () => {
 
     const { container } = render(<App />);
 
-    await screen.findAllByText('Капсула арендатора');
+    await screen.findAllByText(t.content.modules.tenant_capsule.name);
 
     expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 899px)');
     expect(container.querySelector('.desktop-layout')).toBeNull();
@@ -77,19 +80,19 @@ describe('responsive layout rendering', () => {
     setViewportWidth(390);
     render(<App />);
 
-    await screen.findAllByText('Капсула арендатора');
+    await screen.findAllByText(t.content.modules.tenant_capsule.name);
 
-    expect(screen.getByRole('button', { name: 'Комнаты' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Цели' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Бонусы' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Реновация' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: t.rooms })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: t.goals })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: t.bonuses })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: t.renovation })).toBeInTheDocument();
   });
 
   it('renders one room selector navigation for the active layout', async () => {
     setViewportWidth(1200);
     render(<App />);
 
-    await screen.findAllByRole('navigation', { name: 'Комнаты' });
-    expect(screen.getAllByRole('navigation', { name: 'Комнаты' })).toHaveLength(1);
+    await screen.findAllByRole('navigation', { name: t.rooms });
+    expect(screen.getAllByRole('navigation', { name: t.rooms })).toHaveLength(1);
   });
 });

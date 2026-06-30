@@ -1,6 +1,9 @@
 import type { GameState, VisitorRequest } from './types';
 
+export type VisitorTemplateId = 'courier' | 'trader' | 'mechanic' | 'tourist';
+
 interface VisitorTemplate {
+  template: VisitorTemplateId;
   name: string;
   flavor: string;
   costMultiplier: number;
@@ -10,6 +13,7 @@ interface VisitorTemplate {
 
 const visitorTemplates: VisitorTemplate[] = [
   {
+    template: 'courier',
     name: 'Космический курьер',
     flavor: 'Мне нужен сухой док на 10 минут. Заплатите, и я оставлю станции хороший отзыв.',
     costMultiplier: 0.8,
@@ -17,6 +21,7 @@ const visitorTemplates: VisitorTemplate[] = [
     durationMs: 2 * 60 * 1_000
   },
   {
+    template: 'trader',
     name: 'Туманный торговец',
     flavor: 'Обменяю редкие семена на копейки. Комфорт вашего сада вырастет.',
     costMultiplier: 1.2,
@@ -24,6 +29,7 @@ const visitorTemplates: VisitorTemplate[] = [
     durationMs: 3 * 60 * 1_000
   },
   {
+    template: 'mechanic',
     name: 'Бродячий механик',
     flavor: 'Подправлю вашу вентиляцию за пару копеек. Станция станет уютнее.',
     costMultiplier: 0.5,
@@ -31,6 +37,7 @@ const visitorTemplates: VisitorTemplate[] = [
     durationMs: 90 * 1_000
   },
   {
+    template: 'tourist',
     name: 'Заблудившийся турист',
     flavor: 'Я просто хотел посмотреть на звезды. Дайте мне кров, и я расскажу всем о вашей коммуналке.',
     costMultiplier: 1.5,
@@ -60,7 +67,8 @@ export function generateVisitorRequest(state: GameState, now = Date.now()): Visi
     flavor: template.flavor,
     cost,
     rewardComfort: template.rewardComfort,
-    expiresAt: now + template.durationMs
+    expiresAt: now + template.durationMs,
+    template: template.template
   };
 }
 

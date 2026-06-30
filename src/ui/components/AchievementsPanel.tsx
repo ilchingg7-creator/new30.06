@@ -22,6 +22,9 @@ export function AchievementsPanel({ gameState, t }: AchievementsPanelProps) {
       <ul className="compact-list">
         {achievements.map((achievement) => {
           const isUnlocked = unlocked.has(achievement.id);
+          const localized = t.content.achievements[achievement.id];
+          const title = localized?.title ?? achievement.title;
+          const description = localized?.description ?? achievement.description;
 
           return (
             <li
@@ -30,8 +33,8 @@ export function AchievementsPanel({ gameState, t }: AchievementsPanelProps) {
             >
               <Award aria-hidden="true" size={16} />
               <div>
-                <strong>{achievement.title}</strong>
-                <span>{achievement.description}</span>
+                <strong>{title}</strong>
+                <span>{description}</span>
               </div>
             </li>
           );

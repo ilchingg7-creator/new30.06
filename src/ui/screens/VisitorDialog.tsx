@@ -12,13 +12,17 @@ interface VisitorDialogProps {
 }
 
 export function VisitorDialog({ visitor, canAfford, onAccept, onDecline, t }: VisitorDialogProps) {
+  const localized = visitor.template ? t.content.visitors[visitor.template] : undefined;
+  const name = localized?.name ?? visitor.name;
+  const flavor = localized?.flavor ?? visitor.flavor;
+
   return (
     <div className="dialog-backdrop" role="presentation">
       <section className="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="visitor-title">
         <h2 id="visitor-title">
-          <UserRound aria-hidden="true" size={18} style={{ verticalAlign: 'middle' }} /> {visitor.name}
+          <UserRound aria-hidden="true" size={18} style={{ verticalAlign: 'middle' }} /> {name}
         </h2>
-        <p className="dialog-stats-copy">{visitor.flavor}</p>
+        <p className="dialog-stats-copy">{flavor}</p>
         <dl className="dialog-stats">
           <div>
             <dt>{t.price}</dt>

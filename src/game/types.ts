@@ -66,6 +66,13 @@ export interface VisitorRequest {
   cost: number;
   rewardComfort: number;
   expiresAt: number;
+  /**
+   * Template key used to look up localized name/flavor in
+   * `t.content.visitors[template]`. One of 'courier' | 'trader' |
+   * 'mechanic' | 'tourist'. Optional so older saves (which predate the
+   * field) still parse; the UI falls back to the stored `name`/`flavor`.
+   */
+  template?: string;
 }
 
 export type AchievementId =

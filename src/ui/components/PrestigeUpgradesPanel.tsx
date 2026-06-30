@@ -23,6 +23,9 @@ export function PrestigeUpgradesPanel({ gameState, onBuyUpgrade, t }: PrestigeUp
           const purchased = owned.has(upgrade.id);
           const affordable = gameState.reputation >= upgrade.reputationCost;
           const canBuy = !purchased && affordable;
+          const localized = t.content.prestigeUpgrades[upgrade.id];
+          const name = localized?.name ?? upgrade.name;
+          const description = localized?.description ?? upgrade.description;
 
           return (
             <li className="compact-card" key={upgrade.id}>
@@ -32,8 +35,8 @@ export function PrestigeUpgradesPanel({ gameState, onBuyUpgrade, t }: PrestigeUp
                 <Lock aria-hidden="true" size={16} />
               )}
               <div>
-                <strong>{upgrade.name}</strong>
-                <span>{upgrade.description}</span>
+                <strong>{name}</strong>
+                <span>{description}</span>
                 <small>{t.cost}: {upgrade.reputationCost} {t.reputation.toLowerCase()}</small>
               </div>
               <button

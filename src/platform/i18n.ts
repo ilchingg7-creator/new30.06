@@ -135,6 +135,19 @@ export interface Translation {
   // About (replaced)
   aboutHint1: string;
   aboutHint2: string;
+  // Format helpers
+  perSecond: string;
+  // Game content (modules, residents, goals, achievements, prestige
+  // upgrades, visitors). Keys are the id fields from src/game/content/*;
+  // visitor keys are the `template` field set in src/game/visitors.ts.
+  content: {
+    modules: Record<string, { name: string; role: string }>;
+    residents: Record<string, { name: string; unlockText: string; bonusText: string }>;
+    goals: Record<string, { title: string; rewardLabel: string }>;
+    achievements: Record<string, { title: string; description: string }>;
+    prestigeUpgrades: Record<string, { name: string; description: string }>;
+    visitors: Record<string, { name: string; flavor: string }>;
+  };
 }
 
 const ru: Translation = {
@@ -253,7 +266,160 @@ const ru: Translation = {
   rewardKindPrestige: 'Подсказка к реновации',
   rewardType: 'Тип награды',
   aboutHint1: 'Кликайте по комнате — каждый клик даёт копейки. Развивайте станцию, заселяйте жильцов и делайте реновацию орбиты!',
-  aboutHint2: 'Спасибо за игру! Ваша обратная связь помогает делать коммуналку уютнее.'
+  aboutHint2: 'Спасибо за игру! Ваша обратная связь помогает делать коммуналку уютнее.',
+  perSecond: '/сек',
+  content: {
+    modules: {
+      tenant_capsule: { name: 'Капсула арендатора', role: 'Первый генератор' },
+      cosmo_kitchen: { name: 'Общая космо-кухня', role: 'Ранний сервис' },
+      oxygen_garden: { name: 'Кислородный сад', role: 'Комфорт и доход' },
+      zero_g_laundry: { name: 'Прачечная невесомости', role: 'Средний доход' },
+      teleport_entry: { name: 'Телепорт-прихожая', role: 'Поток жильцов' },
+      antigrav_gym: { name: 'Антиграв-спортзал', role: 'Дорогой сервис' },
+      panorama_dome: { name: 'Панорамный купол', role: 'Премиум зона' },
+      saucer_dock: { name: 'Док для мини-тарелок', role: 'Поздний MVP' },
+      radiator_balcony: { name: 'Радиаторный балкон', role: 'Тепло и комфорт' },
+      mail_tube_office: { name: 'Почтовая труба-контора', role: 'Пневмопочта станции' }
+    },
+    residents: {
+      sleepy_engineer: {
+        name: 'Сонный инженер',
+        unlockText: 'Капсула арендатора достигла 10 уровня.',
+        bonusText: '+5% к доходу капсул'
+      },
+      mist_cook: {
+        name: 'Повар с туманной планеты',
+        unlockText: 'Космо-кухня достигла 10 уровня.',
+        bonusText: '+10% к доходу кухни'
+      },
+      vacuum_gardener: {
+        name: 'Садовник вакуума',
+        unlockText: 'Открыт кислородный сад.',
+        bonusText: '+5 комфорта'
+      },
+      sock_master: {
+        name: 'Мастер носков в невесомости',
+        unlockText: 'Прачечная невесомости достигла 10 уровня.',
+        bonusText: '+10% к сервисному доходу'
+      },
+      teleport_courier: {
+        name: 'Курьер через телепорт',
+        unlockText: 'Открыта телепорт-прихожая.',
+        bonusText: '+5% к общему доходу'
+      },
+      vip_astroteenant: {
+        name: 'VIP-астроарендатор',
+        unlockText: 'Добровольный рекламный бонус или редкое событие.',
+        bonusText: 'x2 доход на 10 минут'
+      },
+      retired_cosmonaut: {
+        name: 'Сосед-отставной космонавт',
+        unlockText: 'Первая реновация орбиты.',
+        bonusText: '+10% к стартовому доходу после реновации'
+      },
+      three_eyed_housekeeper: {
+        name: 'Трёхглазая комендантша',
+        unlockText: 'Комфорт станции достиг 40.',
+        bonusText: '-8% к цене первых модулей'
+      }
+    },
+    goals: {
+      buy_capsule_10: {
+        title: 'Поднять капсулу до 10 уровня',
+        rewardLabel: '+1 комфорт, новые детали капсулы'
+      },
+      unlock_kitchen: {
+        title: 'Открыть общую космо-кухню',
+        rewardLabel: '+1 комфорт, кухонные детали'
+      },
+      reach_comfort_25: {
+        title: 'Довести комфорт до 25',
+        rewardLabel: '+3 комфорт, теплый режим станции'
+      },
+      earn_credits_10000: {
+        title: 'Заработать 10 000 копеек',
+        rewardLabel: '+2 комфорт, подсказка к реновации'
+      },
+      unlock_three_residents: {
+        title: 'Заселить 3 жильцов',
+        rewardLabel: '+5 комфорт, жильцы в комнатах'
+      },
+      unlock_panorama_dome: {
+        title: 'Открыть панорамный купол',
+        rewardLabel: '+8 комфорт, детали купола'
+      },
+      first_renovation: {
+        title: 'Сделать первую реновацию орбиты',
+        rewardLabel: 'Реновация отмечена'
+      }
+    },
+    achievements: {
+      first_purchase: {
+        title: 'Первый жилец',
+        description: 'Купить первый уровень любого модуля.'
+      },
+      ten_module_levels: {
+        title: 'Маленькая станция',
+        description: 'Суммарно 10 уровней модулей.'
+      },
+      fifty_module_levels: {
+        title: 'Растущая коммуналка',
+        description: 'Суммарно 50 уровней модулей.'
+      },
+      first_prestige: {
+        title: 'Первая реновация',
+        description: 'Сделать первую реновацию орбиты.'
+      },
+      comfort_50: {
+        title: 'Уютно как дома',
+        description: 'Достичь 50 комфорта.'
+      },
+      credits_million: {
+        title: 'Миллионер орбиты',
+        description: 'Заработать 1 000 000 копеек суммарно.'
+      },
+      all_rooms_unlocked: {
+        title: 'Вся коммуналка',
+        description: 'Открыть все модули станции.'
+      },
+      daily_streak_7: {
+        title: 'Неделя подряд',
+        description: 'Заходить 7 дней подряд.'
+      }
+    },
+    prestigeUpgrades: {
+      residents_survive: {
+        name: 'Соседи остаются',
+        description: 'Жильцы не сбрасываются при реновации орбиты.'
+      },
+      starting_comfort: {
+        name: 'Тёплый старт',
+        description: 'Каждый новый цикл начинается с +5 комфорта.'
+      },
+      higher_offline_cap: {
+        name: 'Запас хода станции',
+        description: 'Лимит офлайн-дохода увеличен с 8 до 12 часов.'
+      }
+    },
+    visitors: {
+      courier: {
+        name: 'Космический курьер',
+        flavor: 'Мне нужен сухой док на 10 минут. Заплатите, и я оставлю станции хороший отзыв.'
+      },
+      trader: {
+        name: 'Туманный торговец',
+        flavor: 'Обменяю редкие семена на копейки. Комфорт вашего сада вырастет.'
+      },
+      mechanic: {
+        name: 'Бродячий механик',
+        flavor: 'Подправлю вашу вентиляцию за пару копеек. Станция станет уютнее.'
+      },
+      tourist: {
+        name: 'Заблудившийся турист',
+        flavor: 'Я просто хотел посмотреть на звезды. Дайте мне кров, и я расскажу всем о вашей коммуналке.'
+      }
+    }
+  }
 };
 
 const en: Translation = {
@@ -372,7 +538,160 @@ const en: Translation = {
   rewardKindPrestige: 'Renovation hint',
   rewardType: 'Reward type',
   aboutHint1: 'Click the room — every click gives kopeks. Develop the station, settle residents and renovate the orbit!',
-  aboutHint2: 'Thanks for playing! Your feedback helps make the communalka cozier.'
+  aboutHint2: 'Thanks for playing! Your feedback helps make the communalka cozier.',
+  perSecond: '/sec',
+  content: {
+    modules: {
+      tenant_capsule: { name: 'Tenant Capsule', role: 'First generator' },
+      cosmo_kitchen: { name: 'Shared Cosmo-Kitchen', role: 'Early service' },
+      oxygen_garden: { name: 'Oxygen Garden', role: 'Comfort and income' },
+      zero_g_laundry: { name: 'Zero-G Laundry', role: 'Mid income' },
+      teleport_entry: { name: 'Teleport Foyer', role: 'Resident flow' },
+      antigrav_gym: { name: 'Antigrav Gym', role: 'Premium service' },
+      panorama_dome: { name: 'Panorama Dome', role: 'Premium zone' },
+      saucer_dock: { name: 'Mini-Saucer Dock', role: 'Late MVP' },
+      radiator_balcony: { name: 'Radiator Balcony', role: 'Warmth and comfort' },
+      mail_tube_office: { name: 'Mail-Tube Office', role: 'Station pneumatic mail' }
+    },
+    residents: {
+      sleepy_engineer: {
+        name: 'Sleepy Engineer',
+        unlockText: 'Tenant Capsule reached level 10.',
+        bonusText: '+5% to capsule income'
+      },
+      mist_cook: {
+        name: 'Mist-Planet Cook',
+        unlockText: 'Cosmo-Kitchen reached level 10.',
+        bonusText: '+10% to kitchen income'
+      },
+      vacuum_gardener: {
+        name: 'Vacuum Gardener',
+        unlockText: 'Oxygen Garden unlocked.',
+        bonusText: '+5 comfort'
+      },
+      sock_master: {
+        name: 'Zero-G Sock Master',
+        unlockText: 'Zero-G Laundry reached level 10.',
+        bonusText: '+10% to service income'
+      },
+      teleport_courier: {
+        name: 'Teleport Courier',
+        unlockText: 'Teleport Foyer unlocked.',
+        bonusText: '+5% to total income'
+      },
+      vip_astroteenant: {
+        name: 'VIP Astroteenant',
+        unlockText: 'Voluntary ad bonus or a rare event.',
+        bonusText: 'x2 income for 10 minutes'
+      },
+      retired_cosmonaut: {
+        name: 'Retired Cosmonaut Neighbor',
+        unlockText: 'First orbit renovation.',
+        bonusText: '+10% to starting income after renovation'
+      },
+      three_eyed_housekeeper: {
+        name: 'Three-Eyed Housekeeper',
+        unlockText: 'Station comfort reached 40.',
+        bonusText: '-8% to first-module cost'
+      }
+    },
+    goals: {
+      buy_capsule_10: {
+        title: 'Upgrade capsule to level 10',
+        rewardLabel: '+1 comfort, new capsule details'
+      },
+      unlock_kitchen: {
+        title: 'Unlock the shared cosmo-kitchen',
+        rewardLabel: '+1 comfort, kitchen details'
+      },
+      reach_comfort_25: {
+        title: 'Raise comfort to 25',
+        rewardLabel: '+3 comfort, warm station mode'
+      },
+      earn_credits_10000: {
+        title: 'Earn 10,000 kopeks',
+        rewardLabel: '+2 comfort, renovation hint'
+      },
+      unlock_three_residents: {
+        title: 'Settle 3 residents',
+        rewardLabel: '+5 comfort, residents in rooms'
+      },
+      unlock_panorama_dome: {
+        title: 'Unlock the panorama dome',
+        rewardLabel: '+8 comfort, dome details'
+      },
+      first_renovation: {
+        title: 'Perform the first orbit renovation',
+        rewardLabel: 'Renovation acknowledged'
+      }
+    },
+    achievements: {
+      first_purchase: {
+        title: 'First Tenant',
+        description: 'Buy the first level of any module.'
+      },
+      ten_module_levels: {
+        title: 'Small Station',
+        description: '10 total module levels.'
+      },
+      fifty_module_levels: {
+        title: 'Growing Communalka',
+        description: '50 total module levels.'
+      },
+      first_prestige: {
+        title: 'First Renovation',
+        description: 'Perform the first orbit renovation.'
+      },
+      comfort_50: {
+        title: 'Cozy as Home',
+        description: 'Reach 50 comfort.'
+      },
+      credits_million: {
+        title: 'Orbital Millionaire',
+        description: 'Earn 1,000,000 kopeks in total.'
+      },
+      all_rooms_unlocked: {
+        title: 'Whole Communalka',
+        description: 'Unlock every station module.'
+      },
+      daily_streak_7: {
+        title: 'Week in a Row',
+        description: 'Log in 7 days in a row.'
+      }
+    },
+    prestigeUpgrades: {
+      residents_survive: {
+        name: 'Neighbors Stay',
+        description: 'Residents are not reset on orbit renovation.'
+      },
+      starting_comfort: {
+        name: 'Warm Start',
+        description: 'Each new cycle starts with +5 comfort.'
+      },
+      higher_offline_cap: {
+        name: 'Station Range',
+        description: 'Offline income cap increased from 8 to 12 hours.'
+      }
+    },
+    visitors: {
+      courier: {
+        name: 'Space Courier',
+        flavor: 'I need a dry dock for 10 minutes. Pay up and I will leave the station a good review.'
+      },
+      trader: {
+        name: 'Mist Trader',
+        flavor: 'I will trade rare seeds for kopeks. Your garden comfort will rise.'
+      },
+      mechanic: {
+        name: 'Wandering Mechanic',
+        flavor: 'I will tweak your ventilation for a couple of kopeks. The station will get cozier.'
+      },
+      tourist: {
+        name: 'Lost Tourist',
+        flavor: 'I just wanted to look at the stars. Give me a bed and I will tell everyone about your communalka.'
+      }
+    }
+  }
 };
 
 export const translations: Record<Language, Translation> = { ru, en };

@@ -18,8 +18,8 @@ export function formatCredits(value: number): string {
   return Math.floor(value).toString();
 }
 
-export function formatRate(value: number): string {
-  return `${trimFixed(value, 1)}/сек`;
+export function formatRate(value: number, suffix: string = '/сек'): string {
+  return `${trimFixed(value, 1)}${suffix}`;
 }
 
 export function formatDuration(seconds: number): string {

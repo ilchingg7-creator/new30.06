@@ -24,18 +24,22 @@ export function ResidentsPanel({ gameState, t }: ResidentsPanelProps) {
       <ul className="compact-list">
         {residents.map((resident) => {
           const isUnlocked = unlocked.has(resident.id);
+          const localized = t.content.residents[resident.id];
+          const name = localized?.name ?? resident.name;
+          const unlockText = localized?.unlockText ?? resident.unlockText;
+          const bonusText = localized?.bonusText ?? resident.bonusText;
 
           return (
             <li className={isUnlocked ? 'compact-card resident-settled' : 'compact-card resident-locked'} key={resident.id}>
               <Users aria-hidden="true" size={16} />
               <div>
                 <div className="resident-card-title">
-                  <strong>{resident.name}</strong>
+                  <strong>{name}</strong>
                   <span className={isUnlocked ? 'resident-status settled' : 'resident-status locked'}>
                     {isUnlocked ? t.settled : t.notSettled}
                   </span>
                 </div>
-                <span>{isUnlocked ? resident.bonusText : resident.unlockText}</span>
+                <span>{isUnlocked ? bonusText : unlockText}</span>
               </div>
             </li>
           );

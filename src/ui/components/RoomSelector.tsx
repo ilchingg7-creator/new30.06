@@ -27,7 +27,7 @@ export function RoomSelector({ gameState, selectedRoomId, onSelectRoom, t }: Roo
             onClick={() => onSelectRoom(item.moduleId)}
           >
             <DoorOpen aria-hidden="true" size={16} />
-            <span>{item.name}</span>
+            <span>{t.content.modules[item.moduleId]?.name ?? item.name}</span>
             <small>{item.unlocked ? `${t.level.toLowerCase()} ${item.level}` : t.closed}</small>
           </button>
         );

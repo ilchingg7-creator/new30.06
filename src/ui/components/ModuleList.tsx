@@ -42,7 +42,7 @@ function buildModuleTooltip(moduleId: ModuleId, state: GameState, t: Translation
   const lines = [
     `${t.level}: ${level}`,
     `${t.nextCost}: ${formatCredits(cost)}`,
-    `${t.stationIncome}: ${formatRate(income)}`
+    `${t.stationIncome}: ${formatRate(income, t.perSecond)}`
   ];
 
   if (module?.comfortBonus) {
@@ -100,8 +100,8 @@ export function ModuleList({ gameState, onBuyLevel, t }: ModuleListProps) {
           return (
             <li className="component-card" key={module.id} title={buildModuleTooltip(module.id, gameState, t)}>
               <div className="component-info">
-                <h3>{module.name}</h3>
-                <p>{module.role}</p>
+                <h3>{t.content.modules[module.id]?.name ?? module.name}</h3>
+                <p>{t.content.modules[module.id]?.role ?? module.role}</p>
                 <span>{t.level} {level}</span>
                 {!locked && <MilestoneProgress level={level} t={t} />}
               </div>

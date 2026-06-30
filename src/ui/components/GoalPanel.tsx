@@ -41,19 +41,25 @@ export function GoalPanel({ gameState, t }: GoalPanelProps) {
             </div>
           </li>
         )}
-        {visibleGoals.map((goal) => (
+        {visibleGoals.map((goal) => {
+          const localized = t.content.goals[goal.id];
+          const title = localized?.title ?? goal.title;
+          const rewardLabel = localized?.rewardLabel ?? goal.rewardLabel;
+
+          return (
           <li
             className="compact-card"
             key={goal.id}
-            title={`${t.rewardType}: ${rewardKindLabel(goal.rewardKind)}\n${goal.rewardLabel}`}
+            title={`${t.rewardType}: ${rewardKindLabel(goal.rewardKind)}\n${rewardLabel}`}
           >
             <Target aria-hidden="true" size={16} />
             <div>
-              <strong>{goal.title}</strong>
-              <span>{goal.rewardLabel}</span>
+              <strong>{title}</strong>
+              <span>{rewardLabel}</span>
             </div>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </section>
   );
