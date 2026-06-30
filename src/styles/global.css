@@ -698,6 +698,17 @@ input {
   font-weight: 700;
 }
 
+/* Replaces framer-motion pulse — triggers on key change via React remount */
+.metric-pulse {
+  animation: metric-pulse 0.3s ease;
+}
+
+@keyframes metric-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
 .top-bar strong {
   display: block;
   margin-top: 4px;
