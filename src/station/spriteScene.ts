@@ -1,12 +1,8 @@
 import { Assets, Container, Sprite, type Texture } from 'pixi.js';
-import type { ModuleId, RoomSpriteAnimation, RoomSpriteLayer } from '../game/types';
-import { getRoomSpriteLayers } from './roomScenes';
+import type { ModuleId, RoomSpriteAnimation, RoomSpriteVariant } from '../game/types';
+import { getRoomDetailLevel } from './roomScenes';
+import { roomSpriteManifests } from './roomSpriteManifests';
 
-/**
- * Texture cache keyed by URL. PixiJS Assets.load already deduplicates, but
- * keeping our own Promise map lets callers check availability without kicking
- * off a load, and makes tests easier (the cache is module-scoped).
- */
 const textureCache = new Map<string, Promise<Texture | null>>();
 
 function loadTexture(url: string): Promise<Texture | null> {
@@ -16,21 +12,42 @@ function loadTexture(url: string): Promise<Texture | null> {
 
   const promise: Promise<Texture | null> = Assets.load(url)
     .then((texture: Texture | { texture?: Texture }) => {
-      // Assets.load returns a Texture for image URLs in PixiJS 8.
       if (texture && typeof texture === 'object' && 'textureId' in texture) {
         return texture as Texture;
       }
 
       return texture as Texture;
     })
-    .catch(() => {
-      // Missing sprite (e.g. not yet generated) — skip the layer gracefully.
-      return null;
-    });
+    .catch(() => null);
 
   textureCache.set(url, promise);
 
   return promise;
+}
+
+/**
+ * Find the best available artwork variant for a room at the given module
+ * level. Returns the variant whose unlockLevel is the highest without
+ * exceeding the current level, or null if none exists / level is 0.
+ */
+export function getRoomSpriteVariant(
+  moduleId: ModuleId,
+  level: number
+): RoomSpriteVariant | null {
+  if (level <= 0) {
+    return null;
+  }
+
+  const variants = roomSpriteManifests[moduleId] ?? [];
+  let best: RoomSpriteVariant | null = null;
+
+  for (const variant of variants) {
+    if (variant.unlockLevel <= level && (!best || variant.unlockLevel > best.unlockLevel)) {
+      best = variant;
+    }
+  }
+
+  return best;
 }
 
 interface AnimatedSpriteState {
@@ -41,68 +58,82 @@ interface AnimatedSpriteState {
   baseScale: number;
 }
 
-const ANIMATED_LABEL = 'animated-sprite';
+const ANIMATED_LABEL = 'animated-room-sprite';
+const SPRITE_STATE_KEY = Symbol('spriteState');
 
 /**
- * Build a room container from sprite layers. Each layer is a static sprite;
- * animated layers are tagged so the ticker can update them every frame.
+ * Build a room container with a single full-room sprite for the current
+ * detail level. The sprite replaces the entire room image — no layering.
+ * The background and shell (Graphics) are NOT included here; the caller
+ * composites this container on top of them.
  *
- * The background and shell (drawn with PixiJS Graphics) are NOT included
- * here — the caller composites this container on top of them.
+ * Falls back to older variant textures if the exact one for the current
+ * level is missing (e.g. not yet generated).
  */
 export async function buildSpriteRoomContainer(
   moduleId: ModuleId,
   level: number
 ): Promise<Container> {
-  const layers = getRoomSpriteLayers(moduleId, level);
   const container = new Container();
 
-  const textures = await Promise.all(layers.map((layer) => loadTexture(layer.texture)));
+  if (level <= 0) {
+    return container;
+  }
 
-  layers.forEach((layer, index) => {
-    const texture = textures[index];
+  const variants = roomSpriteManifests[moduleId] ?? [];
+  const detailLevel = getRoomDetailLevel(level);
+
+  // Try the exact variant for this detail level first, then fall back to
+  // progressively older variants so the room is never blank.
+  const candidates: RoomSpriteVariant[] = [];
+
+  for (let d = detailLevel; d >= 1; d -= 1) {
+    const variant = variants.find((v) => v.detailLevel === d);
+
+    if (variant) {
+      candidates.push(variant);
+    }
+  }
+
+  for (const variant of candidates) {
+    const texture = await loadTexture(variant.texture);
 
     if (!texture) {
-      // Sprite not generated yet — skip this layer. The room still renders
-      // with whatever layers are available.
-      return;
+      continue; // missing sprite — try the next older variant
     }
 
     const sprite = new Sprite(texture);
-    sprite.anchor.set(layer.anchor.x, layer.anchor.y);
-    sprite.position.set(layer.x, layer.y);
-    sprite.scale.set(layer.scale);
+    sprite.anchor.set(0.5, 0.5);
+    sprite.position.set(420, 240); // center of 840×480 canvas
+    sprite.scale.set(0.55); // 1024px sprite → ~563px, fits the canvas
 
-    if (layer.animation) {
+    if (variant.animation) {
       sprite.label = ANIMATED_LABEL;
       const state: AnimatedSpriteState = {
-        animation: layer.animation,
+        animation: variant.animation,
         phase: Math.random() * Math.PI * 2,
-        baseX: layer.x,
-        baseY: layer.y,
-        baseScale: layer.scale
+        baseX: 420,
+        baseY: 240,
+        baseScale: 0.55
       };
-      // PixiJS 8 Container has no userData; attach via a symbol-keyed property.
       (sprite as unknown as Record<symbol, AnimatedSpriteState>)[SPRITE_STATE_KEY] = state;
     }
 
     container.addChild(sprite);
-  });
+    break; // use the first available texture
+  }
 
   return container;
 }
-
-const SPRITE_STATE_KEY = Symbol('spriteState');
 
 function getSpriteState(sprite: Container): AnimatedSpriteState | undefined {
   return (sprite as unknown as Record<symbol, AnimatedSpriteState | undefined>)[SPRITE_STATE_KEY];
 }
 
 /**
- * Update all animated sprite layers in a container. Called from the PixiJS
- * ticker every frame. Pure motion math — no allocations, safe for 60fps.
+ * Update the whole-room sprite animation. Called from the PixiJS ticker.
  */
-export function updateSpriteAnimations(container: Container, deltaTime: number, elapsed: number): void {
+export function updateSpriteAnimations(container: Container, _deltaTime: number, elapsed: number): void {
   container.children.forEach((child) => {
     if (child.label !== ANIMATED_LABEL) {
       return;
@@ -127,32 +158,13 @@ export function updateSpriteAnimations(container: Container, deltaTime: number, 
         }
         break;
       }
-      case 'rotate': {
-        child.rotation = Math.sin(t) * animation.amplitude;
-        break;
-      }
       case 'pulse': {
         const scale = baseScale * (1 + Math.sin(t) * animation.amplitude);
         child.scale.set(scale);
         break;
       }
       case 'flicker': {
-        child.alpha = 0.7 + Math.sin(t) * animation.amplitude;
-        break;
-      }
-      case 'drift': {
-        // Continuous drift with wrap-around so ambient particles loop forever.
-        if (animation.axis === 'x') {
-          child.x += animation.amplitude * deltaTime * animation.speed * 0.02;
-          if (child.x > baseX + animation.amplitude) {
-            child.x = baseX - animation.amplitude;
-          }
-        } else {
-          child.y -= animation.amplitude * deltaTime * animation.speed * 0.02;
-          if (child.y < baseY - animation.amplitude) {
-            child.y = baseY + animation.amplitude;
-          }
-        }
+        child.alpha = 0.85 + Math.sin(t) * animation.amplitude;
         break;
       }
     }
@@ -160,24 +172,21 @@ export function updateSpriteAnimations(container: Container, deltaTime: number, 
 }
 
 /**
- * Preload all sprite textures for a room so switching to it is instant.
- * Best called when the player gets close to unlocking a room.
+ * Preload the sprite texture for a room at the current level so switching
+ * to it is instant.
  */
 export async function preloadRoomSprites(moduleId: ModuleId, level: number): Promise<void> {
-  const layers = getRoomSpriteLayers(moduleId, level);
+  const variant = getRoomSpriteVariant(moduleId, level);
 
-  await Promise.all(layers.map((layer) => loadTexture(layer.texture)));
+  if (variant) {
+    await loadTexture(variant.texture);
+  }
 }
 
-/**
- * Check whether a sprite texture has been loaded (or attempted) already.
- * Used by tests to verify caching behavior.
- */
 export function isTextureCached(url: string): boolean {
   return textureCache.has(url);
 }
 
-/** Clear the texture cache. Test-only helper. */
 export function clearTextureCache(): void {
   textureCache.clear();
 }

@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { modules } from '../game/content/modules';
-import type { ModuleId, RoomSpriteLayer } from '../game/types';
-import { getRoomDetailLevel, getRoomSpriteLayers } from '../station/roomScenes';
+import type { ModuleId } from '../game/types';
+import { getRoomDetailLevel } from '../station/roomScenes';
+import { getRoomSpriteVariant } from '../station/spriteScene';
 import { roomSpriteManifests } from '../station/roomSpriteManifests';
 
 describe('room detail level (granular tier)', () => {
@@ -30,112 +31,101 @@ describe('room detail level (granular tier)', () => {
   });
 });
 
-describe('room sprite manifests', () => {
+describe('room sprite manifests (full-image variants)', () => {
   it('defines a manifest for every module', () => {
     for (const module of modules) {
       const manifest = roomSpriteManifests[module.id as ModuleId];
 
       expect(manifest, `manifest for ${module.id}`).toBeDefined();
-      expect(manifest.length).toBeGreaterThan(0);
+      expect(manifest.length).toBe(10); // detail levels 1..10
     }
   });
 
-  it('every manifest has a base layer unlocking at level 1', () => {
+  it('every manifest has exactly 10 variants (detail levels 1..10)', () => {
     for (const module of modules) {
       const manifest = roomSpriteManifests[module.id as ModuleId];
-      const base = manifest.find((layer) => layer.id === 'base');
+      const detailLevels = manifest.map((v) => v.detailLevel).sort((a, b) => a - b);
 
-      expect(base, `base layer for ${module.id}`).toBeDefined();
-      expect(base?.unlockLevel).toBe(1);
+      expect(detailLevels).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     }
   });
 
-  it('every manifest has exactly 11 layers (one per detail level)', () => {
+  it('variant unlock levels are 1, 11, 21, 31, 41, 51, 61, 71, 81, 91', () => {
+    const expected = [1, 11, 21, 31, 41, 51, 61, 71, 81, 91];
+
     for (const module of modules) {
       const manifest = roomSpriteManifests[module.id as ModuleId];
+      const unlockLevels = manifest.map((v) => v.unlockLevel);
 
-      expect(manifest).toHaveLength(11);
+      expect(unlockLevels).toEqual(expected);
     }
   });
 
-  it('layers unlock at levels 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100', () => {
-    const expectedLevels = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-
-    for (const module of modules) {
-      const manifest = roomSpriteManifests[module.id as ModuleId];
-      const unlockLevels = manifest.map((layer) => layer.unlockLevel).sort((a, b) => a - b);
-
-      expect(unlockLevels).toEqual(expectedLevels);
-    }
-  });
-
-  it('texture paths follow the /sprites/rooms/<moduleId>/<layer>.png convention', () => {
+  it('texture paths follow /sprites/rooms/<moduleId>/tier-<detailLevel>.png', () => {
     for (const module of modules) {
       const manifest = roomSpriteManifests[module.id as ModuleId];
 
-      for (const layer of manifest) {
-        expect(layer.texture).toMatch(/^\/sprites\/rooms\/[^/]+\/[^/]+\.png$/);
+      for (const variant of manifest) {
+        expect(variant.texture).toMatch(
+          new RegExp(`^/sprites/rooms/${module.id}/tier-[1-9]|10\\.png$`)
+        );
       }
+    }
+  });
+
+  it('higher detail levels have animations (bob or pulse)', () => {
+    for (const module of modules) {
+      const manifest = roomSpriteManifests[module.id as ModuleId];
+      const tier8 = manifest.find((v) => v.detailLevel === 8);
+      const tier5 = manifest.find((v) => v.detailLevel === 5);
+
+      expect(tier8?.animation).toBeDefined();
+      expect(tier5?.animation).toBeDefined();
+    }
+  });
+
+  it('tier 1 has no animation (bare room)', () => {
+    for (const module of modules) {
+      const manifest = roomSpriteManifests[module.id as ModuleId];
+      const tier1 = manifest.find((v) => v.detailLevel === 1);
+
+      expect(tier1?.animation).toBeUndefined();
     }
   });
 });
 
-describe('getRoomSpriteLayers', () => {
-  it('returns no layers for a locked room (level 0)', () => {
-    const layers = getRoomSpriteLayers('tenant_capsule', 0);
-
-    expect(layers).toHaveLength(0);
+describe('getRoomSpriteVariant', () => {
+  it('returns null for locked rooms (level 0)', () => {
+    expect(getRoomSpriteVariant('tenant_capsule', 0)).toBeNull();
   });
 
-  it('returns only the base layer at level 1', () => {
-    const layers = getRoomSpriteLayers('tenant_capsule', 1);
+  it('returns tier-1 variant for level 1', () => {
+    const variant = getRoomSpriteVariant('tenant_capsule', 1);
 
-    expect(layers).toHaveLength(1);
-    expect(layers[0].id).toBe('base');
+    expect(variant).not.toBeNull();
+    expect(variant?.detailLevel).toBe(1);
+    expect(variant?.texture).toBe('/sprites/rooms/tenant_capsule/tier-1.png');
   });
 
-  it('adds the resident layer at level 10', () => {
-    const layers = getRoomSpriteLayers('tenant_capsule', 10);
-
-    expect(layers).toHaveLength(2);
-    expect(layers.map((l) => l.id)).toContain('resident-1');
+  it('returns tier-1 for levels 1-10', () => {
+    expect(getRoomSpriteVariant('cosmo_kitchen', 5)?.detailLevel).toBe(1);
+    expect(getRoomSpriteVariant('cosmo_kitchen', 10)?.detailLevel).toBe(1);
   });
 
-  it('adds a new layer every 10 levels', () => {
-    expect(getRoomSpriteLayers('cosmo_kitchen', 20)).toHaveLength(3);
-    expect(getRoomSpriteLayers('cosmo_kitchen', 30)).toHaveLength(4);
-    expect(getRoomSpriteLayers('cosmo_kitchen', 50)).toHaveLength(6);
+  it('returns tier-2 for level 11', () => {
+    expect(getRoomSpriteVariant('cosmo_kitchen', 11)?.detailLevel).toBe(2);
   });
 
-  it('returns all 11 layers at level 100', () => {
-    const layers = getRoomSpriteLayers('oxygen_garden', 100);
-
-    expect(layers).toHaveLength(11);
+  it('returns tier-10 for level 100+', () => {
+    expect(getRoomSpriteVariant('oxygen_garden', 100)?.detailLevel).toBe(10);
+    expect(getRoomSpriteVariant('oxygen_garden', 150)?.detailLevel).toBe(10);
   });
 
-  it('returns layers sorted by z (render order)', () => {
-    const layers = getRoomSpriteLayers('tenant_capsule', 100) as RoomSpriteLayer[];
-    const zValues = layers.map((l) => l.z ?? l.unlockLevel);
+  it('picks the highest variant whose unlockLevel does not exceed the current level', () => {
+    // Level 25 → detail level 3 (unlockLevel 21), not 4 (unlockLevel 31)
+    const variant = getRoomSpriteVariant('tenant_capsule', 25);
 
-    // Check that z values are in non-decreasing order.
-    for (let i = 1; i < zValues.length; i += 1) {
-      expect(zValues[i]).toBeGreaterThanOrEqual(zValues[i - 1]);
-    }
-  });
-
-  it('resident and work-prop layers have animations', () => {
-    const layers = getRoomSpriteLayers('tenant_capsule', 20);
-    const resident = layers.find((l) => l.id === 'resident-1');
-    const workProp = layers.find((l) => l.id === 'work-prop');
-
-    expect(resident?.animation).toBeDefined();
-    expect(workProp?.animation).toBeDefined();
-  });
-
-  it('base layer has no animation', () => {
-    const layers = getRoomSpriteLayers('tenant_capsule', 1);
-    const base = layers.find((l) => l.id === 'base');
-
-    expect(base?.animation).toBeUndefined();
+    expect(variant?.detailLevel).toBe(3);
+    expect(variant?.unlockLevel).toBe(21);
   });
 });
