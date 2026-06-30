@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   advanceGame,
   buyModuleLevel,
@@ -10,6 +10,11 @@ import {
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
 import type { GameState, ModuleId } from '../game/types';
 import { createLocalStoragePort, type StoragePort } from '../platform/storage';
+import {
+  createNoOpYandexPlatform,
+  initYandexPlatform,
+  type YandexPlatform
+} from '../platform/yandex';
 import { resolveSelectedRoomId } from '../station/roomScenes';
 
 export interface OfflineReward {
@@ -23,20 +28,52 @@ export interface UseGameStateResult {
   offlineReward: OfflineReward | null;
   ready: boolean;
   selectedRoomId: ModuleId;
+  adPending: boolean;
+  adsAvailable: boolean;
   buyLevel(moduleId: ModuleId): void;
   selectRoom(moduleId: ModuleId): void;
   renovateOrbit(): void;
   dismissOfflineReward(): void;
-  activateIncomeBoost(): void;
-  activateVipResident(): void;
+  activateIncomeBoost(): Promise<void>;
+  activateVipResident(): Promise<void>;
+  doubleOfflineReward(): Promise<void>;
 }
 
-export function useGameState(storagePort?: StoragePort): UseGameStateResult {
+export function useGameState(
+  storagePort?: StoragePort,
+  yandexPlatform?: YandexPlatform
+): UseGameStateResult {
   const storage = useMemo(() => storagePort ?? createLocalStoragePort(), [storagePort]);
+  const platformRef = useRef<YandexPlatform>(yandexPlatform ?? createNoOpYandexPlatform());
   const [gameState, setGameState] = useState(() => createInitialState());
   const [selectedRoomId, setSelectedRoomId] = useState<ModuleId>('tenant_capsule');
   const [ready, setReady] = useState(false);
   const [offlineReward, setOfflineReward] = useState<OfflineReward | null>(null);
+  const [adPending, setAdPending] = useState(false);
+  const [adsAvailable, setAdsAvailable] = useState(false);
+
+  useEffect(() => {
+    if (yandexPlatform) {
+      platformRef.current = yandexPlatform;
+      setAdsAvailable(yandexPlatform.isAvailable());
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    void initYandexPlatform().then((platform) => {
+      if (cancelled) {
+        return;
+      }
+
+      platformRef.current = platform;
+      setAdsAvailable(platform.isAvailable());
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [yandexPlatform]);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,6 +92,8 @@ export function useGameState(storagePort?: StoragePort): UseGameStateResult {
       }
 
       setReady(true);
+      // Tell the platform the loading screen is gone and the station is visible.
+      platformRef.current.markReady();
     }
 
     void loadSavedState();
@@ -115,33 +154,103 @@ export function useGameState(storagePort?: StoragePort): UseGameStateResult {
     setOfflineReward(null);
   }, []);
 
-  const activateIncomeBoost = useCallback(() => {
-    setGameState((current) => ({
-      ...current,
-      timedBonuses: [
-        ...current.timedBonuses,
-        {
-          id: 'rent_x2',
-          incomeMultiplier: 2,
-          expiresAt: Date.now() + 5 * 60 * 1_000
-        }
-      ]
-    }));
+  // When the Yandex SDK is unavailable (local dev, other platforms), rewarded
+  // bonuses are granted immediately so the feature stays testable. In
+  // production the bonus is only granted after a successful ad watch.
+  const resolveAdGrant = useCallback(async () => {
+    if (!platformRef.current.isAvailable()) {
+      return true;
+    }
+
+    return platformRef.current.showRewardedAd();
   }, []);
 
-  const activateVipResident = useCallback(() => {
-    setGameState((current) => ({
-      ...current,
-      timedBonuses: [
-        ...current.timedBonuses,
-        {
-          id: 'vip_resident',
-          incomeMultiplier: 2,
-          expiresAt: Date.now() + 10 * 60 * 1_000
-        }
-      ]
-    }));
-  }, []);
+  const activateIncomeBoost = useCallback(async () => {
+    if (adPending) {
+      return;
+    }
+
+    setAdPending(true);
+
+    try {
+      const granted = await resolveAdGrant();
+
+      if (!granted) {
+        return;
+      }
+
+      setGameState((current) => ({
+        ...current,
+        timedBonuses: [
+          ...current.timedBonuses,
+          {
+            id: 'rent_x2',
+            incomeMultiplier: 2,
+            expiresAt: Date.now() + 5 * 60 * 1_000
+          }
+        ]
+      }));
+    } finally {
+      setAdPending(false);
+    }
+  }, [adPending, resolveAdGrant]);
+
+  const activateVipResident = useCallback(async () => {
+    if (adPending) {
+      return;
+    }
+
+    setAdPending(true);
+
+    try {
+      const granted = await resolveAdGrant();
+
+      if (!granted) {
+        return;
+      }
+
+      setGameState((current) => ({
+        ...current,
+        timedBonuses: [
+          ...current.timedBonuses,
+          {
+            id: 'vip_resident',
+            incomeMultiplier: 2,
+            expiresAt: Date.now() + 10 * 60 * 1_000
+          }
+        ]
+      }));
+    } finally {
+      setAdPending(false);
+    }
+  }, [adPending, resolveAdGrant]);
+
+  const doubleOfflineReward = useCallback(async () => {
+    if (adPending || !offlineReward) {
+      return;
+    }
+
+    setAdPending(true);
+
+    try {
+      const granted = await resolveAdGrant();
+
+      if (!granted) {
+        return;
+      }
+
+      const bonus = offlineReward.credits;
+
+      setGameState((current) => ({
+        ...current,
+        credits: current.credits + bonus,
+        totalEarnedCredits: current.totalEarnedCredits + bonus
+      }));
+      setOfflineReward(null);
+    } finally {
+      setAdPending(false);
+    }
+  }, [adPending, offlineReward, resolveAdGrant]);
 
   return {
     gameState,
@@ -149,11 +258,14 @@ export function useGameState(storagePort?: StoragePort): UseGameStateResult {
     offlineReward,
     ready,
     selectedRoomId,
+    adPending,
+    adsAvailable,
     buyLevel,
     selectRoom,
     renovateOrbit,
     dismissOfflineReward,
     activateIncomeBoost,
-    activateVipResident
+    activateVipResident,
+    doubleOfflineReward
   };
 }

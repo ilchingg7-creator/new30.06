@@ -1,12 +1,25 @@
+import { Gift } from 'lucide-react';
 import { formatCredits, formatDuration } from '../../game/format';
 
 interface OfflineRewardDialogProps {
   seconds: number;
   credits: number;
   onCollect(): void;
+  onDouble?(): void;
+  adsAvailable?: boolean;
+  adPending?: boolean;
 }
 
-export function OfflineRewardDialog({ seconds, credits, onCollect }: OfflineRewardDialogProps) {
+export function OfflineRewardDialog({
+  seconds,
+  credits,
+  onCollect,
+  onDouble,
+  adsAvailable = false,
+  adPending = false
+}: OfflineRewardDialogProps) {
+  const showDouble = Boolean(onDouble) && adsAvailable;
+
   return (
     <div className="dialog-backdrop" role="presentation">
       <section className="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="offline-reward-title">
@@ -21,7 +34,18 @@ export function OfflineRewardDialog({ seconds, credits, onCollect }: OfflineRewa
             <dd>{formatCredits(credits)}</dd>
           </div>
         </dl>
-        <button type="button" onClick={onCollect}>
+        {showDouble && (
+          <button
+            type="button"
+            className="dialog-double"
+            onClick={onDouble}
+            disabled={adPending}
+          >
+            <Gift aria-hidden="true" size={16} />
+            {adPending ? 'Реклама...' : 'Удвоить за рекламу'}
+          </button>
+        )}
+        <button type="button" onClick={onCollect} disabled={adPending}>
           Забрать
         </button>
       </section>

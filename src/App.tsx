@@ -28,6 +28,9 @@ export function App() {
           seconds={game.offlineReward.seconds}
           credits={game.offlineReward.credits}
           onCollect={game.dismissOfflineReward}
+          onDouble={game.doubleOfflineReward}
+          adsAvailable={game.adsAvailable}
+          adPending={game.adPending}
         />
       )}
     </main>

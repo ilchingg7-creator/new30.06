@@ -20,7 +20,12 @@ describe('core UI components', () => {
         <PixiStationScene gameState={gameState} selectedRoomId="tenant_capsule" />
         <ModuleList gameState={gameState} onBuyLevel={vi.fn()} />
         <GoalPanel gameState={gameState} />
-        <BonusPanel onIncomeBoost={vi.fn()} onVipResident={vi.fn()} />
+        <BonusPanel
+          onIncomeBoost={vi.fn()}
+          onVipResident={vi.fn()}
+          adsAvailable={false}
+          adPending={false}
+        />
         <PrestigePanel reputation={gameState.reputation} onRenovate={vi.fn()} />
       </>
     );

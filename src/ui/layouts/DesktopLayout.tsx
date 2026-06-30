@@ -26,7 +26,12 @@ export function DesktopLayout({ game }: DesktopLayoutProps) {
       </div>
       <aside className="side-panel">
         <GoalPanel gameState={game.gameState} />
-        <BonusPanel onIncomeBoost={game.activateIncomeBoost} onVipResident={game.activateVipResident} />
+        <BonusPanel
+          onIncomeBoost={game.activateIncomeBoost}
+          onVipResident={game.activateVipResident}
+          adsAvailable={game.adsAvailable}
+          adPending={game.adPending}
+        />
         <PrestigePanel reputation={game.gameState.reputation} onRenovate={game.renovateOrbit} />
       </aside>
     </section>

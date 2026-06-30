@@ -34,7 +34,12 @@ export function MobileLayout({ game }: MobileLayoutProps) {
         {activeTab === 'modules' && <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} />}
         {activeTab === 'goals' && <GoalPanel gameState={game.gameState} />}
         {activeTab === 'bonuses' && (
-          <BonusPanel onIncomeBoost={game.activateIncomeBoost} onVipResident={game.activateVipResident} />
+          <BonusPanel
+            onIncomeBoost={game.activateIncomeBoost}
+            onVipResident={game.activateVipResident}
+            adsAvailable={game.adsAvailable}
+            adPending={game.adPending}
+          />
         )}
         {activeTab === 'prestige' && (
           <PrestigePanel reputation={game.gameState.reputation} onRenovate={game.renovateOrbit} />

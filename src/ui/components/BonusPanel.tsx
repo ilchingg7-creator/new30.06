@@ -3,20 +3,35 @@ import { Sparkles, Star } from 'lucide-react';
 interface BonusPanelProps {
   onIncomeBoost(): void;
   onVipResident(): void;
+  adsAvailable?: boolean;
+  adPending?: boolean;
 }
 
-export function BonusPanel({ onIncomeBoost, onVipResident }: BonusPanelProps) {
+export function BonusPanel({
+  onIncomeBoost,
+  onVipResident,
+  adsAvailable = false,
+  adPending = false
+}: BonusPanelProps) {
+  const boostLabel = adsAvailable ? 'x2 аренда (реклама)' : 'x2 аренда';
+  const vipLabel = adsAvailable ? 'VIP-жилец (реклама)' : 'VIP-жилец';
+
   return (
     <section className="panel" aria-labelledby="bonus-panel-title">
       <h2 id="bonus-panel-title">Бонусы</h2>
+      {!adsAvailable && (
+        <p className="panel-copy">
+          Рекламные бонусы доступны на Yandex Games. Локально бонусы включаются сразу.
+        </p>
+      )}
       <div className="button-stack">
-        <button type="button" onClick={onIncomeBoost}>
+        <button type="button" onClick={onIncomeBoost} disabled={adPending}>
           <Sparkles aria-hidden="true" size={16} />
-          x2 аренда
+          {adPending ? 'Реклама...' : boostLabel}
         </button>
-        <button type="button" onClick={onVipResident}>
+        <button type="button" onClick={onVipResident} disabled={adPending}>
           <Star aria-hidden="true" size={16} />
-          VIP-жилец
+          {adPending ? 'Реклама...' : vipLabel}
         </button>
       </div>
     </section>

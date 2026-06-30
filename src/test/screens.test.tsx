@@ -19,4 +19,32 @@ describe('game screens', () => {
     expect(screen.getByText('12.4K')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Забрать' })).toBeInTheDocument();
   });
+
+  it('hides the double-via-ad button when ads are unavailable', () => {
+    render(
+      <OfflineRewardDialog
+        seconds={3_660}
+        credits={12_400}
+        onCollect={vi.fn()}
+        onDouble={vi.fn()}
+        adsAvailable={false}
+      />
+    );
+
+    expect(screen.queryByRole('button', { name: /Удвоить/ })).toBeNull();
+  });
+
+  it('shows the double-via-ad button when ads are available', () => {
+    render(
+      <OfflineRewardDialog
+        seconds={3_660}
+        credits={12_400}
+        onCollect={vi.fn()}
+        onDouble={vi.fn()}
+        adsAvailable
+      />
+    );
+
+    expect(screen.getByRole('button', { name: /Удвоить за рекламу/ })).toBeInTheDocument();
+  });
 });

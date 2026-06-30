@@ -389,6 +389,17 @@ input {
   font-weight: 800;
 }
 
+.dialog-panel button.dialog-double {
+  margin-bottom: 8px;
+  background: var(--color-enamel-green);
+  color: var(--color-ink);
+}
+
+.dialog-panel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.64;
+}
+
 .top-bar {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
