@@ -68,3 +68,15 @@
 - Current build includes Pixi renderer chunks; this is accepted for MVP but should be watched before upload.
 - Desktop 1366x768 and mobile 390x844 visual checks should be repeated after focused-room changes.
 - Browser console showed a favicon 404 during desktop visual check; it does not affect gameplay, but can be cleaned up before publication.
+- Favicon was added in a later commit (`public/favicon.png` + metadata in `index.html`); the 404 is resolved.
+
+## Sandbox Verification Note
+
+This project was developed in a sandbox that only exposes one external port (3000, used by a Next.js host). Running the Vite dev server on a different port for in-browser visual QA via `agent-browser` is not possible because background processes on non-3000 ports are killed by the sandbox. Visual verification therefore relies on:
+
+- `npm test` — 78 tests across 18 files, including React component smoke tests via jsdom with a hardened canvas mock (roundRect, quadraticCurveTo, gradients) so PixiJS Graphics render paths work in the test environment.
+- `npm run build` — Vite production build must succeed.
+- `src/test/responsive.test.tsx` — verifies both desktop and mobile layouts mount, all four top-bar metrics render, all four mobile bottom tabs render, and the room selector appears on both layouts.
+- `src/test/app-smoke.test.tsx` — end-to-end App render through the real `useGameState` hook.
+
+Manual browser checks at 1366x768 and 390x844 remain a pre-publication requirement on a developer machine or CI with a headless browser.
