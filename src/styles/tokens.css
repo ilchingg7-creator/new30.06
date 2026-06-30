@@ -1,0 +1,14 @@
+:root {
+  --color-space-navy: #172033;
+  --color-warm-panel: #e7d7b2;
+  --color-enamel-green: #7fb7a6;
+  --color-signal-red: #d95550;
+  --color-lamp-amber: #f2b84b;
+  --color-utility-blue: #5e8ccb;
+  --color-ink: #27313f;
+  --color-soft-white: #f8f1df;
+  --radius-panel: 8px;
+  --radius-control: 6px;
+  --shadow-panel: 0 12px 28px rgb(0 0 0 / 22%);
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
