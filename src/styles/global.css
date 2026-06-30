@@ -737,6 +737,47 @@ input {
   100% { transform: scale(1); }
 }
 
+/* Room condition bar */
+.room-condition-bar {
+  margin-top: 6px;
+}
+
+.room-condition-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-utility-blue);
+}
+
+.room-condition-header small {
+  margin-left: auto;
+  font-weight: 800;
+}
+
+.room-condition-track {
+  height: 5px;
+  background: rgb(39 49 63 / 18%);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 3px;
+}
+
+.room-condition-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.room-condition-hint {
+  margin: 4px 0 0;
+  font-size: 0.7rem;
+  color: var(--color-signal-red);
+  font-weight: 700;
+  animation: pulse-amber 1.5s ease-in-out infinite;
+}
+
 .top-bar strong {
   display: block;
   margin-top: 4px;

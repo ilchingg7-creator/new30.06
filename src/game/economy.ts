@@ -2,6 +2,7 @@ import { checkAchievements } from './achievements';
 import { modules } from './content/modules';
 import { prestigeUpgrades } from './content/prestigeUpgrades';
 import { completeEligibleGoals } from './goals';
+import { getOverallConditionMultiplier, initializeRoomCondition } from './roomConditions';
 import { checkResidentUnlocks } from './residents';
 import { checkResidentStories } from './residentStories';
 import type { GameState, ModuleId, ModuleLevels, PrestigeUpgradeId, TimedBonus } from './types';
@@ -93,8 +94,9 @@ export function calculateIncomePerSecond(state: GameState, now = Date.now()): nu
   const comfortMultiplier = 1 + state.comfort * 0.01;
   const reputationMultiplier = 1 + state.reputation * 0.05;
   const timedBonusMultiplier = calculateTimedBonusMultiplier(state.timedBonuses, now);
+  const conditionMultiplier = getOverallConditionMultiplier(state);
 
-  return moduleIncome * comfortMultiplier * reputationMultiplier * timedBonusMultiplier;
+  return moduleIncome * comfortMultiplier * reputationMultiplier * timedBonusMultiplier * conditionMultiplier;
 }
 
 export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState {
@@ -119,7 +121,10 @@ export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState 
     totalModulesBought: (state.totalModulesBought ?? 0) + 1
   };
 
-  return checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))));
+  // Initialize room condition on first purchase.
+  const withCondition = currentLevel === 0 ? initializeRoomCondition(nextState, moduleId) : nextState;
+
+  return checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(withCondition))));
 }
 
 export function advanceGame(state: GameState, seconds: number, now = Date.now()): GameState {

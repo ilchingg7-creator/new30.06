@@ -105,6 +105,18 @@ function hasOptionalNumber(value: unknown): boolean {
   return value === undefined || isNumber(value);
 }
 
+function hasOptionalRoomConditions(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return Object.values(value).every((v) => isNumber(v));
+}
+
 /**
  * Pre-versioned saves (no schemaVersion field) are treated as version 1.
  * They predate cosmetics, prestige upgrades, daily login and achievements.
@@ -161,7 +173,8 @@ function isGameStateShape(value: unknown): value is GameState {
     hasOptionalNumber(value.lastLoginDay) &&
     hasOptionalNumber(value.dailyStreak) &&
     hasOptionalAchievements(value.unlockedAchievements) &&
-    hasOptionalStories(value.completedStories)
+    hasOptionalStories(value.completedStories) &&
+    hasOptionalRoomConditions(value.roomConditions)
   );
 }
 

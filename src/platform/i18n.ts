@@ -163,6 +163,13 @@ export interface Translation {
   storyComplete: string;
   storyGotoRoom: string;
   stories: Record<string, { title: string; request: string; complete: string }>;
+  // Room condition
+  conditionTitle: string;
+  conditionPristine: string;
+  conditionWorking: string;
+  conditionWorn: string;
+  conditionBroken: string;
+  conditionHint: string;
   // Format helpers
   perSecond: string;
   // Game content (modules, residents, goals, achievements, prestige
@@ -352,6 +359,12 @@ const ru: Translation = {
       complete: 'Сосед-отставной космонавт отогрелся. +3 комфорта!'
     }
   },
+  conditionTitle: 'Состояние комнаты',
+  conditionPristine: 'Идеальное',
+  conditionWorking: 'Рабочее',
+  conditionWorn: 'Изношенное',
+  conditionBroken: 'Сломано',
+  conditionHint: 'Кликайте по комнате, чтобы починить!',
   perSecond: '/сек',
   content: {
     modules: {
@@ -681,6 +694,12 @@ const en: Translation = {
       complete: 'Retired Cosmonaut warmed up. +3 comfort!'
     }
   },
+  conditionTitle: 'Room condition',
+  conditionPristine: 'Pristine',
+  conditionWorking: 'Working',
+  conditionWorn: 'Worn',
+  conditionBroken: 'Broken',
+  conditionHint: 'Click the room to repair it!',
   perSecond: '/sec',
   content: {
     modules: {

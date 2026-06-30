@@ -186,6 +186,12 @@ export interface GameState {
   /** Completed resident story IDs. Each story fires once per save. */
   completedStories?: ResidentStoryId[];
   /**
+   * Room condition values (0-100) keyed by ModuleId. Condition decays over
+   * time; clicking the room repairs it. High condition gives an income
+   * multiplier; low condition shows visual problems in the scene.
+   */
+  roomConditions?: Partial<Record<ModuleId, number>>;
+  /**
    * Save schema version. Injected by `serializeGameState` and validated by
    * `parseGameState`. Not set on fresh in-memory states created by
    * `createInitialState`; it only appears on serialized/parsed states.

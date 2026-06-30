@@ -8,6 +8,7 @@ import { GoalPanel } from '../components/GoalPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
 import { PrestigePanel } from '../components/PrestigePanel';
+import { RoomConditionBar } from '../components/RoomConditionBar';
 import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
@@ -45,6 +46,7 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
           t={t}
         />
         <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} ariaLabel={t.stationView} />
+        <RoomConditionBar gameState={game.gameState} roomId={game.selectedRoomId} t={t} />
       </div>
       <aside className="side-panel">
         <GoalPanel gameState={game.gameState} t={t} />
