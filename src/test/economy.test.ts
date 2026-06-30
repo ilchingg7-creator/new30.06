@@ -30,6 +30,15 @@ describe('economy engine', () => {
     expect(advanced.totalEarnedCredits).toBe(10);
   });
 
+  it('adds module comfort only when a room is first opened', () => {
+    const started = { ...createInitialState(1_000), credits: 1_000 };
+    const opened = buyModuleLevel(started, 'cosmo_kitchen');
+    const upgraded = buyModuleLevel({ ...opened, credits: 1_000 }, 'cosmo_kitchen');
+
+    expect(opened.comfort).toBe(1);
+    expect(upgraded.comfort).toBe(1);
+  });
+
   it('caps offline income at 8 hours', () => {
     const state = buyModuleLevel(createInitialState(1_000), 'tenant_capsule');
     const reward = calculateOfflineReward(state, 10 * 60 * 60 * 1_000);

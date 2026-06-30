@@ -28,6 +28,8 @@
 - повышает общий доход;
 - влияет на prestige-награду.
 
+Comfort from modules is granted when a room is first opened, not on every level purchase. Repeated level purchases should primarily increase credits/sec and visual detail; otherwise comfort snowballs too fast and collapses late-room pacing.
+
 ### Репутация станции
 
 Репутация станции - prestige-валюта. Она начисляется при "Реновации орбиты" и не сбрасывается.

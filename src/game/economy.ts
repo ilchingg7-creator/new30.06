@@ -1,7 +1,7 @@
 import { modules } from './content/modules';
 import type { GameState, ModuleId, ModuleLevels, TimedBonus } from './types';
 
-export const LEVEL_COST_GROWTH = 1.15;
+export const LEVEL_COST_GROWTH = 1.18;
 export const OFFLINE_CAP_SECONDS = 8 * 60 * 60;
 
 const MILESTONE_MULTIPLIERS = [
@@ -89,14 +89,16 @@ export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState 
   }
 
   const module = getModule(moduleId);
+  const currentLevel = state.moduleLevels[moduleId];
+  const comfortGain = currentLevel === 0 ? module.comfortBonus : 0;
 
   return {
     ...state,
     credits: state.credits - cost,
-    comfort: state.comfort + module.comfortBonus,
+    comfort: state.comfort + comfortGain,
     moduleLevels: {
       ...state.moduleLevels,
-      [moduleId]: state.moduleLevels[moduleId] + 1
+      [moduleId]: currentLevel + 1
     }
   };
 }
