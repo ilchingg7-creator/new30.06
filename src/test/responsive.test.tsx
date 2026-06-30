@@ -133,6 +133,15 @@ describe('responsive layout rendering', () => {
     expect(container.querySelector('.mobile-layout .station-task-panel.compact')).not.toBeNull();
   });
 
+  it('uses compact resource metrics in the mobile layout', async () => {
+    setViewportWidth(390);
+    const { container } = render(<App />);
+
+    await screen.findAllByText(t.content.modules.tenant_capsule.name);
+
+    expect(container.querySelector('.mobile-layout .top-bar.compact')).not.toBeNull();
+  });
+
   it('renders one room selector navigation for the active layout', async () => {
     setViewportWidth(1200);
     render(<App />);

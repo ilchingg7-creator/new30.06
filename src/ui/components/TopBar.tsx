@@ -5,12 +5,13 @@ import type { Translation } from '../../platform/i18n';
 interface TopBarProps {
   gameState: GameState;
   incomePerSecond: number;
+  variant?: 'default' | 'compact';
   t: Translation;
 }
 
-export function TopBar({ gameState, incomePerSecond, t }: TopBarProps) {
+export function TopBar({ gameState, incomePerSecond, variant = 'default', t }: TopBarProps) {
   return (
-    <header className="top-bar" aria-label={t.stationResources}>
+    <header className={variant === 'compact' ? 'top-bar compact' : 'top-bar'} aria-label={t.stationResources}>
       <div className="metric-pulse" key={Math.floor(gameState.credits)}>
         <span>{t.kopeks}</span>
         <strong>{formatCredits(gameState.credits)}</strong>

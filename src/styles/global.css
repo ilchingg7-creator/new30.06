@@ -710,6 +710,14 @@ input {
   padding: 10px 12px;
 }
 
+.top-bar.compact {
+  gap: 6px;
+}
+
+.top-bar.compact div {
+  padding: 6px 8px;
+}
+
 .top-bar span,
 .compact-card span,
 .panel-copy {
@@ -733,6 +741,18 @@ input {
   display: block;
   margin-top: 4px;
   font-size: 1.25rem;
+}
+
+.top-bar.compact span {
+  font-size: 0.66rem;
+  line-height: 1.1;
+}
+
+.top-bar.compact strong {
+  margin-top: 2px;
+  font-size: 0.92rem;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .panel {
@@ -1107,6 +1127,10 @@ input {
 
   .top-bar {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .top-bar.compact {
+    gap: 5px;
   }
 
   .component-card {

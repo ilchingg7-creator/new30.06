@@ -41,7 +41,7 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
 
   return (
     <section className="mobile-layout" aria-label="Mobile layout">
-      <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} t={t} />
+      <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} variant="compact" t={t} />
       <StationTaskPanel
         guidance={stationGuidance}
         onSelectRoom={game.selectRoom}
