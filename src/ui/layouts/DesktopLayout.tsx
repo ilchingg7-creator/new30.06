@@ -30,7 +30,7 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
           onSelectRoom={game.selectRoom}
           t={t}
         />
-        <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} />
+        <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} ariaLabel={t.stationView} />
       </div>
       <aside className="side-panel">
         <GoalPanel gameState={game.gameState} t={t} />

@@ -5,13 +5,6 @@ import { getVisibleGoals } from '../../game/goals';
 import type { GameState } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
 
-const rewardKindLabels: Record<string, string> = {
-  comfort: 'Бонус комфорта',
-  visual_detail: 'Визуальная деталь',
-  temporary_boost: 'Временный буст',
-  prestige_hint: 'Подсказка к реновации'
-};
-
 interface GoalPanelProps {
   gameState: GameState;
   t: Translation;
@@ -19,6 +12,21 @@ interface GoalPanelProps {
 
 export function GoalPanel({ gameState, t }: GoalPanelProps) {
   const visibleGoals = getVisibleGoals(gameState, 4);
+
+  const rewardKindLabel = (kind: string): string => {
+    switch (kind) {
+      case 'comfort':
+        return t.rewardKindComfort;
+      case 'visual_detail':
+        return t.rewardKindVisual;
+      case 'temporary_boost':
+        return t.rewardKindBoost;
+      case 'prestige_hint':
+        return t.rewardKindPrestige;
+      default:
+        return kind;
+    }
+  };
 
   return (
     <section className="panel" aria-labelledby="goal-panel-title">
@@ -37,7 +45,7 @@ export function GoalPanel({ gameState, t }: GoalPanelProps) {
           <li
             className="compact-card"
             key={goal.id}
-            title={`Тип награды: ${rewardKindLabels[goal.rewardKind] ?? goal.rewardKind}\n${goal.rewardLabel}`}
+            title={`${t.rewardType}: ${rewardKindLabel(goal.rewardKind)}\n${goal.rewardLabel}`}
           >
             <Target aria-hidden="true" size={16} />
             <div>

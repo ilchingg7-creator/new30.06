@@ -65,7 +65,7 @@ function MilestoneProgress({ level, t }: { level: number; t: Translation }) {
         <div className="milestone-bar">
           <div className="milestone-fill" style={{ width: '100%' }} />
         </div>
-        <small className="milestone-label">Все milestones получены</small>
+        <small className="milestone-label">{t.allMilestonesDone}</small>
       </div>
     );
   }

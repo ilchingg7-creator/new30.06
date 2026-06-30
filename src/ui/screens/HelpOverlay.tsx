@@ -41,7 +41,7 @@ export function HelpOverlay({ onClose, t }: HelpOverlayProps) {
           <h2 id="help-title">
             <HelpCircle aria-hidden="true" size={18} style={{ verticalAlign: 'middle' }} /> {t.helpTitle}
           </h2>
-          <button type="button" className="help-close" onClick={onClose} aria-label="Закрыть">
+          <button type="button" className="help-close" onClick={onClose} aria-label={t.close}>
             <X aria-hidden="true" size={18} />
           </button>
         </header>

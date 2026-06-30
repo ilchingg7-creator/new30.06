@@ -89,7 +89,6 @@ export function App() {
   return (
     <main className="app-shell">
       <header className="app-title">
-        <p className="eyebrow">{t.eyebrow}</p>
         <div className="title-row">
           <h1>{t.appTitle}</h1>
           <button

@@ -8,9 +8,10 @@ interface PixiStationSceneProps {
   gameState: GameState;
   selectedRoomId: ModuleId;
   onRoomClick?: () => void;
+  ariaLabel?: string;
 }
 
-export function PixiStationScene({ gameState, selectedRoomId, onRoomClick }: PixiStationSceneProps) {
+export function PixiStationScene({ gameState, selectedRoomId, onRoomClick, ariaLabel }: PixiStationSceneProps) {
   const hostRef = useRef<HTMLElement | null>(null);
   const appRef = useRef<Application | null>(null);
   const gameStateRef = useRef(gameState);
@@ -117,5 +118,5 @@ export function PixiStationScene({ gameState, selectedRoomId, onRoomClick }: Pix
     };
   }, []);
 
-  return <section className="station-view" aria-label="Визуальный вид станции" ref={hostRef} />;
+  return <section className="station-view" aria-label={ariaLabel} ref={hostRef} />;
 }

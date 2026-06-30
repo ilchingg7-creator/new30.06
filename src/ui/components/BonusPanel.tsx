@@ -18,8 +18,8 @@ export function BonusPanel({
   adPending = false,
   t
 }: BonusPanelProps) {
-  const boostLabel = adsAvailable ? `${t.boost2x} (реклама)` : t.boost2x;
-  const vipLabel = adsAvailable ? `${t.vipResident} (реклама)` : t.vipResident;
+  const boostLabel = adsAvailable ? `${t.boost2x} ${t.adSuffix}` : t.boost2x;
+  const vipLabel = adsAvailable ? `${t.vipResident} ${t.adSuffix}` : t.vipResident;
 
   return (
     <section className="panel" aria-labelledby="bonus-panel-title">
@@ -32,7 +32,7 @@ export function BonusPanel({
           type="button"
           onClick={onIncomeBoost}
           disabled={adPending}
-          title="Удваивает доход станции на 5 минут. На Yandex Games требует просмотра рекламы."
+          title={t.boostTooltip}
         >
           <Sparkles aria-hidden="true" size={16} />
           {adPending ? t.adPending : boostLabel}
@@ -41,7 +41,7 @@ export function BonusPanel({
           type="button"
           onClick={onVipResident}
           disabled={adPending}
-          title="Заселяет VIP-жильца: x2 доход на 10 минут. На Yandex Games требует просмотра рекламы."
+          title={t.vipTooltip}
         >
           <Star aria-hidden="true" size={16} />
           {adPending ? t.adPending : vipLabel}

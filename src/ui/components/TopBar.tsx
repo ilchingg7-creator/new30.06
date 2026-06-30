@@ -10,7 +10,7 @@ interface TopBarProps {
 
 export function TopBar({ gameState, incomePerSecond, t }: TopBarProps) {
   return (
-    <header className="top-bar" aria-label="Ресурсы станции">
+    <header className="top-bar" aria-label={t.stationResources}>
       <div className="metric-pulse" key={Math.floor(gameState.credits)}>
         <span>{t.kopeks}</span>
         <strong>{formatCredits(gameState.credits)}</strong>

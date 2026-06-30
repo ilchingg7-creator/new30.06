@@ -31,7 +31,7 @@ export function SettingsDialog({ onClose, onResetSave, t, language, onLanguageCh
           <h2 id="settings-title">
             <Settings aria-hidden="true" size={18} style={{ verticalAlign: 'middle' }} /> {t.settingsTitle}
           </h2>
-          <button type="button" className="help-close" onClick={onClose} aria-label="Закрыть">
+          <button type="button" className="help-close" onClick={onClose} aria-label={t.close}>
             <X aria-hidden="true" size={18} />
           </button>
         </header>
@@ -59,7 +59,7 @@ export function SettingsDialog({ onClose, onResetSave, t, language, onLanguageCh
               onClick={() => onLanguageChange('ru')}
               aria-pressed={language === 'ru'}
             >
-              Русский
+              {t.russian}
             </button>
             <button
               type="button"
@@ -67,7 +67,7 @@ export function SettingsDialog({ onClose, onResetSave, t, language, onLanguageCh
               onClick={() => onLanguageChange('en')}
               aria-pressed={language === 'en'}
             >
-              English
+              {t.english}
             </button>
           </div>
         </div>
@@ -77,8 +77,8 @@ export function SettingsDialog({ onClose, onResetSave, t, language, onLanguageCh
             <Info aria-hidden="true" size={16} /> {t.about}
           </h3>
           <p className="panel-copy">{t.aboutText}</p>
-          <p className="panel-copy">{t.aboutStyle} {t.aboutPlatform}</p>
-          <p className="panel-copy">{t.aboutVersion}</p>
+          <p className="panel-copy">{t.aboutHint1}</p>
+          <p className="panel-copy">{t.aboutHint2}</p>
         </div>
       </section>
     </div>

@@ -21,12 +21,12 @@ export function VisitorDialog({ visitor, canAfford, onAccept, onDecline, t }: Vi
         <p className="dialog-stats-copy">{visitor.flavor}</p>
         <dl className="dialog-stats">
           <div>
-            <dt>Цена</dt>
+            <dt>{t.price}</dt>
             <dd>{formatCredits(visitor.cost)}</dd>
           </div>
           <div>
-            <dt>Награда</dt>
-            <dd>+{visitor.rewardComfort} комфорт</dd>
+            <dt>{t.reward}</dt>
+            <dd>+{visitor.rewardComfort} {t.comfortWord}</dd>
           </div>
         </dl>
         <div className="visitor-actions">

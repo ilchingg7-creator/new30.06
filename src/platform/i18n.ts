@@ -106,8 +106,35 @@ export interface Translation {
   settings: string;
   // Residents panel
   residentsTitle: string;
+  residentsSettled: string;
+  noResidents: string;
+  settled: string;
+  notSettled: string;
   // Achievements
   achievementsCount: string;
+  // Common
+  close: string;
+  price: string;
+  reward: string;
+  comfortWord: string;
+  russian: string;
+  english: string;
+  stationResources: string;
+  stationView: string;
+  stationSections: string;
+  adSuffix: string;
+  boostTooltip: string;
+  vipTooltip: string;
+  allMilestonesDone: string;
+  dailyRewardSuffix: string;
+  rewardKindComfort: string;
+  rewardKindVisual: string;
+  rewardKindBoost: string;
+  rewardKindPrestige: string;
+  rewardType: string;
+  // About (replaced)
+  aboutHint1: string;
+  aboutHint2: string;
 }
 
 const ru: Translation = {
@@ -201,7 +228,32 @@ const ru: Translation = {
   howToPlay: 'Как играть',
   settings: 'Настройки',
   residentsTitle: 'Жильцы',
-  achievementsCount: 'Достижения'
+  achievementsCount: 'Достижения',
+  residentsSettled: 'заселено',
+  noResidents: 'Пока жильцов нет',
+  settled: 'Заселён',
+  notSettled: 'Не заселён',
+  close: 'Закрыть',
+  price: 'Цена',
+  reward: 'Награда',
+  comfortWord: 'комфорт',
+  russian: 'Русский',
+  english: 'English',
+  stationResources: 'Ресурсы станции',
+  stationView: 'Визуальный вид станции',
+  stationSections: 'Разделы станции',
+  adSuffix: '(реклама)',
+  boostTooltip: 'Удваивает доход станции на 5 минут. На Yandex Games требует просмотра рекламы.',
+  vipTooltip: 'Заселяет VIP-жильца: x2 доход на 10 минут. На Yandex Games требует просмотра рекламы.',
+  allMilestonesDone: 'Все milestones получены',
+  dailyRewardSuffix: 'копеек',
+  rewardKindComfort: 'Бонус комфорта',
+  rewardKindVisual: 'Визуальная деталь',
+  rewardKindBoost: 'Временный буст',
+  rewardKindPrestige: 'Подсказка к реновации',
+  rewardType: 'Тип награды',
+  aboutHint1: 'Кликайте по комнате — каждый клик даёт копейки. Развивайте станцию, заселяйте жильцов и делайте реновацию орбиты!',
+  aboutHint2: 'Спасибо за игру! Ваша обратная связь помогает делать коммуналку уютнее.'
 };
 
 const en: Translation = {
@@ -295,7 +347,32 @@ const en: Translation = {
   howToPlay: 'How to play',
   settings: 'Settings',
   residentsTitle: 'Residents',
-  achievementsCount: 'Achievements'
+  achievementsCount: 'Achievements',
+  residentsSettled: 'settled',
+  noResidents: 'No residents yet',
+  settled: 'Settled',
+  notSettled: 'Not settled',
+  close: 'Close',
+  price: 'Price',
+  reward: 'Reward',
+  comfortWord: 'comfort',
+  russian: 'Русский',
+  english: 'English',
+  stationResources: 'Station resources',
+  stationView: 'Station visual view',
+  stationSections: 'Station sections',
+  adSuffix: '(ad)',
+  boostTooltip: 'Doubles station income for 5 minutes. On Yandex Games requires watching an ad.',
+  vipTooltip: 'Settles a VIP resident: x2 income for 10 minutes. On Yandex Games requires watching an ad.',
+  allMilestonesDone: 'All milestones unlocked',
+  dailyRewardSuffix: 'kopeks',
+  rewardKindComfort: 'Comfort bonus',
+  rewardKindVisual: 'Visual detail',
+  rewardKindBoost: 'Temporary boost',
+  rewardKindPrestige: 'Renovation hint',
+  rewardType: 'Reward type',
+  aboutHint1: 'Click the room — every click gives kopeks. Develop the station, settle residents and renovate the orbit!',
+  aboutHint2: 'Thanks for playing! Your feedback helps make the communalka cozier.'
 };
 
 export const translations: Record<Language, Translation> = { ru, en };

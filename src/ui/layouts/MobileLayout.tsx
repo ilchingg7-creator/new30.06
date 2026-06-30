@@ -36,7 +36,7 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
     <section className="mobile-layout" aria-label="Mobile layout">
       <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} t={t} />
       <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} t={t} />
-      <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} />
+      <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} ariaLabel={t.stationView} />
       <div className="mobile-tab-content">
         {activeTab === 'modules' && <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} t={t} />}
         {activeTab === 'goals' && (
@@ -68,7 +68,7 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
           </>
         )}
       </div>
-      <nav className="bottom-tabs" aria-label="Разделы станции">
+      <nav className="bottom-tabs" aria-label={t.stationSections}>
         {tabs.map((tab) => {
           const Icon = tab.icon;
 

@@ -21,7 +21,7 @@ describe('core UI components', () => {
       <>
         <TopBar gameState={gameState} incomePerSecond={calculateIncomePerSecond(gameState)} t={t} />
         <RoomSelector gameState={gameState} selectedRoomId="tenant_capsule" onSelectRoom={vi.fn()} t={t} />
-        <PixiStationScene gameState={gameState} selectedRoomId="tenant_capsule" />
+        <PixiStationScene gameState={gameState} selectedRoomId="tenant_capsule" ariaLabel={t.stationView} />
         <ModuleList gameState={gameState} onBuyLevel={vi.fn()} t={t} />
         <GoalPanel gameState={gameState} t={t} />
         <BonusPanel
@@ -37,7 +37,7 @@ describe('core UI components', () => {
 
     expect(screen.getByText('Копейки')).toBeInTheDocument();
     expect(screen.getByRole('navigation', { name: 'Комнаты' })).toBeInTheDocument();
-    expect(screen.getByLabelText('Визуальный вид станции')).toBeInTheDocument();
+    expect(screen.getByLabelText(t.stationView)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Комнаты' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Цели' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Бонусы' })).toBeInTheDocument();
@@ -55,9 +55,9 @@ describe('core UI components', () => {
   it('shows whether the station has settled residents yet', () => {
     render(<ResidentsPanel gameState={createInitialState(1_000)} t={t} />);
 
-    expect(screen.getByText('0/8 заселено')).toBeInTheDocument();
+    expect(screen.getByText(`0/8 ${t.residentsSettled}`)).toBeInTheDocument();
     expect(screen.getByText('Пока жильцов нет')).toBeInTheDocument();
-    expect(screen.getAllByText('Не заселен')).toHaveLength(8);
+    expect(screen.getAllByText(t.notSettled)).toHaveLength(8);
   });
 
   it('marks unlocked residents as settled', () => {
@@ -71,8 +71,8 @@ describe('core UI components', () => {
       />
     );
 
-    expect(screen.getByText('1/8 заселено')).toBeInTheDocument();
-    expect(screen.getByText('Заселен')).toBeInTheDocument();
-    expect(screen.getAllByText('Не заселен')).toHaveLength(7);
+    expect(screen.getByText(`1/8 ${t.residentsSettled}`)).toBeInTheDocument();
+    expect(screen.getByText(t.settled)).toBeInTheDocument();
+    expect(screen.getAllByText(t.notSettled)).toHaveLength(7);
   });
 });

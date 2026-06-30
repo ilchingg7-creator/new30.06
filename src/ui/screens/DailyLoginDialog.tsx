@@ -23,7 +23,7 @@ export function DailyLoginDialog({ streak, credits, onCollect, t }: DailyLoginDi
           {MAX_STREAK}
         </p>
         <p className="dialog-stats-copy">
-          {t.dailyRewardText} <strong>{formatCredits(credits)}</strong> копеек.
+          {t.dailyRewardText} <strong>{formatCredits(credits)}</strong> {t.dailyRewardSuffix}.
         </p>
         <div className="daily-streak-dots" aria-hidden="true">
           {Array.from({ length: MAX_STREAK }, (_, index) => (
