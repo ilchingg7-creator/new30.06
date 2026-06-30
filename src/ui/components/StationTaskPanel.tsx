@@ -10,6 +10,7 @@ interface StationTaskPanelProps {
   guidance: StationGuidance;
   onSelectRoom?(moduleId: ModuleId): void;
   onRenovate?(): void;
+  variant?: 'default' | 'compact';
   t: Translation;
 }
 
@@ -107,14 +108,15 @@ function GuidanceMeta({ guidance, t }: { guidance: StationGuidance; t: Translati
   return null;
 }
 
-export function StationTaskPanel({ guidance, onSelectRoom, onRenovate, t }: StationTaskPanelProps) {
+export function StationTaskPanel({ guidance, onSelectRoom, onRenovate, variant = 'default', t }: StationTaskPanelProps) {
   const title = getTitle(guidance.copyKey, t);
   const body = getBody(guidance.copyKey, t);
   const canSelectRoom = Boolean(guidance.targetRoomId && onSelectRoom);
   const canRenovate = guidance.kind === 'prestige' && guidance.canRenovate && onRenovate;
+  const className = variant === 'compact' ? 'panel station-task-panel compact' : 'panel station-task-panel';
 
   return (
-    <section className="panel station-task-panel" aria-labelledby="station-task-title">
+    <section className={className} aria-labelledby="station-task-title">
       <div className="station-task-heading">
         <ClipboardList aria-hidden="true" size={17} />
         <h2 id="station-task-title">{t.currentTask}</h2>

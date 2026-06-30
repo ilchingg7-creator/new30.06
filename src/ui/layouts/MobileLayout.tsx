@@ -46,6 +46,7 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
         guidance={stationGuidance}
         onSelectRoom={game.selectRoom}
         onRenovate={game.renovateOrbit}
+        variant="compact"
         t={t}
       />
       <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} t={t} />

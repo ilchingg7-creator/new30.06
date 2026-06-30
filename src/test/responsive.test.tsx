@@ -124,6 +124,15 @@ describe('responsive layout rendering', () => {
     expect(screen.getAllByRole('heading', { name: t.currentTask })).toHaveLength(1);
   });
 
+  it('uses compact station director density in the mobile layout', async () => {
+    setViewportWidth(390);
+    const { container } = render(<App />);
+
+    await screen.findAllByText(t.content.modules.tenant_capsule.name);
+
+    expect(container.querySelector('.mobile-layout .station-task-panel.compact')).not.toBeNull();
+  });
+
   it('renders one room selector navigation for the active layout', async () => {
     setViewportWidth(1200);
     render(<App />);

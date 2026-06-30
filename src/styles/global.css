@@ -813,6 +813,50 @@ input {
   justify-content: flex-end;
 }
 
+.station-task-panel.compact {
+  padding: 8px 10px;
+  gap: 5px;
+}
+
+.station-task-panel.compact .station-task-heading {
+  gap: 6px;
+}
+
+.station-task-panel.compact .station-task-heading h2 {
+  font-size: 0.78rem;
+}
+
+.station-task-panel.compact .station-task-body {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.station-task-panel.compact .station-task-body strong {
+  font-size: 0.9rem;
+}
+
+.station-task-panel.compact .station-task-body p {
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.station-task-panel.compact .station-task-meta {
+  gap: 6px;
+}
+
+.station-task-panel.compact .station-task-meta dt,
+.station-task-panel.compact .station-task-meta dd {
+  font-size: 0.74rem;
+}
+
+.station-task-panel.compact .station-task-actions button {
+  min-height: 34px;
+  padding: 0 8px;
+  font-size: 0.78rem;
+}
+
 .panel-heading {
   display: flex;
   align-items: center;
@@ -1079,6 +1123,18 @@ input {
 
   .station-task-actions button {
     width: 100%;
+  }
+
+  .station-task-panel.compact .station-task-body {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .station-task-panel.compact .station-task-actions {
+    justify-content: flex-end;
+  }
+
+  .station-task-panel.compact .station-task-actions button {
+    width: auto;
   }
 }
 
