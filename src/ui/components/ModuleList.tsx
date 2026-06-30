@@ -1,4 +1,5 @@
 import { Home } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { calculateModuleCost } from '../../game/economy';
 import { formatCredits } from '../../game/format';
 import { modules } from '../../game/content/modules';
@@ -21,17 +22,29 @@ export function ModuleList({ gameState, onBuyLevel }: ModuleListProps) {
           const canBuy = !locked && gameState.credits >= cost;
 
           return (
-            <li className="component-card" key={module.id}>
+            <motion.li
+              className="component-card"
+              key={module.id}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.22 }}
+            >
               <div>
                 <h3>{module.name}</h3>
                 <p>{module.role}</p>
                 <span>Уровень {level}</span>
               </div>
-              <button type="button" disabled={!canBuy} onClick={() => onBuyLevel(module.id)}>
+              <motion.button
+                type="button"
+                disabled={!canBuy}
+                onClick={() => onBuyLevel(module.id)}
+                whileTap={canBuy ? { scale: 0.94 } : undefined}
+                whileHover={canBuy ? { scale: 1.02 } : undefined}
+              >
                 <Home aria-hidden="true" size={16} />
                 {locked ? 'Закрыто' : formatCredits(cost)}
-              </button>
-            </li>
+              </motion.button>
+            </motion.li>
           );
         })}
       </ul>
