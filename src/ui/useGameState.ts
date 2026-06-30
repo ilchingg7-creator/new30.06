@@ -12,6 +12,7 @@ import {
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
 import type { GameState, ModuleId, PrestigeUpgradeId, WindowLightColor } from '../game/types';
 import { createLocalStoragePort, type StoragePort } from '../platform/storage';
+import { playSound, toggleMuted, isMuted } from '../platform/sound';
 import {
   createNoOpYandexPlatform,
   initYandexPlatform,
@@ -48,6 +49,8 @@ export interface UseGameStateResult {
   doubleOfflineReward(): Promise<void>;
   setWindowLightColor(color: WindowLightColor): void;
   buyPrestigeUpgrade(upgradeId: PrestigeUpgradeId): void;
+  toggleSound(): void;
+  soundMuted: boolean;
 }
 
 export function useGameState(
@@ -63,6 +66,7 @@ export function useGameState(
   const [dailyReward, setDailyReward] = useState<DailyLoginReward | null>(null);
   const [adPending, setAdPending] = useState(false);
   const [adsAvailable, setAdsAvailable] = useState(false);
+  const [soundMuted, setSoundMuted] = useState(() => isMuted());
 
   useEffect(() => {
     if (yandexPlatform) {
@@ -177,15 +181,25 @@ export function useGameState(
   }, [gameState]);
 
   const buyLevel = useCallback((moduleId: ModuleId) => {
+    let purchased = false;
+
     setGameState((current) => {
       const next = buyModuleLevel(current, moduleId);
 
       if (next !== current) {
+        purchased = true;
         setSelectedRoomId(moduleId);
       }
 
       return next;
     });
+
+    // Play sound outside the updater to avoid setState-in-render warnings.
+    if (purchased) {
+      playSound('purchase');
+    } else {
+      playSound('error');
+    }
   }, []);
 
   const selectRoom = useCallback(
@@ -197,14 +211,17 @@ export function useGameState(
 
   const renovateOrbit = useCallback(() => {
     setGameState((current) => performPrestige(current));
+    playSound('prestige');
   }, []);
 
   const dismissOfflineReward = useCallback(() => {
     setOfflineReward(null);
+    playSound('reward');
   }, []);
 
   const dismissDailyReward = useCallback(() => {
     setDailyReward(null);
+    playSound('click');
   }, []);
 
   // When the Yandex SDK is unavailable (local dev, other platforms), rewarded
@@ -318,7 +335,31 @@ export function useGameState(
   }, []);
 
   const buyUpgrade = useCallback((upgradeId: PrestigeUpgradeId) => {
-    setGameState((current) => buyPrestigeUpgrade(current, upgradeId));
+    let purchased = false;
+
+    setGameState((current) => {
+      const next = buyPrestigeUpgrade(current, upgradeId);
+
+      if (next !== current) {
+        purchased = true;
+      }
+
+      return next;
+    });
+
+    if (purchased) {
+      playSound('unlock');
+    } else {
+      playSound('error');
+    }
+  }, []);
+
+  const toggleSound = useCallback(() => {
+    const next = toggleMuted();
+    setSoundMuted(next);
+    if (!next) {
+      playSound('click');
+    }
   }, []);
 
   return {
@@ -339,6 +380,8 @@ export function useGameState(
     activateVipResident,
     doubleOfflineReward,
     setWindowLightColor,
-    buyPrestigeUpgrade: buyUpgrade
+    buyPrestigeUpgrade: buyUpgrade,
+    toggleSound,
+    soundMuted
   };
 }

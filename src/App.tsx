@@ -1,3 +1,4 @@
+import { Volume2, VolumeX } from 'lucide-react';
 import { useGameState } from './ui/useGameState';
 import { DesktopLayout } from './ui/layouts/DesktopLayout';
 import { MobileLayout } from './ui/layouts/MobileLayout';
@@ -16,7 +17,18 @@ export function App() {
     <main className="app-shell">
       <header className="app-title">
         <p className="eyebrow">Retro Soviet Space Cozy</p>
-        <h1>Космическая коммуналка</h1>
+        <div className="title-row">
+          <h1>Космическая коммуналка</h1>
+          <button
+            type="button"
+            className="sound-toggle"
+            onClick={game.toggleSound}
+            aria-label={game.soundMuted ? 'Включить звук' : 'Выключить звук'}
+            title={game.soundMuted ? 'Включить звук' : 'Выключить звук'}
+          >
+            {game.soundMuted ? <VolumeX aria-hidden="true" size={18} /> : <Volume2 aria-hidden="true" size={18} />}
+          </button>
+        </div>
       </header>
       <div className="desktop-only">
         <DesktopLayout game={game} />
