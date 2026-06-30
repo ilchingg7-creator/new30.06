@@ -41,3 +41,120 @@ input {
   font-size: 0.85rem;
   font-weight: 700;
 }
+
+.game-panel {
+  width: min(100%, 840px);
+  background: var(--color-warm-panel);
+  color: var(--color-ink);
+  border: 2px solid rgb(39 49 63 / 18%);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  padding: 24px;
+}
+
+.game-header h1 {
+  margin: 0 0 20px;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.resource-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 24px;
+}
+
+.resource-row div {
+  min-width: 0;
+  background: var(--color-soft-white);
+  border: 1px solid rgb(39 49 63 / 14%);
+  border-radius: var(--radius-control);
+  padding: 12px;
+}
+
+.resource-row dt {
+  margin-bottom: 4px;
+  color: var(--color-utility-blue);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.resource-row dd {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.module-section h2 {
+  margin: 0 0 12px;
+}
+
+.module-list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.module-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  background: var(--color-soft-white);
+  border: 1px solid rgb(39 49 63 / 14%);
+  border-radius: var(--radius-control);
+  padding: 12px;
+}
+
+.module-item h3,
+.module-item p {
+  margin: 0 0 4px;
+}
+
+.module-item span {
+  color: var(--color-utility-blue);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.module-item button {
+  min-height: 44px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-signal-red);
+  color: var(--color-soft-white);
+  font-weight: 800;
+  padding: 0 16px;
+}
+
+.module-item button:disabled {
+  background: var(--color-utility-blue);
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    align-items: start;
+    padding: 12px;
+  }
+
+  .game-panel {
+    padding: 16px;
+  }
+
+  .game-header h1 {
+    font-size: 2rem;
+  }
+
+  .resource-row {
+    grid-template-columns: 1fr;
+  }
+
+  .module-item {
+    grid-template-columns: 1fr;
+  }
+}
