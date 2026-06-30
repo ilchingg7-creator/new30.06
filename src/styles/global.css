@@ -714,6 +714,41 @@ input {
   padding: 12px;
 }
 
+.component-info {
+  min-width: 0;
+}
+
+.milestone-progress {
+  margin-top: 8px;
+}
+
+.milestone-bar {
+  height: 6px;
+  background: rgb(39 49 63 / 18%);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.milestone-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-lamp-amber), var(--color-signal-red));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.milestone-label {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-utility-blue);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.milestone-mult {
+  color: var(--color-lamp-amber);
+  font-weight: 800;
+}
+
 .component-card h3,
 .component-card p,
 .panel-copy {

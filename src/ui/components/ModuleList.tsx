@@ -10,15 +10,25 @@ interface ModuleListProps {
   onBuyLevel(moduleId: ModuleId): void;
 }
 
-function getNextMilestone(level: number): { level: number; multiplier: number } | null {
-  const milestones = [
-    { level: 10, multiplier: 2 },
-    { level: 25, multiplier: 2 },
-    { level: 50, multiplier: 3 },
-    { level: 100, multiplier: 4 }
-  ];
+interface Milestone {
+  level: number;
+  multiplier: number;
+}
 
-  return milestones.find((milestone) => level < milestone.level) ?? null;
+const MILESTONES: Milestone[] = [
+  { level: 10, multiplier: 2 },
+  { level: 25, multiplier: 2 },
+  { level: 50, multiplier: 3 },
+  { level: 100, multiplier: 4 }
+];
+
+function getNextMilestone(level: number): Milestone | null {
+  return MILESTONES.find((milestone) => level < milestone.level) ?? null;
+}
+
+function getPreviousMilestoneLevel(level: number): number {
+  const previous = [...MILESTONES].reverse().find((milestone) => level >= milestone.level);
+  return previous?.level ?? 0;
 }
 
 function buildModuleTooltip(moduleId: ModuleId, state: GameState): string {
@@ -45,6 +55,41 @@ function buildModuleTooltip(moduleId: ModuleId, state: GameState): string {
   return lines.join('\n');
 }
 
+function MilestoneProgress({ level }: { level: number }) {
+  const next = getNextMilestone(level);
+
+  if (!next) {
+    return (
+      <div className="milestone-progress">
+        <div className="milestone-bar">
+          <div className="milestone-fill" style={{ width: '100%' }} />
+        </div>
+        <small className="milestone-label">Все milestones получены</small>
+      </div>
+    );
+  }
+
+  const prevLevel = getPreviousMilestoneLevel(level);
+  const range = next.level - prevLevel;
+  const progress = Math.min(100, Math.max(0, ((level - prevLevel) / range) * 100));
+
+  return (
+    <div className="milestone-progress">
+      <div className="milestone-bar">
+        <motion.div
+          className="milestone-fill"
+          initial={{ width: 0 }}
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.3 }}
+        />
+      </div>
+      <small className="milestone-label">
+        ур. {level} → {next.level} <span className="milestone-mult">×{next.multiplier}</span>
+      </small>
+    </div>
+  );
+}
+
 export function ModuleList({ gameState, onBuyLevel }: ModuleListProps) {
   return (
     <section className="panel module-panel" aria-labelledby="module-panel-title">
@@ -65,10 +110,11 @@ export function ModuleList({ gameState, onBuyLevel }: ModuleListProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.22 }}
             >
-              <div>
+              <div className="component-info">
                 <h3>{module.name}</h3>
                 <p>{module.role}</p>
                 <span>Уровень {level}</span>
+                {!locked && <MilestoneProgress level={level} />}
               </div>
               <motion.button
                 type="button"
