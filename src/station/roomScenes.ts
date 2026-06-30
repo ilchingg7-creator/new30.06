@@ -176,18 +176,29 @@ function addTierProps(props: RoomSceneProp[], tier: RoomDetailTier, accentColor:
     return props;
   }
 
-  const nextProps = [...props, { kind: 'lamp' as const, x: 238, y: 150, color: stationTheme.lampAmber }];
+  // Working tier: first extra lamp + a side patch.
+  const nextProps = [
+    ...props,
+    { kind: 'lamp' as const, x: 238, y: 150, color: stationTheme.lampAmber },
+    { kind: 'patch' as const, x: 568, y: 330, color: stationTheme.enamelGreen }
+  ];
 
+  // Cozy tier: warmer accent lamp + a decorative ceiling patch.
   if (tier === 'cozy' || tier === 'busy' || tier === 'complete') {
-    nextProps.push({ kind: 'patch', x: 568, y: 330, color: stationTheme.enamelGreen });
+    nextProps.push({ kind: 'lamp' as const, x: 600, y: 180, color: accentColor });
+    nextProps.push({ kind: 'patch' as const, x: 340, y: 110, color: stationTheme.warmPanel });
   }
 
+  // Busy tier: extra work lamp + second side patch for density.
   if (tier === 'busy' || tier === 'complete') {
-    nextProps.push({ kind: 'lamp', x: 600, y: 180, color: accentColor });
+    nextProps.push({ kind: 'lamp' as const, x: 148, y: 200, color: stationTheme.lampAmber });
+    nextProps.push({ kind: 'patch' as const, x: 690, y: 300, color: accentColor });
   }
 
+  // Complete tier: premium ceiling detail + final accent patch.
   if (tier === 'complete') {
-    nextProps.push({ kind: 'patch', x: 420, y: 118, color: stationTheme.softWhite });
+    nextProps.push({ kind: 'patch' as const, x: 420, y: 118, color: stationTheme.softWhite });
+    nextProps.push({ kind: 'lamp' as const, x: 740, y: 140, color: stationTheme.lampAmber });
   }
 
   return nextProps;
@@ -201,6 +212,24 @@ export function createRoomSceneDescriptor(gameState: GameState, selectedRoomId: 
   const windowLight = resolveWindowLightColor(gameState);
   const props = addTierProps(createBaseProps(moduleId, accentColor), tier, accentColor);
 
+  const ambientLights: RoomSceneDescriptor['ambientLights'] = [
+    { x: 660, y: 132, radius: tier === 'locked' ? 12 : 22, color: windowLight },
+    { x: 420, y: 246, radius: tier === 'complete' ? 28 : 18, color: accentColor }
+  ];
+
+  // Higher tiers get additional ambient light sources for a warmer, busier feel.
+  if (tier === 'cozy' || tier === 'busy' || tier === 'complete') {
+    ambientLights.push({ x: 238, y: 150, radius: 14, color: windowLight });
+  }
+
+  if (tier === 'busy' || tier === 'complete') {
+    ambientLights.push({ x: 600, y: 180, radius: 16, color: accentColor });
+  }
+
+  if (tier === 'complete') {
+    ambientLights.push({ x: 148, y: 200, radius: 12, color: windowLight });
+  }
+
   return {
     moduleId,
     name: getModuleName(moduleId),
@@ -208,10 +237,7 @@ export function createRoomSceneDescriptor(gameState: GameState, selectedRoomId: 
     tier,
     accentColor,
     props,
-    ambientLights: [
-      { x: 660, y: 132, radius: tier === 'locked' ? 12 : 22, color: windowLight },
-      { x: 420, y: 246, radius: tier === 'complete' ? 28 : 18, color: accentColor }
-    ]
+    ambientLights
   };
 }
 
