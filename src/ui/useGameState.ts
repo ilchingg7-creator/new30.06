@@ -10,7 +10,8 @@ import {
   createInitialState
 } from '../game/economy';
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
-import type { GameState, ModuleId, PrestigeUpgradeId, WindowLightColor } from '../game/types';
+import type { ActiveResidentStory, GameState, ModuleId, PrestigeUpgradeId, WindowLightColor } from '../game/types';
+import { getActiveResidentStory } from '../game/residentStories';
 import {
   acceptVisitor,
   declineVisitor,
@@ -61,6 +62,9 @@ export interface UseGameStateResult {
   declineVisitor(): void;
   resetSave(): void;
   clickRoom(): void;
+  activeStory: ActiveResidentStory | null;
+  storyDismissed: boolean;
+  dismissStory(): void;
 }
 
 export function useGameState(
@@ -77,6 +81,7 @@ export function useGameState(
   const [adPending, setAdPending] = useState(false);
   const [adsAvailable, setAdsAvailable] = useState(false);
   const [soundMuted, setSoundMuted] = useState(() => isMuted());
+  const [storyDismissed, setStoryDismissed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -207,6 +212,14 @@ export function useGameState(
 
   useEffect(() => {
     setSelectedRoomId((current) => resolveSelectedRoomId(gameState, current));
+
+    // Reset the story-dismissed flag when the active story changes so a
+    // new story can pop up again.
+    const story = getActiveResidentStory(gameState);
+
+    if (!story) {
+      setStoryDismissed(false);
+    }
   }, [gameState]);
 
   const buyLevel = useCallback((moduleId: ModuleId) => {
@@ -466,6 +479,9 @@ export function useGameState(
     acceptVisitor: handleAcceptVisitor,
     declineVisitor: handleDeclineVisitor,
     resetSave,
-    clickRoom
+    clickRoom,
+    activeStory: storyDismissed ? null : getActiveResidentStory(gameState),
+    storyDismissed,
+    dismissStory: useCallback(() => setStoryDismissed(true), [])
   };
 }

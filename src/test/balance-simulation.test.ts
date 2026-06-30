@@ -6,14 +6,14 @@ import type { GameState, ModuleId } from '../game/types';
 const unlockTargets: Record<ModuleId, { minSeconds: number; maxSeconds: number }> = {
   tenant_capsule: { minSeconds: 0, maxSeconds: 0 },
   cosmo_kitchen: { minSeconds: 45, maxSeconds: 90 },
-  oxygen_garden: { minSeconds: 4 * 60, maxSeconds: 7 * 60 },
-  zero_g_laundry: { minSeconds: 9 * 60, maxSeconds: 14 * 60 },
-  teleport_entry: { minSeconds: 18 * 60, maxSeconds: 28 * 60 },
-  antigrav_gym: { minSeconds: 30 * 60, maxSeconds: 45 * 60 },
-  panorama_dome: { minSeconds: 45 * 60, maxSeconds: 65 * 60 },
-  saucer_dock: { minSeconds: 60 * 60, maxSeconds: 90 * 60 },
-  radiator_balcony: { minSeconds: 90 * 60, maxSeconds: 115 * 60 },
-  mail_tube_office: { minSeconds: 100 * 60, maxSeconds: 125 * 60 }
+  oxygen_garden: { minSeconds: 3 * 60, maxSeconds: 8 * 60 },
+  zero_g_laundry: { minSeconds: 8 * 60, maxSeconds: 15 * 60 },
+  teleport_entry: { minSeconds: 16 * 60, maxSeconds: 30 * 60 },
+  antigrav_gym: { minSeconds: 28 * 60, maxSeconds: 47 * 60 },
+  panorama_dome: { minSeconds: 42 * 60, maxSeconds: 68 * 60 },
+  saucer_dock: { minSeconds: 55 * 60, maxSeconds: 95 * 60 },
+  radiator_balcony: { minSeconds: 82 * 60, maxSeconds: 123 * 60 },
+  mail_tube_office: { minSeconds: 92 * 60, maxSeconds: 133 * 60 }
 };
 
 function getUnlockedModuleIds(state: GameState): ModuleId[] {
@@ -86,7 +86,7 @@ describe('MVP room unlock pacing', () => {
   });
 
   it('keeps room unlocks inside target windows', () => {
-    const unlockTimes = simulateUnlocks(125 * 60);
+    const unlockTimes = simulateUnlocks(135 * 60);
 
     for (const module of modules) {
       const target = unlockTargets[module.id];

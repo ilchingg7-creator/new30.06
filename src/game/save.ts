@@ -64,6 +64,15 @@ const VALID_ACHIEVEMENT_IDS = new Set([
   'daily_streak_7'
 ]);
 
+const VALID_STORY_IDS = new Set([
+  'engineer_quiet_capsule',
+  'cook_working_kitchen',
+  'gardener_first_plant',
+  'sock_master_laundry_upgrade',
+  'courier_teleport_traffic',
+  'cosmonaut_warm_start'
+]);
+
 function hasOptionalWindowLightColor(value: unknown): boolean {
   return value === undefined || (typeof value === 'string' && VALID_WINDOW_LIGHT_COLORS.has(value));
 }
@@ -82,6 +91,14 @@ function hasOptionalAchievements(value: unknown): boolean {
   }
 
   return isStringArray(value) && value.every((id) => VALID_ACHIEVEMENT_IDS.has(id));
+}
+
+function hasOptionalStories(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  return isStringArray(value) && value.every((id) => VALID_STORY_IDS.has(id));
 }
 
 function hasOptionalNumber(value: unknown): boolean {
@@ -143,7 +160,8 @@ function isGameStateShape(value: unknown): value is GameState {
     hasOptionalPrestigeUpgrades(value.purchasedPrestigeUpgrades) &&
     hasOptionalNumber(value.lastLoginDay) &&
     hasOptionalNumber(value.dailyStreak) &&
-    hasOptionalAchievements(value.unlockedAchievements)
+    hasOptionalAchievements(value.unlockedAchievements) &&
+    hasOptionalStories(value.completedStories)
   );
 }
 

@@ -3,6 +3,7 @@ import { modules } from './content/modules';
 import { prestigeUpgrades } from './content/prestigeUpgrades';
 import { completeEligibleGoals } from './goals';
 import { checkResidentUnlocks } from './residents';
+import { checkResidentStories } from './residentStories';
 import type { GameState, ModuleId, ModuleLevels, PrestigeUpgradeId, TimedBonus } from './types';
 
 export const LEVEL_COST_GROWTH = 1.18;
@@ -118,7 +119,7 @@ export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState 
     totalModulesBought: (state.totalModulesBought ?? 0) + 1
   };
 
-  return checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)));
+  return checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))));
 }
 
 export function advanceGame(state: GameState, seconds: number, now = Date.now()): GameState {
@@ -133,7 +134,7 @@ export function advanceGame(state: GameState, seconds: number, now = Date.now())
     totalPlaySeconds: (state.totalPlaySeconds ?? 0) + elapsedSeconds
   };
 
-  return checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)));
+  return checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))));
 }
 
 export function calculateOfflineReward(
@@ -174,7 +175,7 @@ export function performPrestige(state: GameState, now = Date.now()): GameState {
     prestigeCount: (state.prestigeCount ?? 0) + 1
   };
 
-  return checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)));
+  return checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))));
 }
 
 export function buyPrestigeUpgrade(state: GameState, upgradeId: PrestigeUpgradeId): GameState {
@@ -190,11 +191,11 @@ export function buyPrestigeUpgrade(state: GameState, upgradeId: PrestigeUpgradeI
     return state;
   }
 
-  return checkResidentUnlocks(checkAchievements({
+  return checkResidentStories(checkResidentUnlocks(checkAchievements({
     ...state,
     reputation: state.reputation - upgrade.reputationCost,
     purchasedPrestigeUpgrades: [...owned, upgradeId]
-  }));
+  })));
 }
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1_000;
@@ -243,7 +244,7 @@ export function checkDailyLogin(state: GameState, now = Date.now()): DailyLoginR
   };
 
   return {
-    state: checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))),
+    state: checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)))),
     reward,
     streak: nextStreak
   };

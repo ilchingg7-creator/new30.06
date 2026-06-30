@@ -156,6 +156,13 @@ export interface Translation {
   // About (replaced)
   aboutHint1: string;
   aboutHint2: string;
+  // Resident stories
+  storyTitle: string;
+  storyProgress: string;
+  storyReward: string;
+  storyComplete: string;
+  storyGotoRoom: string;
+  stories: Record<string, { title: string; request: string; complete: string }>;
   // Format helpers
   perSecond: string;
   // Game content (modules, residents, goals, achievements, prestige
@@ -308,6 +315,43 @@ const ru: Translation = {
   rewardType: 'Тип награды',
   aboutHint1: 'Кликайте по комнате — каждый клик даёт копейки. Развивайте станцию, заселяйте жильцов и делайте реновацию орбиты!',
   aboutHint2: 'Спасибо за игру! Ваша обратная связь помогает делать коммуналку уютнее.',
+  storyTitle: 'Просьба жильца',
+  storyProgress: 'Прогресс',
+  storyReward: 'Награда',
+  storyComplete: 'История завершена!',
+  storyGotoRoom: 'Перейти к комнате',
+  stories: {
+    engineer_quiet_capsule: {
+      title: 'Сонный инженер просит тишины',
+      request: '«Соседи слишком шумят. Поднимите капсулу до 15 уровня — поставлю звукоизоляцию.»',
+      complete: 'Сонный инженер доволен тишиной. +2 комфорта!'
+    },
+    cook_working_kitchen: {
+      title: 'Повару нужна рабочая кухня',
+      request: '«Плита еле греет. Космо-кухня 20 уровня — и я накормлю всю станцию.»',
+      complete: 'Повар с туманной планеты счастлив. +3 комфорта!'
+    },
+    gardener_first_plant: {
+      title: 'Садовник ждёт первого ростка',
+      request: '«Мои семена не прорастут без хорошего сада. Кислородный сад до 10 уровня, пожалуйста.»',
+      complete: 'Первый росток выжил! Садовник вакуума улыбается. +3 комфорта!'
+    },
+    sock_master_laundry_upgrade: {
+      title: 'Мастер носков требует порядок',
+      request: '«Носки летают повсюду! Прачечная 25 уровня — и я наведу порядок.»',
+      complete: 'Все носки пойманы. Мастер носков гордится. +5 комфорта!'
+    },
+    courier_teleport_traffic: {
+      title: 'Курьеру нужен поток',
+      request: '«Телеппорт еле работает. 15 уровень — и посылки полетят сами!»',
+      complete: 'Телепорт гудит от traffic. Курьер доволен. +4 комфорта!'
+    },
+    cosmonaut_warm_start: {
+      title: 'Сосед-космонавт просит тепла',
+      request: '«После реновации тут холодно. Поднимите капсулу до 10 уровня — и я согреюсь.»',
+      complete: 'Сосед-отставной космонавт отогрелся. +3 комфорта!'
+    }
+  },
   perSecond: '/сек',
   content: {
     modules: {
@@ -600,6 +644,43 @@ const en: Translation = {
   rewardType: 'Reward type',
   aboutHint1: 'Click the room — every click gives kopeks. Develop the station, settle residents and renovate the orbit!',
   aboutHint2: 'Thanks for playing! Your feedback helps make the communalka cozier.',
+  storyTitle: 'Resident Request',
+  storyProgress: 'Progress',
+  storyReward: 'Reward',
+  storyComplete: 'Story complete!',
+  storyGotoRoom: 'Go to room',
+  stories: {
+    engineer_quiet_capsule: {
+      title: 'Sleepy Engineer wants quiet',
+      request: '"The neighbors are too loud. Get the capsule to level 15 and I will install soundproofing."',
+      complete: 'Sleepy Engineer enjoys the silence. +2 comfort!'
+    },
+    cook_working_kitchen: {
+      title: 'Cook needs a working kitchen',
+      request: '"The stove barely heats. Get the kitchen to level 20 and I will feed the whole station."',
+      complete: 'The Mist Cook is happy. +3 comfort!'
+    },
+    gardener_first_plant: {
+      title: 'Gardener waits for the first sprout',
+      request: '"My seeds will not grow without a proper garden. Get the oxygen garden to level 10, please."',
+      complete: 'The first sprout survived! Vacuum Gardener smiles. +3 comfort!'
+    },
+    sock_master_laundry_upgrade: {
+      title: 'Sock Master demands order',
+      request: '"Socks are flying everywhere! Get the laundry to level 25 and I will sort them out."',
+      complete: 'All socks caught. Sock Master is proud. +5 comfort!'
+    },
+    courier_teleport_traffic: {
+      title: 'Courier needs traffic',
+      request: '"The teleport barely works. Level 15 and the parcels will fly themselves!"',
+      complete: 'The teleport hums with traffic. Courier is pleased. +4 comfort!'
+    },
+    cosmonaut_warm_start: {
+      title: 'Cosmonaut neighbor asks for warmth',
+      request: '"It is cold here after renovation. Get the capsule to level 10 and I will warm up."',
+      complete: 'Retired Cosmonaut warmed up. +3 comfort!'
+    }
+  },
   perSecond: '/sec',
   content: {
     modules: {

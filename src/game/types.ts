@@ -66,13 +66,52 @@ export interface VisitorRequest {
   cost: number;
   rewardComfort: number;
   expiresAt: number;
-  /**
-   * Template key used to look up localized name/flavor in
-   * `t.content.visitors[template]`. One of 'courier' | 'trader' |
-   * 'mechanic' | 'tourist'. Optional so older saves (which predate the
-   * field) still parse; the UI falls back to the stored `name`/`flavor`.
-   */
   template?: string;
+}
+
+/**
+ * Identifies a resident story — a state-derived cozy-comedy moment where a
+ * resident asks the player to improve their room or station. Each story
+ * fires once per save (tracked in `completedStories`).
+ */
+export type ResidentStoryId =
+  | 'engineer_quiet_capsule'
+  | 'cook_working_kitchen'
+  | 'gardener_first_plant'
+  | 'sock_master_laundry_upgrade'
+  | 'courier_teleport_traffic'
+  | 'cosmonaut_warm_start';
+
+/**
+ * A resident story definition. The story becomes active when:
+ * 1. The resident is unlocked.
+ * 2. The story is not in `completedStories`.
+ * 3. The trigger condition is met (e.g. room level >= triggerLevel).
+ *
+ * The story completes when the requirement is met (e.g. room level >=
+ * requiredLevel). The reward is comfort + flavor.
+ */
+export interface ResidentStoryDefinition {
+  id: ResidentStoryId;
+  residentId: ResidentId;
+  /** Room the story is tied to (for visual focus). */
+  roomId: ModuleId;
+  /** Room level at which the story triggers (resident notices a problem). */
+  triggerLevel: number;
+  /** Room level required to complete the story. */
+  requiredLevel: number;
+  /** Comfort reward on completion. */
+  rewardComfort: number;
+}
+
+/** An active resident story instance (derived from GameState, not persisted). */
+export interface ActiveResidentStory {
+  id: ResidentStoryId;
+  residentId: ResidentId;
+  roomId: ModuleId;
+  currentLevel: number;
+  requiredLevel: number;
+  rewardComfort: number;
 }
 
 export type AchievementId =
@@ -144,6 +183,8 @@ export interface GameState {
   prestigeCount?: number;
   /** Active visitor request, if any. Cleared on accept/decline/expire. */
   activeVisitor?: VisitorRequest | null;
+  /** Completed resident story IDs. Each story fires once per save. */
+  completedStories?: ResidentStoryId[];
   /**
    * Save schema version. Injected by `serializeGameState` and validated by
    * `parseGameState`. Not set on fresh in-memory states created by
