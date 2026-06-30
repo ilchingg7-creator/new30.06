@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
 import { translations } from '../platform/i18n';
@@ -61,6 +62,32 @@ describe('responsive layout rendering', () => {
 
     expect(container.querySelector('.desktop-layout')).toBeNull();
     expect(container.querySelector('.mobile-layout')).not.toBeNull();
+  });
+
+  it('uses a compact single settings button in the mobile header', async () => {
+    setViewportWidth(390);
+    render(<App />);
+
+    await screen.findAllByText(t.content.modules.tenant_capsule.name);
+
+    expect(screen.queryByRole('heading', { name: t.appTitle })).toBeNull();
+    expect(screen.getByRole('button', { name: t.settings })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: t.howToPlay })).toBeNull();
+    expect(screen.queryByRole('button', { name: t.soundOff })).toBeNull();
+    expect(screen.queryByRole('button', { name: t.soundOn })).toBeNull();
+  });
+
+  it('moves help and sound controls into the mobile settings dialog', async () => {
+    const user = userEvent.setup();
+    setViewportWidth(390);
+    render(<App />);
+
+    await screen.findAllByText(t.content.modules.tenant_capsule.name);
+    await user.click(screen.getByRole('button', { name: t.settings }));
+
+    expect(screen.getByRole('dialog', { name: t.settingsTitle })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: t.howToPlay })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: t.soundOff })).toBeInTheDocument();
   });
 
   it('uses the CSS media query result when browser mobile emulation changes layout viewport', async () => {

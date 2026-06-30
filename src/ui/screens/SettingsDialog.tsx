@@ -1,16 +1,28 @@
-import { Info, RotateCcw, Settings, X } from 'lucide-react';
+import { HelpCircle, Info, RotateCcw, Settings, Volume2, VolumeX, X } from 'lucide-react';
 import { useState } from 'react';
 import type { Language, Translation } from '../../platform/i18n';
 
 interface SettingsDialogProps {
   onClose(): void;
+  onOpenHelp?(): void;
   onResetSave(): void;
+  onToggleSound?(): void;
+  soundMuted?: boolean;
   t: Translation;
   language: Language;
   onLanguageChange(lang: Language): void;
 }
 
-export function SettingsDialog({ onClose, onResetSave, t, language, onLanguageChange }: SettingsDialogProps) {
+export function SettingsDialog({
+  onClose,
+  onOpenHelp,
+  onResetSave,
+  onToggleSound,
+  soundMuted = false,
+  t,
+  language,
+  onLanguageChange
+}: SettingsDialogProps) {
   const [confirmReset, setConfirmReset] = useState(false);
 
   const handleReset = () => {
@@ -35,6 +47,33 @@ export function SettingsDialog({ onClose, onResetSave, t, language, onLanguageCh
             <X aria-hidden="true" size={18} />
           </button>
         </header>
+
+        {(onOpenHelp || onToggleSound) && (
+          <div className="settings-section">
+            <h3>
+              <Settings aria-hidden="true" size={16} /> {t.settings}
+            </h3>
+            <div className="settings-action-list">
+              {onOpenHelp && (
+                <button type="button" className="settings-action" onClick={onOpenHelp}>
+                  <HelpCircle aria-hidden="true" size={16} />
+                  {t.howToPlay}
+                </button>
+              )}
+              {onToggleSound && (
+                <button
+                  type="button"
+                  className="settings-action"
+                  onClick={onToggleSound}
+                  aria-label={soundMuted ? t.soundOn : t.soundOff}
+                >
+                  {soundMuted ? <VolumeX aria-hidden="true" size={16} /> : <Volume2 aria-hidden="true" size={16} />}
+                  {soundMuted ? t.soundOn : t.soundOff}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="settings-section">
           <h3>

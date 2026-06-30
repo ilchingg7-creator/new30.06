@@ -90,16 +90,18 @@ export function App() {
     <main className="app-shell">
       <header className="app-title">
         <div className="title-row">
-          <h1>{t.appTitle}</h1>
-          <button
-            type="button"
-            className="sound-toggle"
-            onClick={() => setShowHelp(true)}
-            aria-label={t.howToPlay}
-            title={t.howToPlay}
-          >
-            <HelpCircle aria-hidden="true" size={18} />
-          </button>
+          {!isMobileViewport && <h1>{t.appTitle}</h1>}
+          {!isMobileViewport && (
+            <button
+              type="button"
+              className="sound-toggle"
+              onClick={() => setShowHelp(true)}
+              aria-label={t.howToPlay}
+              title={t.howToPlay}
+            >
+              <HelpCircle aria-hidden="true" size={18} />
+            </button>
+          )}
           <button
             type="button"
             className="sound-toggle"
@@ -109,15 +111,17 @@ export function App() {
           >
             <Settings aria-hidden="true" size={18} />
           </button>
-          <button
-            type="button"
-            className="sound-toggle"
-            onClick={game.toggleSound}
-            aria-label={game.soundMuted ? t.soundOn : t.soundOff}
-            title={game.soundMuted ? t.soundOn : t.soundOff}
-          >
-            {game.soundMuted ? <VolumeX aria-hidden="true" size={18} /> : <Volume2 aria-hidden="true" size={18} />}
-          </button>
+          {!isMobileViewport && (
+            <button
+              type="button"
+              className="sound-toggle"
+              onClick={game.toggleSound}
+              aria-label={game.soundMuted ? t.soundOn : t.soundOff}
+              title={game.soundMuted ? t.soundOn : t.soundOff}
+            >
+              {game.soundMuted ? <VolumeX aria-hidden="true" size={18} /> : <Volume2 aria-hidden="true" size={18} />}
+            </button>
+          )}
         </div>
       </header>
       {isMobileViewport ? (
@@ -157,7 +161,13 @@ export function App() {
       {showSettings && (
         <SettingsDialog
           onClose={() => setShowSettings(false)}
+          onOpenHelp={() => {
+            setShowSettings(false);
+            setShowHelp(true);
+          }}
           onResetSave={game.resetSave}
+          onToggleSound={game.toggleSound}
+          soundMuted={game.soundMuted}
           t={t}
           language={language}
           onLanguageChange={changeLanguage}
