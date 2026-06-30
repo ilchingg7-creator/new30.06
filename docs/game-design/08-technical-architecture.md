@@ -39,7 +39,7 @@ React renders:
 ## Data Flow
 
 ```text
-GameState -> React layouts -> PixiStationScene props -> stationScene renderer
+GameState + selectedRoomId -> React layouts -> PixiStationScene props -> roomScenes renderer
 ```
 
 The Pixi scene receives plain data and never mutates game economy. It may emit UI-level interaction events later, such as `onModuleSelect(moduleId)`, but purchase logic remains in React/domain code.
