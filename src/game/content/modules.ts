@@ -48,7 +48,7 @@ export const modules: ModuleDefinition[] = [
     baseCost: 90000,
     baseIncomePerSecond: 650,
     comfortBonus: 4,
-    unlockAtCredits: 85000,
+    unlockAtCredits: 88000,
     visualKey: 'blue-teleport'
   },
   {
@@ -78,7 +78,7 @@ export const modules: ModuleDefinition[] = [
     baseCost: 6000000,
     baseIncomePerSecond: 23000,
     comfortBonus: 12,
-    unlockAtCredits: 10000000,
+    unlockAtCredits: 12000000,
     visualKey: 'saucer-dock'
   },
   {
@@ -88,7 +88,7 @@ export const modules: ModuleDefinition[] = [
     baseCost: 18000000,
     baseIncomePerSecond: 60000,
     comfortBonus: 15,
-    unlockAtCredits: 100000000,
+    unlockAtCredits: 115000000,
     visualKey: 'radiator-balcony'
   },
   {

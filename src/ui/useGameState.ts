@@ -237,6 +237,11 @@ export function useGameState(
 
       setGameState((current) => ({
         ...current,
+        // Mark the VIP resident as permanently unlocked when first activated
+        // via rewarded ad, while the timed bonus still expires.
+        unlockedResidents: current.unlockedResidents.includes('vip_astroteenant')
+          ? current.unlockedResidents
+          : [...current.unlockedResidents, 'vip_astroteenant'],
         timedBonuses: [
           ...current.timedBonuses,
           {

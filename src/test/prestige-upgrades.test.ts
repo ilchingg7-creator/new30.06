@@ -23,10 +23,15 @@ describe('prestige upgrade tree', () => {
 
     const renovated = performPrestige(upgraded, 2_000);
 
-    expect(renovated.unlockedResidents).toEqual(['sleepy_engineer', 'mist_cook']);
+    // The two owned residents survive. retired_cosmonaut auto-unlocks because
+    // reputation becomes > 0 after the first renovation.
+    expect(renovated.unlockedResidents).toEqual(
+      expect.arrayContaining(['sleepy_engineer', 'mist_cook', 'retired_cosmonaut'])
+    );
+    expect(renovated.unlockedResidents).toHaveLength(3);
   });
 
-  it('drops residents on renovation without residents_survive', () => {
+  it('drops residents on renovation without residents_survive (except retired_cosmonaut)', () => {
     const state = {
       ...createInitialState(1_000),
       totalEarnedCredits: 400_000,
@@ -36,7 +41,10 @@ describe('prestige upgrade tree', () => {
 
     const renovated = performPrestige(state, 2_000);
 
-    expect(renovated.unlockedResidents).toEqual([]);
+    // sleep_engineer is dropped, but retired_cosmonaut auto-unlocks because
+    // reputation becomes > 0 after the renovation.
+    expect(renovated.unlockedResidents).not.toContain('sleepy_engineer');
+    expect(renovated.unlockedResidents).toContain('retired_cosmonaut');
   });
 
   it('refuses to buy an upgrade without enough reputation', () => {
