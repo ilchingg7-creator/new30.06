@@ -47,6 +47,9 @@ describe('station director guidance', () => {
     const guidance = getStationGuidance({ state, incomePerSecond: 5 });
 
     expect(guidance.kind).toBe('goal');
+    if (guidance.kind !== 'goal') {
+      throw new Error(`Expected goal guidance, got ${guidance.kind}`);
+    }
     expect(guidance.goalId).toBe('buy_capsule_10');
     expect(guidance.targetRoomId).toBe('tenant_capsule');
     expect(guidance.progressCurrent).toBe(9);
@@ -62,6 +65,9 @@ describe('station director guidance', () => {
     const guidance = getStationGuidance({ state, incomePerSecond: 0 });
 
     expect(guidance.kind).toBe('module');
+    if (guidance.kind !== 'module') {
+      throw new Error(`Expected module guidance, got ${guidance.kind}`);
+    }
     expect(guidance.moduleId).toBe('tenant_capsule');
     expect(guidance.targetRoomId).toBe('tenant_capsule');
     expect(guidance.canAfford).toBe(true);
@@ -77,6 +83,9 @@ describe('station director guidance', () => {
     const guidance = getStationGuidance({ state, incomePerSecond: 2 });
 
     expect(guidance.kind).toBe('module');
+    if (guidance.kind !== 'module') {
+      throw new Error(`Expected module guidance, got ${guidance.kind}`);
+    }
     expect(guidance.canAfford).toBe(false);
     expect(guidance.waitSeconds).toBeGreaterThan(0);
     expect(Number.isFinite(guidance.waitSeconds)).toBe(true);
@@ -91,6 +100,9 @@ describe('station director guidance', () => {
     const guidance = getStationGuidance({ state, incomePerSecond: 0 });
 
     expect(guidance.kind).toBe('module');
+    if (guidance.kind !== 'module') {
+      throw new Error(`Expected module guidance, got ${guidance.kind}`);
+    }
     expect(guidance.canAfford).toBe(false);
     expect(guidance.waitSeconds).toBeNull();
   });
@@ -104,6 +116,9 @@ describe('station director guidance', () => {
     const guidance = getStationGuidance({ state, incomePerSecond: 10 });
 
     expect(guidance.kind).toBe('prestige');
+    if (guidance.kind !== 'prestige') {
+      throw new Error(`Expected prestige guidance, got ${guidance.kind}`);
+    }
     expect(guidance.canRenovate).toBe(true);
     expect(guidance.expectedReputation).toBe(1);
   });
