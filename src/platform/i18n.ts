@@ -16,6 +16,27 @@ export interface Translation {
   statistics: string;
   cosmetics: string;
   prestigeUpgrades: string;
+  // Station Director
+  currentTask: string;
+  taskVisitorTitle: string;
+  taskVisitorBody: string;
+  taskDailyTitle: string;
+  taskDailyBody: string;
+  taskGoalTitle: string;
+  taskGoalBody: string;
+  taskModuleBuyTitle: string;
+  taskModuleBuyBody: string;
+  taskModuleWaitTitle: string;
+  taskModuleWaitBody: string;
+  taskModuleUnlockTitle: string;
+  taskModuleUnlockBody: string;
+  taskPrestigeTitle: string;
+  taskPrestigeBody: string;
+  taskSelectRoom: string;
+  taskRenovate: string;
+  taskCost: string;
+  taskWait: string;
+  taskProgress: string;
   // Module list
   level: string;
   closed: string;
@@ -164,6 +185,26 @@ const ru: Translation = {
   statistics: 'Статистика',
   cosmetics: 'Косметика станции',
   prestigeUpgrades: 'Улучшения реновации',
+  currentTask: 'Текущая задача',
+  taskVisitorTitle: 'Принять гостя станции',
+  taskVisitorBody: 'Гость даст комфорт, если сейчас его принять.',
+  taskDailyTitle: 'Забрать ежедневную награду',
+  taskDailyBody: 'Это быстрый старт для следующей покупки.',
+  taskGoalTitle: 'Дожать близкую цель',
+  taskGoalBody: 'Цель уже почти готова, и она поможет станции расти.',
+  taskModuleBuyTitle: 'Купить улучшение комнаты',
+  taskModuleBuyBody: 'Это самый полезный шаг для роста дохода.',
+  taskModuleWaitTitle: 'Накопить на следующее улучшение',
+  taskModuleWaitBody: 'Доход уже идет, осталось дождаться покупки.',
+  taskModuleUnlockTitle: 'Открыть следующую комнату',
+  taskModuleUnlockBody: 'Комната станет доступна после достаточного общего заработка.',
+  taskPrestigeTitle: 'Подготовить реновацию',
+  taskPrestigeBody: 'Реновация даст репутацию и усилит следующий цикл.',
+  taskSelectRoom: 'Показать комнату',
+  taskRenovate: 'К реновации',
+  taskCost: 'Цена',
+  taskWait: 'Ждать',
+  taskProgress: 'Прогресс',
   level: 'Уровень',
   closed: 'Закрыто',
   nextCost: 'Цена следующего',
@@ -436,6 +477,26 @@ const en: Translation = {
   statistics: 'Statistics',
   cosmetics: 'Station Cosmetics',
   prestigeUpgrades: 'Renovation Upgrades',
+  currentTask: 'Current task',
+  taskVisitorTitle: 'Welcome a station visitor',
+  taskVisitorBody: 'The visitor adds comfort if you accept the request now.',
+  taskDailyTitle: 'Collect the daily reward',
+  taskDailyBody: 'This gives a quick start toward the next purchase.',
+  taskGoalTitle: 'Finish a close goal',
+  taskGoalBody: 'This goal is almost done and will help the station grow.',
+  taskModuleBuyTitle: 'Buy a room upgrade',
+  taskModuleBuyBody: 'This is the most useful next step for income growth.',
+  taskModuleWaitTitle: 'Save for the next upgrade',
+  taskModuleWaitBody: 'Income is already running; wait until the room can be upgraded.',
+  taskModuleUnlockTitle: 'Unlock the next room',
+  taskModuleUnlockBody: 'The room opens after enough lifetime earnings.',
+  taskPrestigeTitle: 'Prepare an orbit renovation',
+  taskPrestigeBody: 'Renovation grants reputation and strengthens the next cycle.',
+  taskSelectRoom: 'Show room',
+  taskRenovate: 'Go to renovation',
+  taskCost: 'Cost',
+  taskWait: 'Wait',
+  taskProgress: 'Progress',
   level: 'Level',
   closed: 'Locked',
   nextCost: 'Next cost',
