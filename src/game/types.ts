@@ -16,7 +16,9 @@ export type ResidentId =
   | 'vacuum_gardener'
   | 'sock_master'
   | 'teleport_courier'
-  | 'vip_astroteenant';
+  | 'vip_astroteenant'
+  | 'retired_cosmonaut'
+  | 'three_eyed_housekeeper';
 
 export type GoalId =
   | 'buy_capsule_10'

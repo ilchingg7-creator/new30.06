@@ -6,6 +6,7 @@ import { GoalPanel } from '../components/GoalPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
 import { PrestigePanel } from '../components/PrestigePanel';
+import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
 import { TopBar } from '../components/TopBar';
 
@@ -32,7 +33,12 @@ export function MobileLayout({ game }: MobileLayoutProps) {
       <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} />
       <div className="mobile-tab-content">
         {activeTab === 'modules' && <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} />}
-        {activeTab === 'goals' && <GoalPanel gameState={game.gameState} />}
+        {activeTab === 'goals' && (
+          <>
+            <GoalPanel gameState={game.gameState} />
+            <ResidentsPanel gameState={game.gameState} />
+          </>
+        )}
         {activeTab === 'bonuses' && (
           <BonusPanel
             onIncomeBoost={game.activateIncomeBoost}

@@ -4,6 +4,7 @@ import { GoalPanel } from '../components/GoalPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
 import { PrestigePanel } from '../components/PrestigePanel';
+import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
 import { TopBar } from '../components/TopBar';
 
@@ -26,6 +27,7 @@ export function DesktopLayout({ game }: DesktopLayoutProps) {
       </div>
       <aside className="side-panel">
         <GoalPanel gameState={game.gameState} />
+        <ResidentsPanel gameState={game.gameState} />
         <BonusPanel
           onIncomeBoost={game.activateIncomeBoost}
           onVipResident={game.activateVipResident}

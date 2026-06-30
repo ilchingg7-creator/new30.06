@@ -47,5 +47,19 @@ export const residents: ResidentDefinition[] = [
     unlockText: 'Добровольный рекламный бонус или редкое событие.',
     bonusText: 'x2 доход на 10 минут',
     requiredComfort: 25
+  },
+  {
+    id: 'retired_cosmonaut',
+    name: 'Сосед-отставной космонавт',
+    unlockText: 'Первая реновация орбиты.',
+    bonusText: '+10% к стартовому доходу после реновации',
+    requiredComfort: 0
+  },
+  {
+    id: 'three_eyed_housekeeper',
+    name: 'Трёхглазая комендантша',
+    unlockText: 'Комфорт станции достиг 40.',
+    bonusText: '-8% к цене первых модулей',
+    requiredComfort: 40
   }
 ];
