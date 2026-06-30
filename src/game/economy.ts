@@ -114,7 +114,8 @@ export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState 
     moduleLevels: {
       ...state.moduleLevels,
       [moduleId]: currentLevel + 1
-    }
+    },
+    totalModulesBought: (state.totalModulesBought ?? 0) + 1
   };
 
   return checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)));
@@ -128,7 +129,8 @@ export function advanceGame(state: GameState, seconds: number, now = Date.now())
     ...state,
     credits: state.credits + earnedCredits,
     totalEarnedCredits: state.totalEarnedCredits + earnedCredits,
-    lastSavedAt: now
+    lastSavedAt: now,
+    totalPlaySeconds: (state.totalPlaySeconds ?? 0) + elapsedSeconds
   };
 
   return checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)));
@@ -165,7 +167,11 @@ export function performPrestige(state: GameState, now = Date.now()): GameState {
       ? state.unlockedResidents
       : base.unlockedResidents,
     // Tier 2 prestige upgrade: warm start comfort.
-    comfort: upgrades.includes('starting_comfort') ? STARTING_COMFORT_BONUS : base.comfort
+    comfort: upgrades.includes('starting_comfort') ? STARTING_COMFORT_BONUS : base.comfort,
+    // Lifetime stats survive renovation.
+    totalPlaySeconds: state.totalPlaySeconds,
+    totalModulesBought: state.totalModulesBought,
+    prestigeCount: (state.prestigeCount ?? 0) + 1
   };
 
   return checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)));

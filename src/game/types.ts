@@ -113,6 +113,12 @@ export interface GameState {
   lastLoginDay?: number;
   dailyStreak?: number;
   unlockedAchievements?: AchievementId[];
+  /** Total seconds played across all sessions (accumulated by the tick loop). */
+  totalPlaySeconds?: number;
+  /** Total module levels purchased across all sessions. */
+  totalModulesBought?: number;
+  /** Number of prestige renovations performed. */
+  prestigeCount?: number;
   /**
    * Save schema version. Injected by `serializeGameState` and validated by
    * `parseGameState`. Not set on fresh in-memory states created by

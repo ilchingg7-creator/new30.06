@@ -9,6 +9,7 @@ import { PrestigePanel } from '../components/PrestigePanel';
 import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
+import { StatsPanel } from '../components/StatsPanel';
 import { TopBar } from '../components/TopBar';
 
 interface DesktopLayoutProps {
@@ -44,6 +45,7 @@ export function DesktopLayout({ game }: DesktopLayoutProps) {
           onWindowLightColor={game.setWindowLightColor}
         />
         <AchievementsPanel gameState={game.gameState} />
+        <StatsPanel gameState={game.gameState} />
       </aside>
     </section>
   );
