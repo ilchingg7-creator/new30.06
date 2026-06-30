@@ -2,13 +2,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   advanceGame,
   buyModuleLevel,
+  buyPrestigeUpgrade,
   calculateIncomePerSecond,
   calculateOfflineReward,
   performPrestige,
   createInitialState
 } from '../game/economy';
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
-import type { GameState, ModuleId, WindowLightColor } from '../game/types';
+import type { GameState, ModuleId, PrestigeUpgradeId, WindowLightColor } from '../game/types';
 import { createLocalStoragePort, type StoragePort } from '../platform/storage';
 import {
   createNoOpYandexPlatform,
@@ -38,6 +39,7 @@ export interface UseGameStateResult {
   activateVipResident(): Promise<void>;
   doubleOfflineReward(): Promise<void>;
   setWindowLightColor(color: WindowLightColor): void;
+  buyPrestigeUpgrade(upgradeId: PrestigeUpgradeId): void;
 }
 
 export function useGameState(
@@ -260,6 +262,10 @@ export function useGameState(
     }));
   }, []);
 
+  const buyUpgrade = useCallback((upgradeId: PrestigeUpgradeId) => {
+    setGameState((current) => buyPrestigeUpgrade(current, upgradeId));
+  }, []);
+
   return {
     gameState,
     incomePerSecond: calculateIncomePerSecond(gameState),
@@ -275,6 +281,7 @@ export function useGameState(
     activateIncomeBoost,
     activateVipResident,
     doubleOfflineReward,
-    setWindowLightColor
+    setWindowLightColor,
+    buyPrestigeUpgrade: buyUpgrade
   };
 }

@@ -5,6 +5,7 @@ import { GoalPanel } from '../components/GoalPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
 import { PrestigePanel } from '../components/PrestigePanel';
+import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
 import { TopBar } from '../components/TopBar';
@@ -36,6 +37,7 @@ export function DesktopLayout({ game }: DesktopLayoutProps) {
           adPending={game.adPending}
         />
         <PrestigePanel reputation={game.gameState.reputation} onRenovate={game.renovateOrbit} />
+        <PrestigeUpgradesPanel gameState={game.gameState} onBuyUpgrade={game.buyPrestigeUpgrade} />
         <CosmeticsPanel
           windowLightColor={game.gameState.windowLightColor ?? 'amber'}
           onWindowLightColor={game.setWindowLightColor}

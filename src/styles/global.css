@@ -485,6 +485,25 @@ input {
   padding: 10px;
 }
 
+.compact-card:has(button) {
+  align-items: center;
+}
+
+.compact-card small {
+  display: block;
+  color: var(--color-lamp-amber);
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.compact-card button {
+  flex: 0 0 auto;
+  min-height: 36px;
+  font-size: 0.82rem;
+  padding: 0 10px;
+}
+
 .compact-card svg {
   color: var(--color-signal-red);
   flex: 0 0 auto;

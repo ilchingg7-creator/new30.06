@@ -52,6 +52,18 @@ export interface ResidentDefinition {
 
 export type WindowLightColor = 'amber' | 'green' | 'red' | 'blue';
 
+export type PrestigeUpgradeId =
+  | 'residents_survive'
+  | 'starting_comfort'
+  | 'higher_offline_cap';
+
+export interface PrestigeUpgradeDefinition {
+  id: PrestigeUpgradeId;
+  name: string;
+  description: string;
+  reputationCost: number;
+}
+
 export type GoalRewardKind = 'comfort' | 'visual_detail' | 'temporary_boost' | 'prestige_hint';
 
 export interface GoalDefinition {
@@ -81,4 +93,5 @@ export interface GameState {
   timedBonuses: TimedBonus[];
   lastSavedAt: number;
   windowLightColor?: WindowLightColor;
+  purchasedPrestigeUpgrades?: PrestigeUpgradeId[];
 }

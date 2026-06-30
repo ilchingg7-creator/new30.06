@@ -39,6 +39,25 @@ function hasValidTimedBonuses(value: unknown): boolean {
   );
 }
 
+const VALID_WINDOW_LIGHT_COLORS = new Set(['amber', 'green', 'red', 'blue']);
+const VALID_PRESTIGE_UPGRADE_IDS = new Set([
+  'residents_survive',
+  'starting_comfort',
+  'higher_offline_cap'
+]);
+
+function hasOptionalWindowLightColor(value: unknown): boolean {
+  return value === undefined || (typeof value === 'string' && VALID_WINDOW_LIGHT_COLORS.has(value));
+}
+
+function hasOptionalPrestigeUpgrades(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  return isStringArray(value) && value.every((id) => VALID_PRESTIGE_UPGRADE_IDS.has(id));
+}
+
 function isGameState(value: unknown): value is GameState {
   if (!isRecord(value)) {
     return false;
@@ -53,7 +72,9 @@ function isGameState(value: unknown): value is GameState {
     isStringArray(value.completedGoals) &&
     isStringArray(value.unlockedResidents) &&
     hasValidTimedBonuses(value.timedBonuses) &&
-    isNumber(value.lastSavedAt)
+    isNumber(value.lastSavedAt) &&
+    hasOptionalWindowLightColor(value.windowLightColor) &&
+    hasOptionalPrestigeUpgrades(value.purchasedPrestigeUpgrades)
   );
 }
 

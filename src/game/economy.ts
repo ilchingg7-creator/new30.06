@@ -1,9 +1,18 @@
 import { modules } from './content/modules';
+import { prestigeUpgrades } from './content/prestigeUpgrades';
 import { completeEligibleGoals } from './goals';
-import type { GameState, ModuleId, ModuleLevels, TimedBonus } from './types';
+import type { GameState, ModuleId, ModuleLevels, PrestigeUpgradeId, TimedBonus } from './types';
 
 export const LEVEL_COST_GROWTH = 1.18;
 export const OFFLINE_CAP_SECONDS = 8 * 60 * 60;
+const UPGRADED_OFFLINE_CAP_SECONDS = 12 * 60 * 60;
+const STARTING_COMFORT_BONUS = 5;
+
+export function getOfflineCapSeconds(state: GameState): number {
+  return state.purchasedPrestigeUpgrades?.includes('higher_offline_cap')
+    ? UPGRADED_OFFLINE_CAP_SECONDS
+    : OFFLINE_CAP_SECONDS;
+}
 
 const MILESTONE_MULTIPLIERS = [
   { level: 10, multiplier: 2 },
@@ -128,7 +137,7 @@ export function calculateOfflineReward(
   now = Date.now()
 ): { seconds: number; credits: number } {
   const elapsedSeconds = Math.max(0, Math.floor((now - state.lastSavedAt) / 1_000));
-  const cappedSeconds = Math.min(elapsedSeconds, OFFLINE_CAP_SECONDS);
+  const cappedSeconds = Math.min(elapsedSeconds, getOfflineCapSeconds(state));
 
   return {
     seconds: cappedSeconds,
@@ -142,11 +151,40 @@ export function calculatePrestigeReward(state: GameState): number {
 
 export function performPrestige(state: GameState, now = Date.now()): GameState {
   const nextReputation = state.reputation + calculatePrestigeReward(state);
+  const upgrades = state.purchasedPrestigeUpgrades ?? [];
 
-  const nextState = {
-    ...createInitialState(now),
-    reputation: nextReputation
+  const base = createInitialState(now);
+  const nextState: GameState = {
+    ...base,
+    reputation: nextReputation,
+    purchasedPrestigeUpgrades: upgrades,
+    // Tier 2 prestige upgrade: residents survive renovation.
+    unlockedResidents: upgrades.includes('residents_survive')
+      ? state.unlockedResidents
+      : base.unlockedResidents,
+    // Tier 2 prestige upgrade: warm start comfort.
+    comfort: upgrades.includes('starting_comfort') ? STARTING_COMFORT_BONUS : base.comfort
   };
 
   return completeEligibleGoals(nextState);
+}
+
+export function buyPrestigeUpgrade(state: GameState, upgradeId: PrestigeUpgradeId): GameState {
+  const upgrade = prestigeUpgrades.find((item) => item.id === upgradeId);
+
+  if (!upgrade) {
+    return state;
+  }
+
+  const owned = state.purchasedPrestigeUpgrades ?? [];
+
+  if (owned.includes(upgradeId) || state.reputation < upgrade.reputationCost) {
+    return state;
+  }
+
+  return {
+    ...state,
+    reputation: state.reputation - upgrade.reputationCost,
+    purchasedPrestigeUpgrades: [...owned, upgradeId]
+  };
 }
