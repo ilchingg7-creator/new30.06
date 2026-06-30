@@ -50,6 +50,8 @@ export interface ResidentDefinition {
   requiredComfort?: number;
 }
 
+export type WindowLightColor = 'amber' | 'green' | 'red' | 'blue';
+
 export type GoalRewardKind = 'comfort' | 'visual_detail' | 'temporary_boost' | 'prestige_hint';
 
 export interface GoalDefinition {
@@ -78,4 +80,5 @@ export interface GameState {
   unlockedResidents: ResidentId[];
   timedBonuses: TimedBonus[];
   lastSavedAt: number;
+  windowLightColor?: WindowLightColor;
 }

@@ -2,6 +2,7 @@ import { Gift, Home, RotateCcw, Target } from 'lucide-react';
 import { useState } from 'react';
 import type { UseGameStateResult } from '../useGameState';
 import { BonusPanel } from '../components/BonusPanel';
+import { CosmeticsPanel } from '../components/CosmeticsPanel';
 import { GoalPanel } from '../components/GoalPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
@@ -48,7 +49,13 @@ export function MobileLayout({ game }: MobileLayoutProps) {
           />
         )}
         {activeTab === 'prestige' && (
-          <PrestigePanel reputation={game.gameState.reputation} onRenovate={game.renovateOrbit} />
+          <>
+            <PrestigePanel reputation={game.gameState.reputation} onRenovate={game.renovateOrbit} />
+            <CosmeticsPanel
+              windowLightColor={game.gameState.windowLightColor ?? 'amber'}
+              onWindowLightColor={game.setWindowLightColor}
+            />
+          </>
         )}
       </div>
       <nav className="bottom-tabs" aria-label="Разделы станции">

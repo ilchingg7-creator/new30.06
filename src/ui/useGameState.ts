@@ -8,7 +8,7 @@ import {
   createInitialState
 } from '../game/economy';
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
-import type { GameState, ModuleId } from '../game/types';
+import type { GameState, ModuleId, WindowLightColor } from '../game/types';
 import { createLocalStoragePort, type StoragePort } from '../platform/storage';
 import {
   createNoOpYandexPlatform,
@@ -37,6 +37,7 @@ export interface UseGameStateResult {
   activateIncomeBoost(): Promise<void>;
   activateVipResident(): Promise<void>;
   doubleOfflineReward(): Promise<void>;
+  setWindowLightColor(color: WindowLightColor): void;
 }
 
 export function useGameState(
@@ -252,6 +253,13 @@ export function useGameState(
     }
   }, [adPending, offlineReward, resolveAdGrant]);
 
+  const setWindowLightColor = useCallback((color: WindowLightColor) => {
+    setGameState((current) => ({
+      ...current,
+      windowLightColor: color
+    }));
+  }, []);
+
   return {
     gameState,
     incomePerSecond: calculateIncomePerSecond(gameState),
@@ -266,6 +274,7 @@ export function useGameState(
     dismissOfflineReward,
     activateIncomeBoost,
     activateVipResident,
-    doubleOfflineReward
+    doubleOfflineReward,
+    setWindowLightColor
   };
 }

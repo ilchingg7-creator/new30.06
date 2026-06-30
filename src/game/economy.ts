@@ -59,7 +59,8 @@ export function createInitialState(now = Date.now()): GameState {
     completedGoals: [],
     unlockedResidents: [],
     timedBonuses: [],
-    lastSavedAt: now
+    lastSavedAt: now,
+    windowLightColor: 'amber'
   };
 }
 

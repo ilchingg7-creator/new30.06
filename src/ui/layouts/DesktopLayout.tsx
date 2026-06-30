@@ -1,5 +1,6 @@
 import type { UseGameStateResult } from '../useGameState';
 import { BonusPanel } from '../components/BonusPanel';
+import { CosmeticsPanel } from '../components/CosmeticsPanel';
 import { GoalPanel } from '../components/GoalPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
@@ -35,6 +36,10 @@ export function DesktopLayout({ game }: DesktopLayoutProps) {
           adPending={game.adPending}
         />
         <PrestigePanel reputation={game.gameState.reputation} onRenovate={game.renovateOrbit} />
+        <CosmeticsPanel
+          windowLightColor={game.gameState.windowLightColor ?? 'amber'}
+          onWindowLightColor={game.setWindowLightColor}
+        />
       </aside>
     </section>
   );

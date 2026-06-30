@@ -1,7 +1,18 @@
 import { Container, Graphics } from 'pixi.js';
 import { modules } from '../game/content/modules';
-import type { GameState, ModuleId } from '../game/types';
+import type { GameState, ModuleId, WindowLightColor } from '../game/types';
 import { stationTheme } from './stationTheme';
+
+const windowLightColorMap: Record<WindowLightColor, number> = {
+  amber: stationTheme.lampAmber,
+  green: stationTheme.enamelGreen,
+  red: stationTheme.signalRed,
+  blue: stationTheme.utilityBlue
+};
+
+function resolveWindowLightColor(state: GameState): number {
+  return state.windowLightColor ? windowLightColorMap[state.windowLightColor] : stationTheme.lampAmber;
+}
 
 export type RoomDetailTier = 'locked' | 'basic' | 'working' | 'cozy' | 'busy' | 'complete';
 
@@ -187,6 +198,7 @@ export function createRoomSceneDescriptor(gameState: GameState, selectedRoomId: 
   const level = gameState.moduleLevels[moduleId];
   const tier = getRoomDetailTier(level);
   const accentColor = roomAccentColors[moduleId];
+  const windowLight = resolveWindowLightColor(gameState);
   const props = addTierProps(createBaseProps(moduleId, accentColor), tier, accentColor);
 
   return {
@@ -197,7 +209,7 @@ export function createRoomSceneDescriptor(gameState: GameState, selectedRoomId: 
     accentColor,
     props,
     ambientLights: [
-      { x: 660, y: 132, radius: tier === 'locked' ? 12 : 22, color: stationTheme.lampAmber },
+      { x: 660, y: 132, radius: tier === 'locked' ? 12 : 22, color: windowLight },
       { x: 420, y: 246, radius: tier === 'complete' ? 28 : 18, color: accentColor }
     ]
   };
