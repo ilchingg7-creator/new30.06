@@ -1,4 +1,5 @@
 import type { UseGameStateResult } from '../useGameState';
+import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
 import { CosmeticsPanel } from '../components/CosmeticsPanel';
 import { GoalPanel } from '../components/GoalPanel';
@@ -42,6 +43,7 @@ export function DesktopLayout({ game }: DesktopLayoutProps) {
           windowLightColor={game.gameState.windowLightColor ?? 'amber'}
           onWindowLightColor={game.setWindowLightColor}
         />
+        <AchievementsPanel gameState={game.gameState} />
       </aside>
     </section>
   );

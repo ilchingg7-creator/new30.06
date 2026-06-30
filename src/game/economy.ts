@@ -1,3 +1,4 @@
+import { checkAchievements } from './achievements';
 import { modules } from './content/modules';
 import { prestigeUpgrades } from './content/prestigeUpgrades';
 import { completeEligibleGoals } from './goals';
@@ -115,7 +116,7 @@ export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState 
     }
   };
 
-  return completeEligibleGoals(nextState);
+  return checkAchievements(completeEligibleGoals(nextState));
 }
 
 export function advanceGame(state: GameState, seconds: number, now = Date.now()): GameState {
@@ -129,7 +130,7 @@ export function advanceGame(state: GameState, seconds: number, now = Date.now())
     lastSavedAt: now
   };
 
-  return completeEligibleGoals(nextState);
+  return checkAchievements(completeEligibleGoals(nextState));
 }
 
 export function calculateOfflineReward(
@@ -166,7 +167,7 @@ export function performPrestige(state: GameState, now = Date.now()): GameState {
     comfort: upgrades.includes('starting_comfort') ? STARTING_COMFORT_BONUS : base.comfort
   };
 
-  return completeEligibleGoals(nextState);
+  return checkAchievements(completeEligibleGoals(nextState));
 }
 
 export function buyPrestigeUpgrade(state: GameState, upgradeId: PrestigeUpgradeId): GameState {
@@ -182,11 +183,11 @@ export function buyPrestigeUpgrade(state: GameState, upgradeId: PrestigeUpgradeI
     return state;
   }
 
-  return {
+  return checkAchievements({
     ...state,
     reputation: state.reputation - upgrade.reputationCost,
     purchasedPrestigeUpgrades: [...owned, upgradeId]
-  };
+  });
 }
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1_000;
@@ -235,7 +236,7 @@ export function checkDailyLogin(state: GameState, now = Date.now()): DailyLoginR
   };
 
   return {
-    state: completeEligibleGoals(nextState),
+    state: checkAchievements(completeEligibleGoals(nextState)),
     reward,
     streak: nextStreak
   };

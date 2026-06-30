@@ -428,6 +428,26 @@ input {
   box-shadow: 0 0 6px var(--color-lamp-amber);
 }
 
+.panel-counter {
+  display: inline-block;
+  margin-left: 6px;
+  color: var(--color-lamp-amber);
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.compact-card.achievement-locked {
+  opacity: 0.52;
+}
+
+.compact-card.achievement-locked svg {
+  color: var(--color-utility-blue);
+}
+
+.compact-card.achievement-unlocked svg {
+  color: var(--color-lamp-amber);
+}
+
 .top-bar {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

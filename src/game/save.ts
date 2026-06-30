@@ -46,6 +46,17 @@ const VALID_PRESTIGE_UPGRADE_IDS = new Set([
   'higher_offline_cap'
 ]);
 
+const VALID_ACHIEVEMENT_IDS = new Set([
+  'first_purchase',
+  'ten_module_levels',
+  'fifty_module_levels',
+  'first_prestige',
+  'comfort_50',
+  'credits_million',
+  'all_rooms_unlocked',
+  'daily_streak_7'
+]);
+
 function hasOptionalWindowLightColor(value: unknown): boolean {
   return value === undefined || (typeof value === 'string' && VALID_WINDOW_LIGHT_COLORS.has(value));
 }
@@ -56,6 +67,14 @@ function hasOptionalPrestigeUpgrades(value: unknown): boolean {
   }
 
   return isStringArray(value) && value.every((id) => VALID_PRESTIGE_UPGRADE_IDS.has(id));
+}
+
+function hasOptionalAchievements(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  return isStringArray(value) && value.every((id) => VALID_ACHIEVEMENT_IDS.has(id));
 }
 
 function hasOptionalNumber(value: unknown): boolean {
@@ -80,7 +99,8 @@ function isGameState(value: unknown): value is GameState {
     hasOptionalWindowLightColor(value.windowLightColor) &&
     hasOptionalPrestigeUpgrades(value.purchasedPrestigeUpgrades) &&
     hasOptionalNumber(value.lastLoginDay) &&
-    hasOptionalNumber(value.dailyStreak)
+    hasOptionalNumber(value.dailyStreak) &&
+    hasOptionalAchievements(value.unlockedAchievements)
   );
 }
 

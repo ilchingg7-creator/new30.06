@@ -1,6 +1,7 @@
 import { Gift, Home, RotateCcw, Target } from 'lucide-react';
 import { useState } from 'react';
 import type { UseGameStateResult } from '../useGameState';
+import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
 import { CosmeticsPanel } from '../components/CosmeticsPanel';
 import { GoalPanel } from '../components/GoalPanel';
@@ -39,6 +40,7 @@ export function MobileLayout({ game }: MobileLayoutProps) {
           <>
             <GoalPanel gameState={game.gameState} />
             <ResidentsPanel gameState={game.gameState} />
+            <AchievementsPanel gameState={game.gameState} />
           </>
         )}
         {activeTab === 'bonuses' && (

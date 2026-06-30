@@ -52,6 +52,22 @@ export interface ResidentDefinition {
 
 export type WindowLightColor = 'amber' | 'green' | 'red' | 'blue';
 
+export type AchievementId =
+  | 'first_purchase'
+  | 'ten_module_levels'
+  | 'fifty_module_levels'
+  | 'first_prestige'
+  | 'comfort_50'
+  | 'credits_million'
+  | 'all_rooms_unlocked'
+  | 'daily_streak_7';
+
+export interface AchievementDefinition {
+  id: AchievementId;
+  title: string;
+  description: string;
+}
+
 export type PrestigeUpgradeId =
   | 'residents_survive'
   | 'starting_comfort'
@@ -96,4 +112,5 @@ export interface GameState {
   purchasedPrestigeUpgrades?: PrestigeUpgradeId[];
   lastLoginDay?: number;
   dailyStreak?: number;
+  unlockedAchievements?: AchievementId[];
 }
