@@ -164,34 +164,50 @@ input {
 .station-stack {
   min-width: 0;
   display: grid;
+  align-content: start;
   gap: 10px;
 }
 
 .room-selector {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(116px, 1fr);
+  grid-auto-columns: minmax(172px, 1fr);
+  grid-auto-rows: 64px;
+  align-items: start;
+  height: 76px;
   gap: 8px;
   overflow-x: auto;
   scrollbar-width: thin;
 }
 
 .room-selector button {
-  min-height: 50px;
+  min-width: 0;
+  min-height: 64px;
+  height: 64px;
+  padding: 8px;
   border: 1px solid color-mix(in srgb, var(--color-utility-blue), transparent 38%);
   border-radius: var(--radius-control);
   background: color-mix(in srgb, var(--color-ink), var(--color-space-navy) 22%);
   color: var(--color-soft-white);
   display: grid;
   grid-template-columns: auto 1fr;
+  grid-template-rows: minmax(0, 1fr) auto;
   align-items: center;
   gap: 4px 6px;
   text-align: left;
+  line-height: 1.12;
+}
+
+.room-selector button span,
+.room-selector button small {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .room-selector button small {
   grid-column: 2;
   color: var(--color-warm-panel);
+  line-height: 1.1;
 }
 
 .room-selector button.active {
@@ -235,7 +251,7 @@ input {
 }
 
 .desktop-layout .station-view {
-  height: 560px;
+  height: min(560px, calc(100vh - 310px));
 }
 
 .side-panel {
@@ -536,5 +552,9 @@ input {
 
   .mobile-only {
     display: block;
+  }
+
+  .room-selector {
+    grid-auto-columns: minmax(148px, 52vw);
   }
 }

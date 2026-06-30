@@ -33,4 +33,12 @@ describe('core UI components', () => {
     expect(screen.getByRole('heading', { name: 'Бонусы' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Реновация орбиты' })).toBeInTheDocument();
   });
+
+  it('does not mark locked rooms as active in the selector', () => {
+    const { container } = render(
+      <RoomSelector gameState={createInitialState(1_000)} selectedRoomId="tenant_capsule" onSelectRoom={vi.fn()} />
+    );
+
+    expect(container.querySelector('.room-selector button.active')).toBeNull();
+  });
 });

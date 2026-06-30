@@ -17,7 +17,7 @@ export function RoomSelector({ gameState, selectedRoomId, onSelectRoom }: RoomSe
         <button
           type="button"
           key={item.moduleId}
-          className={selectedRoomId === item.moduleId ? 'active' : undefined}
+            className={item.unlocked && selectedRoomId === item.moduleId ? 'active' : undefined}
           disabled={!item.unlocked}
           onClick={() => onSelectRoom(item.moduleId)}
         >
