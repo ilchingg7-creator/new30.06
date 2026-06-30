@@ -34,6 +34,7 @@ export function PixiStationScene({ gameState }: PixiStationSceneProps) {
     }
 
     let cancelled = false;
+    let initialized = false;
     const app = new Application();
     appRef.current = app;
 
@@ -43,6 +44,8 @@ export function PixiStationScene({ gameState }: PixiStationSceneProps) {
         resizeTo: host
       })
       .then(() => {
+        initialized = true;
+
         if (cancelled) {
           app.destroy(true);
           return;
@@ -54,7 +57,9 @@ export function PixiStationScene({ gameState }: PixiStationSceneProps) {
 
     return () => {
       cancelled = true;
-      app.destroy(true);
+      if (initialized) {
+        app.destroy(true);
+      }
       appRef.current = null;
     };
   }, []);

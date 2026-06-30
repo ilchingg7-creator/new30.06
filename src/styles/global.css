@@ -149,6 +149,128 @@ input {
   display: block;
 }
 
+.top-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.top-bar div,
+.panel {
+  background: var(--color-warm-panel);
+  color: var(--color-ink);
+  border: 1px solid rgb(39 49 63 / 16%);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+}
+
+.top-bar div {
+  min-width: 0;
+  padding: 10px 12px;
+}
+
+.top-bar span,
+.compact-card span,
+.panel-copy {
+  color: var(--color-utility-blue);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.top-bar strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.25rem;
+}
+
+.panel {
+  padding: 14px;
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 1.15rem;
+}
+
+.component-list,
+.compact-list {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.component-card,
+.compact-card {
+  background: var(--color-soft-white);
+  border: 1px solid rgb(39 49 63 / 14%);
+  border-radius: var(--radius-control);
+}
+
+.component-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+}
+
+.component-card h3,
+.component-card p,
+.panel-copy {
+  margin: 0 0 6px;
+}
+
+.component-card span {
+  color: var(--color-utility-blue);
+  font-weight: 700;
+}
+
+.compact-card {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px;
+}
+
+.compact-card svg {
+  color: var(--color-signal-red);
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.compact-card strong,
+.compact-card span {
+  display: block;
+}
+
+.button-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.panel button,
+.component-card button {
+  min-height: 44px;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-utility-blue);
+  color: var(--color-soft-white);
+  font-weight: 800;
+  padding: 0 14px;
+}
+
+.panel button:disabled,
+.component-card button:disabled {
+  cursor: not-allowed;
+  opacity: 0.64;
+}
+
 @media (max-width: 640px) {
   .app-shell {
     align-items: start;
@@ -168,6 +290,14 @@ input {
   }
 
   .module-item {
+    grid-template-columns: 1fr;
+  }
+
+  .top-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .component-card {
     grid-template-columns: 1fr;
   }
 }
