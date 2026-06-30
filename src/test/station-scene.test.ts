@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buyModuleLevel, createInitialState } from '../game/economy';
 import { stationTheme } from '../station/stationTheme';
-import { createStationModuleSprites } from '../station/stationScene';
+import { calculateStationSceneFit, createStationModuleSprites, createStationSceneDetails } from '../station/stationScene';
 
 describe('station scene mapping', () => {
   it('creates one sprite descriptor for every MVP module', () => {
@@ -47,5 +47,33 @@ describe('station scene mapping', () => {
       { moduleId: 'panorama_dome', x: 420, y: 370 },
       { moduleId: 'saucer_dock', x: 560, y: 330 }
     ]);
+  });
+
+  it('describes polished ambient scene details', () => {
+    const state = buyModuleLevel(createInitialState(1_000), 'tenant_capsule');
+    const details = createStationSceneDetails(state);
+
+    expect(details.stars).toHaveLength(18);
+    expect(details.antennas).toHaveLength(2);
+    expect(details.activeWindowCount).toBe(1);
+    expect(details.lockedHardpointCount).toBe(7);
+    expect(details.hasOxygenGardenAccent).toBe(true);
+    expect(details.hasTeleportAccent).toBe(true);
+  });
+
+  it('fits the fixed station composition inside the canvas bounds', () => {
+    const mobileFit = calculateStationSceneFit(390, 260);
+    const desktopFit = calculateStationSceneFit(572, 560);
+
+    expect(mobileFit.scale).toBeCloseTo(390 / 840);
+    expect(mobileFit.x).toBe(0);
+    expect(mobileFit.y).toBeGreaterThan(0);
+    expect(mobileFit.width).toBeLessThanOrEqual(390);
+    expect(mobileFit.height).toBeLessThanOrEqual(260);
+
+    expect(desktopFit.width).toBeLessThanOrEqual(572);
+    expect(desktopFit.height).toBeLessThanOrEqual(560);
+    expect(desktopFit.x).toBe(0);
+    expect(desktopFit.y).toBeGreaterThan(0);
   });
 });
