@@ -1,4 +1,5 @@
 import { modules } from './content/modules';
+import { completeEligibleGoals } from './goals';
 import type { GameState, ModuleId, ModuleLevels, TimedBonus } from './types';
 
 export const LEVEL_COST_GROWTH = 1.18;
@@ -92,7 +93,7 @@ export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState 
   const currentLevel = state.moduleLevels[moduleId];
   const comfortGain = currentLevel === 0 ? module.comfortBonus : 0;
 
-  return {
+  const nextState = {
     ...state,
     credits: state.credits - cost,
     comfort: state.comfort + comfortGain,
@@ -101,18 +102,22 @@ export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState 
       [moduleId]: currentLevel + 1
     }
   };
+
+  return completeEligibleGoals(nextState);
 }
 
 export function advanceGame(state: GameState, seconds: number, now = Date.now()): GameState {
   const elapsedSeconds = Math.max(0, seconds);
   const earnedCredits = calculateIncomePerSecond(state, now) * elapsedSeconds;
 
-  return {
+  const nextState = {
     ...state,
     credits: state.credits + earnedCredits,
     totalEarnedCredits: state.totalEarnedCredits + earnedCredits,
     lastSavedAt: now
   };
+
+  return completeEligibleGoals(nextState);
 }
 
 export function calculateOfflineReward(
@@ -135,8 +140,10 @@ export function calculatePrestigeReward(state: GameState): number {
 export function performPrestige(state: GameState, now = Date.now()): GameState {
   const nextReputation = state.reputation + calculatePrestigeReward(state);
 
-  return {
+  const nextState = {
     ...createInitialState(now),
     reputation: nextReputation
   };
+
+  return completeEligibleGoals(nextState);
 }

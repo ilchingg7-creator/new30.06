@@ -46,11 +46,14 @@ export interface ResidentDefinition {
   requiredComfort?: number;
 }
 
+export type GoalRewardKind = 'comfort' | 'visual_detail' | 'temporary_boost' | 'prestige_hint';
+
 export interface GoalDefinition {
   id: GoalId;
   title: string;
-  rewardCredits: number;
   rewardComfort: number;
+  rewardKind: GoalRewardKind;
+  rewardLabel: string;
 }
 
 export type ModuleLevels = Record<ModuleId, number>;

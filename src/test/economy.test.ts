@@ -31,7 +31,7 @@ describe('economy engine', () => {
   });
 
   it('adds module comfort only when a room is first opened', () => {
-    const started = { ...createInitialState(1_000), credits: 1_000 };
+    const started = { ...createInitialState(1_000), credits: 1_000, completedGoals: ['unlock_kitchen' as const] };
     const opened = buyModuleLevel(started, 'cosmo_kitchen');
     const upgraded = buyModuleLevel({ ...opened, credits: 1_000 }, 'cosmo_kitchen');
 
