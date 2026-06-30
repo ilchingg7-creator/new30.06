@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
 
 function setViewportWidth(width: number) {
@@ -9,6 +9,24 @@ function setViewportWidth(width: number) {
   });
   window.dispatchEvent(new Event('resize'));
 }
+
+function setMediaQueryMatches(matches: boolean) {
+  window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+    matches,
+    media: query,
+    onchange: null,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn()
+  }));
+}
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  Reflect.deleteProperty(window, 'matchMedia');
+});
 
 describe('responsive layout rendering', () => {
   it('renders the four resource metrics required by the desktop top bar', async () => {
@@ -38,6 +56,19 @@ describe('responsive layout rendering', () => {
 
     await screen.findAllByText('Капсула арендатора');
 
+    expect(container.querySelector('.desktop-layout')).toBeNull();
+    expect(container.querySelector('.mobile-layout')).not.toBeNull();
+  });
+
+  it('uses the CSS media query result when browser mobile emulation changes layout viewport', async () => {
+    setViewportWidth(1200);
+    setMediaQueryMatches(true);
+
+    const { container } = render(<App />);
+
+    await screen.findAllByText('Капсула арендатора');
+
+    expect(window.matchMedia).toHaveBeenCalledWith('(max-width: 899px)');
     expect(container.querySelector('.desktop-layout')).toBeNull();
     expect(container.querySelector('.mobile-layout')).not.toBeNull();
   });

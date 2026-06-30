@@ -12,6 +12,7 @@ import { VisitorDialog } from './ui/screens/VisitorDialog';
 
 const HELP_SEEN_KEY = 'cosmic-communalka-help-seen';
 const MOBILE_BREAKPOINT = 900;
+const MOBILE_MEDIA_QUERY = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`;
 
 function hasSeenHelp(): boolean {
   if (typeof window === 'undefined') {
@@ -32,7 +33,11 @@ function getIsMobileViewport() {
     return false;
   }
 
-  return window.innerWidth < MOBILE_BREAKPOINT;
+  if (typeof window.matchMedia === 'function') {
+    return window.matchMedia(MOBILE_MEDIA_QUERY).matches;
+  }
+
+  return (window.visualViewport?.width ?? window.innerWidth) < MOBILE_BREAKPOINT;
 }
 
 export function App() {
@@ -45,11 +50,29 @@ export function App() {
     const updateViewport = () => {
       setIsMobileViewport(getIsMobileViewport());
     };
+    const mobileMedia = typeof window.matchMedia === 'function' ? window.matchMedia(MOBILE_MEDIA_QUERY) : null;
+    const visualViewport = window.visualViewport ?? null;
 
     updateViewport();
     window.addEventListener('resize', updateViewport);
+    visualViewport?.addEventListener('resize', updateViewport);
 
-    return () => window.removeEventListener('resize', updateViewport);
+    if (mobileMedia?.addEventListener) {
+      mobileMedia.addEventListener('change', updateViewport);
+    } else {
+      mobileMedia?.addListener(updateViewport);
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateViewport);
+      visualViewport?.removeEventListener('resize', updateViewport);
+
+      if (mobileMedia?.removeEventListener) {
+        mobileMedia.removeEventListener('change', updateViewport);
+      } else {
+        mobileMedia?.removeListener(updateViewport);
+      }
+    };
   }, []);
 
   const closeHelp = () => {
