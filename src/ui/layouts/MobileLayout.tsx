@@ -6,6 +6,7 @@ import { GoalPanel } from '../components/GoalPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
 import { PrestigePanel } from '../components/PrestigePanel';
+import { RoomSelector } from '../components/RoomSelector';
 import { TopBar } from '../components/TopBar';
 
 type MobileTab = 'modules' | 'goals' | 'bonuses' | 'prestige';
@@ -27,6 +28,7 @@ export function MobileLayout({ game }: MobileLayoutProps) {
   return (
     <section className="mobile-layout" aria-label="Mobile layout">
       <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} />
+      <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} />
       <PixiStationScene gameState={game.gameState} />
       <div className="mobile-tab-content">
         {activeTab === 'modules' && <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} />}

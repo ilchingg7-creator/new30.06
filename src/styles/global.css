@@ -161,6 +161,48 @@ input {
   display: block;
 }
 
+.station-stack {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.room-selector {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(116px, 1fr);
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.room-selector button {
+  min-height: 50px;
+  border: 1px solid color-mix(in srgb, var(--color-utility-blue), transparent 38%);
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--color-ink), var(--color-space-navy) 22%);
+  color: var(--color-soft-white);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 4px 6px;
+  text-align: left;
+}
+
+.room-selector button small {
+  grid-column: 2;
+  color: var(--color-warm-panel);
+}
+
+.room-selector button.active {
+  border-color: var(--color-lamp-amber);
+  box-shadow: inset 0 0 0 1px var(--color-lamp-amber);
+}
+
+.room-selector button:disabled {
+  opacity: 0.48;
+}
+
 .desktop-only {
   display: block;
 }
@@ -188,8 +230,11 @@ input {
   grid-area: modules;
 }
 
-.desktop-layout .station-view {
+.desktop-layout .station-stack {
   grid-area: station;
+}
+
+.desktop-layout .station-view {
   height: 560px;
 }
 
@@ -203,7 +248,7 @@ input {
 .mobile-layout {
   min-height: calc(100vh - 96px);
   display: grid;
-  grid-template-rows: auto 260px minmax(0, 1fr) auto;
+  grid-template-rows: auto auto 260px minmax(0, 1fr) auto;
   gap: 12px;
 }
 

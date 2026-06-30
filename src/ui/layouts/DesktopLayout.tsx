@@ -4,6 +4,7 @@ import { GoalPanel } from '../components/GoalPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
 import { PrestigePanel } from '../components/PrestigePanel';
+import { RoomSelector } from '../components/RoomSelector';
 import { TopBar } from '../components/TopBar';
 
 interface DesktopLayoutProps {
@@ -15,7 +16,14 @@ export function DesktopLayout({ game }: DesktopLayoutProps) {
     <section className="desktop-layout" aria-label="Desktop layout">
       <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} />
       <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} />
-      <PixiStationScene gameState={game.gameState} />
+      <div className="station-stack">
+        <RoomSelector
+          gameState={game.gameState}
+          selectedRoomId={game.selectedRoomId}
+          onSelectRoom={game.selectRoom}
+        />
+        <PixiStationScene gameState={game.gameState} />
+      </div>
       <aside className="side-panel">
         <GoalPanel gameState={game.gameState} />
         <BonusPanel onIncomeBoost={game.activateIncomeBoost} onVipResident={game.activateVipResident} />
