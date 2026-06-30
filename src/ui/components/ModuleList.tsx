@@ -1,13 +1,48 @@
 import { Home } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { calculateModuleCost } from '../../game/economy';
-import { formatCredits } from '../../game/format';
+import { calculateModuleCost, calculateIncomePerSecond } from '../../game/economy';
+import { formatCredits, formatRate } from '../../game/format';
 import { modules } from '../../game/content/modules';
 import type { GameState, ModuleId } from '../../game/types';
 
 interface ModuleListProps {
   gameState: GameState;
   onBuyLevel(moduleId: ModuleId): void;
+}
+
+function getNextMilestone(level: number): { level: number; multiplier: number } | null {
+  const milestones = [
+    { level: 10, multiplier: 2 },
+    { level: 25, multiplier: 2 },
+    { level: 50, multiplier: 3 },
+    { level: 100, multiplier: 4 }
+  ];
+
+  return milestones.find((milestone) => level < milestone.level) ?? null;
+}
+
+function buildModuleTooltip(moduleId: ModuleId, state: GameState): string {
+  const module = modules.find((item) => item.id === moduleId);
+  const level = state.moduleLevels[moduleId];
+  const cost = calculateModuleCost(moduleId, state);
+  const income = calculateIncomePerSecond(state);
+  const milestone = getNextMilestone(level);
+
+  const lines = [
+    `Уровень: ${level}`,
+    `Цена следующего: ${formatCredits(cost)} кредитов`,
+    `Текущий доход станции: ${formatRate(income)}`
+  ];
+
+  if (module?.comfortBonus) {
+    lines.push(`Комфорт при открытии: +${module.comfortBonus}`);
+  }
+
+  if (milestone) {
+    lines.push(`Следующий milestone: ур. ${milestone.level} (x${milestone.multiplier})`);
+  }
+
+  return lines.join('\n');
 }
 
 export function ModuleList({ gameState, onBuyLevel }: ModuleListProps) {
@@ -25,6 +60,7 @@ export function ModuleList({ gameState, onBuyLevel }: ModuleListProps) {
             <motion.li
               className="component-card"
               key={module.id}
+              title={buildModuleTooltip(module.id, gameState)}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.22 }}

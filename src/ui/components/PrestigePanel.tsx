@@ -1,3 +1,5 @@
+'use client';
+
 import { RotateCcw } from 'lucide-react';
 
 interface PrestigePanelProps {
@@ -10,7 +12,11 @@ export function PrestigePanel({ reputation, onRenovate }: PrestigePanelProps) {
     <section className="panel" aria-labelledby="prestige-panel-title">
       <h2 id="prestige-panel-title">Реновация орбиты</h2>
       <p className="panel-copy">Репутация станции: {reputation}</p>
-      <button type="button" onClick={onRenovate}>
+      <button
+        type="button"
+        onClick={onRenovate}
+        title="Реновация сбрасывает кредиты и модули, но сохраняет репутацию и купленные улучшения. Награда = floor(sqrt(заработано / 100000))."
+      >
         <RotateCcw aria-hidden="true" size={16} />
         Реновировать
       </button>

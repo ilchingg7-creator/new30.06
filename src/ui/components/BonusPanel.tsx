@@ -1,3 +1,5 @@
+'use client';
+
 import { Sparkles, Star } from 'lucide-react';
 
 interface BonusPanelProps {
@@ -25,11 +27,21 @@ export function BonusPanel({
         </p>
       )}
       <div className="button-stack">
-        <button type="button" onClick={onIncomeBoost} disabled={adPending}>
+        <button
+          type="button"
+          onClick={onIncomeBoost}
+          disabled={adPending}
+          title="Удваивает доход станции на 5 минут. На Yandex Games требует просмотра рекламы."
+        >
           <Sparkles aria-hidden="true" size={16} />
           {adPending ? 'Реклама...' : boostLabel}
         </button>
-        <button type="button" onClick={onVipResident} disabled={adPending}>
+        <button
+          type="button"
+          onClick={onVipResident}
+          disabled={adPending}
+          title="Заселяет VIP-жильца: x2 доход на 10 минут. На Yandex Games требует просмотра рекламы."
+        >
           <Star aria-hidden="true" size={16} />
           {adPending ? 'Реклама...' : vipLabel}
         </button>

@@ -1,6 +1,15 @@
+'use client';
+
 import { Target } from 'lucide-react';
 import { getVisibleGoals } from '../../game/goals';
 import type { GameState } from '../../game/types';
+
+const rewardKindLabels: Record<string, string> = {
+  comfort: 'Бонус комфорта',
+  visual_detail: 'Визуальная деталь',
+  temporary_boost: 'Временный буст',
+  prestige_hint: 'Подсказка к реновации'
+};
 
 interface GoalPanelProps {
   gameState: GameState;
@@ -23,7 +32,11 @@ export function GoalPanel({ gameState }: GoalPanelProps) {
           </li>
         )}
         {visibleGoals.map((goal) => (
-          <li className="compact-card" key={goal.id}>
+          <li
+            className="compact-card"
+            key={goal.id}
+            title={`Тип награды: ${rewardKindLabels[goal.rewardKind] ?? goal.rewardKind}\n${goal.rewardLabel}`}
+          >
             <Target aria-hidden="true" size={16} />
             <div>
               <strong>{goal.title}</strong>
