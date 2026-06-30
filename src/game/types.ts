@@ -54,37 +54,10 @@ export type WindowLightColor = 'amber' | 'green' | 'red' | 'blue';
 
 /**
  * Granular room detail level: 0 (locked) through 10 (complete, level 100+).
- * Each step corresponds to 10 module levels and swaps the room artwork to
- * a richer version — the whole image changes, not just an added layer.
+ * Each step corresponds to 10 module levels and adds more Graphics detail
+ * to the room scene. Used by the hardcoded PixiJS room renderer.
  */
 export type RoomDetailLevel = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-
-/**
- * Programmatic animation applied to the whole room sprite via the PixiJS
- * ticker. Cheap, consistent, no frame-by-frame art needed.
- */
-export interface RoomSpriteAnimation {
-  kind: 'bob' | 'pulse' | 'flicker';
-  amplitude: number;
-  speed: number;
-  axis?: 'x' | 'y';
-}
-
-/**
- * One full-room artwork at a specific detail level. The sprite replaces
- * the entire room image when the module reaches `unlockLevel`. The room
- * stays the same room (e.g. kitchen stays kitchen) — only the richness
- * of detail grows.
- */
-export interface RoomSpriteVariant {
-  /** Detail level (1..10) this artwork represents. 0 = locked (no sprite). */
-  detailLevel: RoomDetailLevel;
-  /** Module level at which this artwork appears (1, 10, 20, ..., 100). */
-  unlockLevel: number;
-  texture: string;
-  /** Optional whole-room animation (e.g. gentle bob, ambient pulse). */
-  animation?: RoomSpriteAnimation;
-}
 
 export interface VisitorRequest {
   id: string;

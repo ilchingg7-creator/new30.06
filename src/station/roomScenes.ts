@@ -192,34 +192,62 @@ function createBaseProps(moduleId: ModuleId, accentColor: number): RoomSceneProp
   }
 }
 
-function addTierProps(props: RoomSceneProp[], tier: RoomDetailTier, accentColor: number): RoomSceneProp[] {
-  if (tier === 'locked' || tier === 'basic') {
+/**
+ * Add detail props based on the granular detail level (0..10). Each level
+ * adds one or two new visual elements so the room visibly grows richer
+ * every 10 module levels.
+ *
+ * Detail levels map to module levels:
+ *   0 → locked (no props beyond base)
+ *   1 → levels 1-10   (bare room, just base props)
+ *   2 → levels 11-20  (+ extra lamp)
+ *   3 → levels 21-30  (+ side patch)
+ *   4 → levels 31-40  (+ accent lamp)
+ *   5 → levels 41-50  (+ ceiling patch)
+ *   6 → levels 51-60  (+ work lamp)
+ *   7 → levels 61-70  (+ second side patch)
+ *   8 → levels 71-80  (+ premium ceiling detail)
+ *   9 → levels 81-90  (+ corner lamp)
+ *  10 → levels 91-100+ (+ final accent lamp + soft-white patch)
+ */
+function addDetailProps(
+  props: RoomSceneProp[],
+  detailLevel: RoomDetailLevel,
+  accentColor: number
+): RoomSceneProp[] {
+  if (detailLevel <= 1) {
     return props;
   }
 
-  // Working tier: first extra lamp + a side patch.
-  const nextProps = [
-    ...props,
-    { kind: 'lamp' as const, x: 238, y: 150, color: stationTheme.lampAmber },
-    { kind: 'patch' as const, x: 568, y: 330, color: stationTheme.enamelGreen }
-  ];
+  const nextProps = [...props];
 
-  // Cozy tier: warmer accent lamp + a decorative ceiling patch.
-  if (tier === 'cozy' || tier === 'busy' || tier === 'complete') {
-    nextProps.push({ kind: 'lamp' as const, x: 600, y: 180, color: accentColor });
-    nextProps.push({ kind: 'patch' as const, x: 340, y: 110, color: stationTheme.warmPanel });
+  if (detailLevel >= 2) {
+    nextProps.push({ kind: 'lamp', x: 238, y: 150, color: stationTheme.lampAmber });
   }
-
-  // Busy tier: extra work lamp + second side patch for density.
-  if (tier === 'busy' || tier === 'complete') {
-    nextProps.push({ kind: 'lamp' as const, x: 148, y: 200, color: stationTheme.lampAmber });
-    nextProps.push({ kind: 'patch' as const, x: 690, y: 300, color: accentColor });
+  if (detailLevel >= 3) {
+    nextProps.push({ kind: 'patch', x: 568, y: 330, color: stationTheme.enamelGreen });
   }
-
-  // Complete tier: premium ceiling detail + final accent patch.
-  if (tier === 'complete') {
-    nextProps.push({ kind: 'patch' as const, x: 420, y: 118, color: stationTheme.softWhite });
-    nextProps.push({ kind: 'lamp' as const, x: 740, y: 140, color: stationTheme.lampAmber });
+  if (detailLevel >= 4) {
+    nextProps.push({ kind: 'lamp', x: 600, y: 180, color: accentColor });
+  }
+  if (detailLevel >= 5) {
+    nextProps.push({ kind: 'patch', x: 340, y: 110, color: stationTheme.warmPanel });
+  }
+  if (detailLevel >= 6) {
+    nextProps.push({ kind: 'lamp', x: 148, y: 200, color: stationTheme.lampAmber });
+  }
+  if (detailLevel >= 7) {
+    nextProps.push({ kind: 'patch', x: 690, y: 300, color: accentColor });
+  }
+  if (detailLevel >= 8) {
+    nextProps.push({ kind: 'patch', x: 420, y: 118, color: stationTheme.softWhite });
+  }
+  if (detailLevel >= 9) {
+    nextProps.push({ kind: 'lamp', x: 740, y: 140, color: stationTheme.lampAmber });
+  }
+  if (detailLevel >= 10) {
+    nextProps.push({ kind: 'lamp', x: 180, y: 130, color: accentColor });
+    nextProps.push({ kind: 'patch', x: 500, y: 330, color: stationTheme.lampAmber });
   }
 
   return nextProps;
@@ -228,27 +256,29 @@ function addTierProps(props: RoomSceneProp[], tier: RoomDetailTier, accentColor:
 export function createRoomSceneDescriptor(gameState: GameState, selectedRoomId: ModuleId): RoomSceneDescriptor {
   const moduleId = resolveSelectedRoomId(gameState, selectedRoomId);
   const level = gameState.moduleLevels[moduleId];
+  const detailLevel = getRoomDetailLevel(level);
   const tier = getRoomDetailTier(level);
   const accentColor = roomAccentColors[moduleId];
   const windowLight = resolveWindowLightColor(gameState);
-  const props = addTierProps(createBaseProps(moduleId, accentColor), tier, accentColor);
+  const props = addDetailProps(createBaseProps(moduleId, accentColor), detailLevel, accentColor);
 
   const ambientLights: RoomSceneDescriptor['ambientLights'] = [
-    { x: 660, y: 132, radius: tier === 'locked' ? 12 : 22, color: windowLight },
-    { x: 420, y: 246, radius: tier === 'complete' ? 28 : 18, color: accentColor }
+    { x: 660, y: 132, radius: detailLevel === 0 ? 12 : 22, color: windowLight },
+    { x: 420, y: 246, radius: detailLevel >= 10 ? 28 : 18, color: accentColor }
   ];
 
-  // Higher tiers get additional ambient light sources for a warmer, busier feel.
-  if (tier === 'cozy' || tier === 'busy' || tier === 'complete') {
+  // Each detail level above 4 adds another ambient light source.
+  if (detailLevel >= 5) {
     ambientLights.push({ x: 238, y: 150, radius: 14, color: windowLight });
   }
-
-  if (tier === 'busy' || tier === 'complete') {
+  if (detailLevel >= 7) {
     ambientLights.push({ x: 600, y: 180, radius: 16, color: accentColor });
   }
-
-  if (tier === 'complete') {
+  if (detailLevel >= 9) {
     ambientLights.push({ x: 148, y: 200, radius: 12, color: windowLight });
+  }
+  if (detailLevel >= 10) {
+    ambientLights.push({ x: 180, y: 130, radius: 10, color: accentColor });
   }
 
   return {
