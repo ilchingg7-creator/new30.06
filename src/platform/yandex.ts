@@ -1,3 +1,11 @@
+export interface YandexPlayer {
+  getData(options?: { keys?: string[] }): Promise<Record<string, unknown>>;
+  setData(
+    data: Record<string, unknown>,
+    options?: { flush?: boolean }
+  ): Promise<void>;
+}
+
 export interface YandexSdk {
   features?: {
     LoadingAPI?: {
@@ -13,6 +21,7 @@ export interface YandexSdk {
       };
     }): void;
   };
+  getPlayer?(): Promise<YandexPlayer>;
 }
 
 export interface YandexGamesLib {
@@ -23,6 +32,8 @@ export interface YandexPlatform {
   isAvailable(): boolean;
   markReady(): void;
   showRewardedAd(): Promise<boolean>;
+  loadCloudSave(key: string): Promise<string | null>;
+  saveCloud(key: string, value: string): Promise<void>;
 }
 
 declare global {
@@ -65,6 +76,35 @@ export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatfo
           }
         });
       });
+    },
+    async loadCloudSave(key: string) {
+      const player = await sdk?.getPlayer?.().catch(() => null);
+
+      if (!player) {
+        return null;
+      }
+
+      try {
+        const data = await player.getData({ keys: [key] });
+        const raw = data[key];
+
+        return typeof raw === 'string' ? raw : null;
+      } catch {
+        return null;
+      }
+    },
+    async saveCloud(key: string, value: string) {
+      const player = await sdk?.getPlayer?.().catch(() => null);
+
+      if (!player) {
+        return;
+      }
+
+      try {
+        await player.setData({ [key]: value }, { flush: true });
+      } catch {
+        // Cloud save is best-effort; localStorage already has the data.
+      }
     }
   };
 }
@@ -72,7 +112,8 @@ export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatfo
 /**
  * No-op platform used when Yandex Games SDK is unavailable (local dev, other
  * platforms). `showRewardedAd` resolves to `false` so UI code treats it as
- * "ad not available" and never blocks the player.
+ * "ad not available" and never blocks the player. Cloud save methods resolve
+ * as empty so the local storage fallback is used instead.
  */
 export function createNoOpYandexPlatform(): YandexPlatform {
   return {
@@ -84,6 +125,12 @@ export function createNoOpYandexPlatform(): YandexPlatform {
     },
     async showRewardedAd() {
       return false;
+    },
+    async loadCloudSave() {
+      return null;
+    },
+    async saveCloud() {
+      // no-op outside Yandex Games
     }
   };
 }

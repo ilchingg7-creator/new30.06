@@ -12,7 +12,9 @@ function makePlatform(grant: boolean): YandexPlatform {
       return true;
     },
     markReady: vi.fn(),
-    showRewardedAd: vi.fn().mockResolvedValue(grant)
+    showRewardedAd: vi.fn().mockResolvedValue(grant),
+    loadCloudSave: vi.fn().mockResolvedValue(null),
+    saveCloud: vi.fn().mockResolvedValue(undefined)
   };
 }
 
@@ -128,5 +130,53 @@ describe('yandex platform integration', () => {
 
     expect(platform.showRewardedAd).toHaveBeenCalledTimes(1);
     expect(result.current.offlineReward).not.toBeNull();
+  });
+
+  it('prefers the newer cloud save over the local save on load', async () => {
+    const baseState = {
+      ...createInitialState(1_000),
+      credits: 50,
+      moduleLevels: { ...createInitialState(1_000).moduleLevels, tenant_capsule: 1 }
+    };
+    const olderLocal = { ...baseState, credits: 10, lastSavedAt: 1_000 };
+    const newerCloud = { ...baseState, credits: 999, lastSavedAt: 5_000 };
+    const storage = makeMemoryStorage(JSON.stringify(olderLocal));
+
+    const platform: YandexPlatform = {
+      isAvailable() {
+        return true;
+      },
+      markReady: vi.fn(),
+      showRewardedAd: vi.fn().mockResolvedValue(false),
+      loadCloudSave: vi.fn().mockResolvedValue(JSON.stringify(newerCloud)),
+      saveCloud: vi.fn().mockResolvedValue(undefined)
+    };
+
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    // Cloud save had 999 credits; advanceGame applies offline income from
+    // lastSavedAt=5000 to now (huge delta, ~29k credits) + a daily login
+    // reward of 50. The key assertion: we did NOT use the local save (10
+    // credits + tiny offline delta), so credits must be well above 999.
+    expect(result.current.gameState.credits).toBeGreaterThan(999);
+    expect(result.current.gameState.credits).toBeGreaterThanOrEqual(29_000);
+  });
+
+  it('writes to both local storage and cloud on every state change', async () => {
+    const platform = makePlatform(false);
+    const storage = makeMemoryStorage();
+
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    act(() => {
+      result.current.buyLevel('tenant_capsule');
+    });
+
+    await waitFor(() => expect(platform.saveCloud).toHaveBeenCalled());
+    expect(storage.load(SAVE_KEY)).resolves.not.toBeNull();
   });
 });

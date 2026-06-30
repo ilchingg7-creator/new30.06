@@ -91,7 +91,28 @@ export function useGameState(
     let cancelled = false;
 
     async function loadSavedState() {
-      const savedState = parseGameState(await storage.load(SAVE_KEY));
+      // Prefer the Yandex cloud save when available; fall back to local
+      // storage so the game still boots offline or on other platforms.
+      const cloudRaw = await platformRef.current.loadCloudSave(SAVE_KEY).catch(() => null);
+      const cloudState = parseGameState(cloudRaw);
+      const localRaw = await storage.load(SAVE_KEY);
+      const localState = parseGameState(localRaw);
+
+      // Pick the newer of the two valid saves (cloud vs local) by lastSavedAt
+      // so a player who switched devices keeps their latest progress.
+      let savedState: ReturnType<typeof parseGameState> = null;
+
+      if (cloudState && localState) {
+        savedState = cloudState.lastSavedAt >= localState.lastSavedAt ? cloudState : localState;
+      } else {
+        savedState = cloudState ?? localState;
+      }
+
+      // If we loaded from cloud but local is empty/stale, mirror it locally so
+      // future offline boots have a recent copy.
+      if (cloudState && (!localState || cloudState.lastSavedAt > localState.lastSavedAt)) {
+        void storage.save(SAVE_KEY, cloudRaw ?? '');
+      }
 
       if (cancelled) {
         return;
@@ -130,7 +151,13 @@ export function useGameState(
       return;
     }
 
-    void storage.save(SAVE_KEY, serializeGameState(gameState));
+    const serialized = serializeGameState(gameState);
+
+    // Always persist locally first (synchronous, reliable), then push to the
+    // Yandex cloud in the background. Cloud failures are swallowed by the
+    // platform so a network drop never blocks gameplay.
+    void storage.save(SAVE_KEY, serialized);
+    void platformRef.current.saveCloud(SAVE_KEY, serialized);
   }, [gameState, ready, storage]);
 
   useEffect(() => {
