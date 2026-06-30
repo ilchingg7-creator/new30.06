@@ -5,6 +5,7 @@ import {
   buyPrestigeUpgrade,
   calculateIncomePerSecond,
   calculateOfflineReward,
+  checkDailyLogin,
   performPrestige,
   createInitialState
 } from '../game/economy';
@@ -23,10 +24,16 @@ export interface OfflineReward {
   credits: number;
 }
 
+export interface DailyLoginReward {
+  streak: number;
+  credits: number;
+}
+
 export interface UseGameStateResult {
   gameState: GameState;
   incomePerSecond: number;
   offlineReward: OfflineReward | null;
+  dailyReward: DailyLoginReward | null;
   ready: boolean;
   selectedRoomId: ModuleId;
   adPending: boolean;
@@ -35,6 +42,7 @@ export interface UseGameStateResult {
   selectRoom(moduleId: ModuleId): void;
   renovateOrbit(): void;
   dismissOfflineReward(): void;
+  dismissDailyReward(): void;
   activateIncomeBoost(): Promise<void>;
   activateVipResident(): Promise<void>;
   doubleOfflineReward(): Promise<void>;
@@ -52,6 +60,7 @@ export function useGameState(
   const [selectedRoomId, setSelectedRoomId] = useState<ModuleId>('tenant_capsule');
   const [ready, setReady] = useState(false);
   const [offlineReward, setOfflineReward] = useState<OfflineReward | null>(null);
+  const [dailyReward, setDailyReward] = useState<DailyLoginReward | null>(null);
   const [adPending, setAdPending] = useState(false);
   const [adsAvailable, setAdsAvailable] = useState(false);
 
@@ -90,8 +99,18 @@ export function useGameState(
 
       if (savedState) {
         const reward = calculateOfflineReward(savedState);
-        setGameState(advanceGame(savedState, reward.seconds));
+        const advanced = advanceGame(savedState, reward.seconds);
+        const daily = checkDailyLogin(advanced);
+
+        setGameState(daily.state);
         setOfflineReward(reward.credits > 0 ? reward : null);
+        setDailyReward(daily.reward > 0 ? { streak: daily.streak, credits: daily.reward } : null);
+      } else {
+        const fresh = createInitialState();
+        const daily = checkDailyLogin(fresh);
+
+        setGameState(daily.state);
+        setDailyReward(daily.reward > 0 ? { streak: daily.streak, credits: daily.reward } : null);
       }
 
       setReady(true);
@@ -155,6 +174,10 @@ export function useGameState(
 
   const dismissOfflineReward = useCallback(() => {
     setOfflineReward(null);
+  }, []);
+
+  const dismissDailyReward = useCallback(() => {
+    setDailyReward(null);
   }, []);
 
   // When the Yandex SDK is unavailable (local dev, other platforms), rewarded
@@ -270,6 +293,7 @@ export function useGameState(
     gameState,
     incomePerSecond: calculateIncomePerSecond(gameState),
     offlineReward,
+    dailyReward,
     ready,
     selectedRoomId,
     adPending,
@@ -278,6 +302,7 @@ export function useGameState(
     selectRoom,
     renovateOrbit,
     dismissOfflineReward,
+    dismissDailyReward,
     activateIncomeBoost,
     activateVipResident,
     doubleOfflineReward,

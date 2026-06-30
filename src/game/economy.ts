@@ -188,3 +188,55 @@ export function buyPrestigeUpgrade(state: GameState, upgradeId: PrestigeUpgradeI
     purchasedPrestigeUpgrades: [...owned, upgradeId]
   };
 }
+
+const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1_000;
+const MAX_DAILY_STREAK = 7;
+
+export function getDayIndex(now: number): number {
+  return Math.floor(now / MILLISECONDS_PER_DAY);
+}
+
+export function getDailyLoginReward(streak: number): number {
+  // Reward grows with streak, capped at day 7 then cycles.
+  const effectiveStreak = ((streak - 1) % MAX_DAILY_STREAK) + 1;
+  return effectiveStreak * 50;
+}
+
+export interface DailyLoginResult {
+  state: GameState;
+  reward: number;
+  streak: number;
+}
+
+export function checkDailyLogin(state: GameState, now = Date.now()): DailyLoginResult {
+  const today = getDayIndex(now);
+  const lastDay = state.lastLoginDay;
+
+  if (lastDay === today) {
+    return {
+      state,
+      reward: 0,
+      streak: state.dailyStreak ?? 0
+    };
+  }
+
+  const previousStreak = state.dailyStreak ?? 0;
+  // Consecutive if last login was yesterday. Otherwise reset to 0 (becomes 1).
+  const isConsecutive = lastDay === today - 1;
+  const nextStreak = isConsecutive ? previousStreak + 1 : 1;
+  const reward = getDailyLoginReward(nextStreak);
+
+  const nextState: GameState = {
+    ...state,
+    credits: state.credits + reward,
+    totalEarnedCredits: state.totalEarnedCredits + reward,
+    lastLoginDay: today,
+    dailyStreak: nextStreak
+  };
+
+  return {
+    state: completeEligibleGoals(nextState),
+    reward,
+    streak: nextStreak
+  };
+}

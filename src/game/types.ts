@@ -94,4 +94,6 @@ export interface GameState {
   lastSavedAt: number;
   windowLightColor?: WindowLightColor;
   purchasedPrestigeUpgrades?: PrestigeUpgradeId[];
+  lastLoginDay?: number;
+  dailyStreak?: number;
 }

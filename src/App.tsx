@@ -1,6 +1,7 @@
 import { useGameState } from './ui/useGameState';
 import { DesktopLayout } from './ui/layouts/DesktopLayout';
 import { MobileLayout } from './ui/layouts/MobileLayout';
+import { DailyLoginDialog } from './ui/screens/DailyLoginDialog';
 import { LoadingScreen } from './ui/screens/LoadingScreen';
 import { OfflineRewardDialog } from './ui/screens/OfflineRewardDialog';
 
@@ -31,6 +32,13 @@ export function App() {
           onDouble={game.doubleOfflineReward}
           adsAvailable={game.adsAvailable}
           adPending={game.adPending}
+        />
+      )}
+      {game.dailyReward && (
+        <DailyLoginDialog
+          streak={game.dailyReward.streak}
+          credits={game.dailyReward.credits}
+          onCollect={game.dismissDailyReward}
         />
       )}
     </main>

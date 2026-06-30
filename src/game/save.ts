@@ -58,6 +58,10 @@ function hasOptionalPrestigeUpgrades(value: unknown): boolean {
   return isStringArray(value) && value.every((id) => VALID_PRESTIGE_UPGRADE_IDS.has(id));
 }
 
+function hasOptionalNumber(value: unknown): boolean {
+  return value === undefined || isNumber(value);
+}
+
 function isGameState(value: unknown): value is GameState {
   if (!isRecord(value)) {
     return false;
@@ -74,7 +78,9 @@ function isGameState(value: unknown): value is GameState {
     hasValidTimedBonuses(value.timedBonuses) &&
     isNumber(value.lastSavedAt) &&
     hasOptionalWindowLightColor(value.windowLightColor) &&
-    hasOptionalPrestigeUpgrades(value.purchasedPrestigeUpgrades)
+    hasOptionalPrestigeUpgrades(value.purchasedPrestigeUpgrades) &&
+    hasOptionalNumber(value.lastLoginDay) &&
+    hasOptionalNumber(value.dailyStreak)
   );
 }
 
