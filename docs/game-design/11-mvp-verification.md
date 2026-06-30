@@ -51,6 +51,11 @@
 
 - First purchase is possible immediately with 15 starting credits.
 - First new module becomes reachable in the first 45-90 seconds.
+- Station Director panel is visible in the active desktop layout.
+- Station Director panel is visible in the active mobile layout.
+- The panel shows one current task derived from state, not a hardcoded tutorial.
+- A room-focused task can focus the relevant room without buying anything.
+- Prestige guidance appears only when renovation can grant reputation.
 - Offline reward appears after returning from a saved session.
 - Prestige screen displays "Реновация орбиты".
 

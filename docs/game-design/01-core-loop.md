@@ -10,6 +10,11 @@
 
 Игрок должен всегда видеть ближайшую полезную покупку. Если денег не хватает, интерфейс показывает, сколько времени осталось при текущем доходе.
 
+Station Director guidance is the first-pass answer to "what should I do next?".
+It derives one current task from game state, income, goals, visitors and
+prestige readiness. It does not force the player into a quest chain; it simply
+keeps the next useful action visible on both desktop and mobile.
+
 ## Ресурсы цикла
 
 - **Кредиты** - основная валюта, идет на модули, апгрейды и обслуживание.
