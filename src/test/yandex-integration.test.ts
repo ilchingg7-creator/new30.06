@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createInitialState } from '../game/economy';
 import { SAVE_KEY } from '../game/save';
 import { useGameState } from '../ui/useGameState';
@@ -34,6 +34,10 @@ function makeMemoryStorage(saved: string | null = null) {
     }
   } as Storage);
 }
+
+afterEach(() => {
+  delete window.YaGames;
+});
 
 describe('yandex platform integration', () => {
   it('calls markReady after the save loads', async () => {
@@ -164,6 +168,52 @@ describe('yandex platform integration', () => {
     expect(result.current.gameState.credits).toBeGreaterThanOrEqual(29_000);
   });
 
+  it('waits for the real Yandex SDK init before loading cloud save', async () => {
+    const cloudState = {
+      ...createInitialState(Date.now()),
+      credits: 777,
+      lastSavedAt: Date.now()
+    };
+    const getData = vi.fn().mockResolvedValue({ [SAVE_KEY]: JSON.stringify(cloudState) });
+    const ready = vi.fn();
+    let resolveInit: (sdk: {
+      features: { LoadingAPI: { ready(): void } };
+      getPlayer(): Promise<{ getData: typeof getData; setData: ReturnType<typeof vi.fn> }>;
+    }) => void = () => undefined;
+
+    window.YaGames = {
+      init: vi.fn().mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveInit = resolve;
+          })
+      )
+    };
+
+    const storage = makeMemoryStorage();
+    const { result } = renderHook(() => useGameState(storage));
+
+    await waitFor(() => expect(window.YaGames?.init).toHaveBeenCalled());
+
+    act(() => {
+      resolveInit({
+        features: { LoadingAPI: { ready } },
+        async getPlayer() {
+          return {
+            getData,
+            setData: vi.fn().mockResolvedValue(undefined)
+          };
+        }
+      });
+    });
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    expect(getData).toHaveBeenCalledWith({ keys: [SAVE_KEY] });
+    expect(result.current.gameState.credits).toBeGreaterThanOrEqual(777);
+    expect(ready).toHaveBeenCalled();
+  });
+
   it('writes to both local storage and cloud on every state change', async () => {
     const platform = makePlatform(false);
     const storage = makeMemoryStorage();
@@ -177,6 +227,6 @@ describe('yandex platform integration', () => {
     });
 
     await waitFor(() => expect(platform.saveCloud).toHaveBeenCalled());
-    expect(storage.load(SAVE_KEY)).resolves.not.toBeNull();
+    await expect(storage.load(SAVE_KEY)).resolves.not.toBeNull();
   });
 });

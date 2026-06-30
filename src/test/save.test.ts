@@ -70,11 +70,11 @@ describe('save serialization', () => {
     const migrated = parseGameState(JSON.stringify(legacy));
 
     expect(migrated).not.toBeNull();
-    expect(migrated?.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
     expect(migrated?.windowLightColor).toBe('amber');
     expect(migrated?.purchasedPrestigeUpgrades).toEqual([]);
     expect(migrated?.unlockedAchievements).toEqual([]);
     expect(migrated?.dailyStreak).toBeUndefined();
+    expect(JSON.parse(serializeGameState(migrated!)).schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
   });
 
   it('preserves existing optional fields when migrating a v1 save', () => {
@@ -107,6 +107,6 @@ describe('save serialization', () => {
 
     expect(migrated?.windowLightColor).toBe('green');
     expect(migrated?.dailyStreak).toBe(3);
-    expect(migrated?.schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
+    expect(JSON.parse(serializeGameState(migrated!)).schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
   });
 });

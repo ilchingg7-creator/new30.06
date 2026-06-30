@@ -65,35 +65,21 @@ export function useGameState(
   const [adsAvailable, setAdsAvailable] = useState(false);
 
   useEffect(() => {
-    if (yandexPlatform) {
-      platformRef.current = yandexPlatform;
-      setAdsAvailable(yandexPlatform.isAvailable());
-      return undefined;
-    }
-
     let cancelled = false;
 
-    void initYandexPlatform().then((platform) => {
+    async function loadSavedState() {
+      const platform = yandexPlatform ?? (await initYandexPlatform());
+
       if (cancelled) {
         return;
       }
 
       platformRef.current = platform;
       setAdsAvailable(platform.isAvailable());
-    });
 
-    return () => {
-      cancelled = true;
-    };
-  }, [yandexPlatform]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadSavedState() {
       // Prefer the Yandex cloud save when available; fall back to local
       // storage so the game still boots offline or on other platforms.
-      const cloudRaw = await platformRef.current.loadCloudSave(SAVE_KEY).catch(() => null);
+      const cloudRaw = await platform.loadCloudSave(SAVE_KEY).catch(() => null);
       const cloudState = parseGameState(cloudRaw);
       const localRaw = await storage.load(SAVE_KEY);
       const localState = parseGameState(localRaw);
@@ -136,7 +122,7 @@ export function useGameState(
 
       setReady(true);
       // Tell the platform the loading screen is gone and the station is visible.
-      platformRef.current.markReady();
+      platform.markReady();
     }
 
     void loadSavedState();
@@ -144,7 +130,7 @@ export function useGameState(
     return () => {
       cancelled = true;
     };
-  }, [storage]);
+  }, [storage, yandexPlatform]);
 
   useEffect(() => {
     if (!ready) {
