@@ -89,6 +89,25 @@ Initial MVP reward direction:
 | `unlock_panorama_dome` | Panorama visual detail unlock. |
 | `first_renovation` | Reputation loop acknowledgement. |
 
+## Balance Pacing
+
+The full room list must not unlock in the first 2-3 minutes. That pacing makes room detail, goals, offline income and prestige education irrelevant.
+
+Target unlock windows without mandatory rewarded ads:
+
+| Room | Target Unlock Window |
+|---|---:|
+| `tenant_capsule` | immediately |
+| `cosmo_kitchen` | 45-90 seconds |
+| `oxygen_garden` | 4-7 minutes |
+| `zero_g_laundry` | 9-14 minutes |
+| `teleport_entry` | 18-28 minutes |
+| `antigrav_gym` | 30-45 minutes |
+| `panorama_dome` | 45-65 minutes |
+| `saucer_dock` | 60-90 minutes |
+
+The implementation plan should include a deterministic balance simulation test. The test should fail if `saucer_dock` becomes unlockable before the intended late-MVP window under normal play assumptions.
+
 ## Data And Architecture
 
 Keep the existing boundary:
@@ -132,4 +151,3 @@ Visual verification after implementation:
 - Drag/pan station map.
 - Complex quest chains.
 - Credit rewards from goals.
-

@@ -12,6 +12,8 @@ MVP targets the first 30-60 minutes:
 - first new module in 45-90 seconds;
 - first visible station upgrade within 2 minutes;
 - first meaningful rewarded bonus around 10 minutes;
+- late rooms should stretch progression instead of all unlocking in the first 2-3 minutes;
+- saucer dock target unlock is 60-90 minutes without mandatory ads;
 - first prestige goal becomes understandable around 30 minutes;
 - first prestige is reachable around 60 minutes without mandatory ads.
 

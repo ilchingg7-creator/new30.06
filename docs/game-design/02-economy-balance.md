@@ -8,7 +8,6 @@
 
 - доход модулей в секунду;
 - офлайн-доход;
-- цели;
 - rewarded ad бонусы;
 - VIP-жильцы.
 
@@ -101,6 +100,27 @@
 - 10:00 - доступен первый meaningful rewarded ad.
 - 30:00 - игрок понимает, что такое prestige.
 - 60:00 - первый prestige должен быть достижим без обязательной рекламы.
+
+## Unlock Pacing Targets
+
+Opening the last room in 2-3 minutes is too fast for the MVP. The early loop should feel active, but the full station should not be exhausted during the first short session.
+
+Target unlock pacing without mandatory rewarded ads:
+
+| Room | Target Unlock Window |
+|---|---:|
+| `tenant_capsule` | immediately |
+| `cosmo_kitchen` | 45-90 seconds |
+| `oxygen_garden` | 4-7 minutes |
+| `zero_g_laundry` | 9-14 minutes |
+| `teleport_entry` | 18-28 minutes |
+| `antigrav_gym` | 30-45 minutes |
+| `panorama_dome` | 45-65 minutes |
+| `saucer_dock` | 60-90 minutes |
+
+Balancing should prefer changing module costs, income growth and milestone multipliers over adding artificial timers. Rewarded bonuses may speed up progression, but they must not be required and must not collapse the full unlock arc to a few minutes.
+
+Implementation should include a deterministic progression simulation test that prevents `saucer_dock` from becoming unlockable before the target window under normal play assumptions.
 
 ## Защита от тупика
 
