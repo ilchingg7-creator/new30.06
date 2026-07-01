@@ -109,4 +109,51 @@ describe('save serialization', () => {
     expect(migrated?.dailyStreak).toBe(3);
     expect(JSON.parse(serializeGameState(migrated!)).schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
   });
+
+  it('parses saves without communal duty fields as valid legacy-compatible state', () => {
+    const state = createInitialState(1_000);
+    const raw = JSON.stringify({ ...state, schemaVersion: CURRENT_SCHEMA_VERSION });
+
+    const parsed = parseGameState(raw);
+
+    expect(parsed).not.toBeNull();
+    expect(parsed?.communalDuty).toBeUndefined();
+    expect(parsed?.lastCommunalDutyResolvedAt).toBeUndefined();
+  });
+
+  it('round-trips a valid available communal duty', () => {
+    const state = {
+      ...createInitialState(1_000),
+      communalDuty: {
+        id: 'duty-1',
+        dutyId: 'capsule_quiet_hours' as const,
+        roomId: 'tenant_capsule' as const,
+        status: 'available' as const,
+        createdAt: 1_000
+      },
+      lastCommunalDutyResolvedAt: 500
+    };
+
+    const parsed = parseGameState(serializeGameState(state));
+
+    expect(parsed?.communalDuty?.dutyId).toBe('capsule_quiet_hours');
+    expect(parsed?.lastCommunalDutyResolvedAt).toBe(500);
+  });
+
+  it('rejects saves with invalid communal duty ids', () => {
+    const state = createInitialState(1_000);
+    const raw = JSON.stringify({
+      ...state,
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      communalDuty: {
+        id: 'duty-bad',
+        dutyId: 'not_a_duty',
+        roomId: 'tenant_capsule',
+        status: 'available',
+        createdAt: 1_000
+      }
+    });
+
+    expect(parseGameState(raw)).toBeNull();
+  });
 });

@@ -73,6 +73,26 @@ const VALID_STORY_IDS = new Set([
   'cosmonaut_warm_start'
 ]);
 
+const VALID_RESIDENT_IDS = new Set([
+  'sleepy_engineer',
+  'mist_cook',
+  'vacuum_gardener',
+  'sock_master',
+  'teleport_courier',
+  'vip_astroteenant',
+  'retired_cosmonaut',
+  'three_eyed_housekeeper'
+]);
+
+const VALID_COMMUNAL_DUTY_IDS = new Set([
+  'capsule_quiet_hours',
+  'kitchen_soup_escape',
+  'garden_vacuum_sprout',
+  'laundry_sock_orbit'
+]);
+
+const VALID_COMMUNAL_DUTY_STATUSES = new Set(['available', 'in_progress', 'ready_to_claim']);
+
 function hasOptionalWindowLightColor(value: unknown): boolean {
   return value === undefined || (typeof value === 'string' && VALID_WINDOW_LIGHT_COLORS.has(value));
 }
@@ -115,6 +135,64 @@ function hasOptionalRoomConditions(value: unknown): boolean {
   }
 
   return Object.values(value).every((v) => isNumber(v));
+}
+
+function isValidModuleId(value: unknown): boolean {
+  return typeof value === 'string' && modules.some((module) => module.id === value);
+}
+
+function hasOptionalCommunalDuty(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  return (
+    isRecord(value) &&
+    typeof value.id === 'string' &&
+    typeof value.dutyId === 'string' &&
+    VALID_COMMUNAL_DUTY_IDS.has(value.dutyId) &&
+    isValidModuleId(value.roomId) &&
+    typeof value.status === 'string' &&
+    VALID_COMMUNAL_DUTY_STATUSES.has(value.status) &&
+    isNumber(value.createdAt) &&
+    hasOptionalNumber(value.startedAt) &&
+    hasOptionalNumber(value.completesAt) &&
+    (
+      value.assignedResidentId === undefined ||
+      (typeof value.assignedResidentId === 'string' && VALID_RESIDENT_IDS.has(value.assignedResidentId))
+    )
+  );
+}
+
+function hasOptionalConditionRepair(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return Object.entries(value).every(([moduleId, repair]) => isValidModuleId(moduleId) && isNumber(repair));
+}
+
+function hasOptionalCommunalDutyResult(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  return (
+    isRecord(value) &&
+    typeof value.dutyId === 'string' &&
+    VALID_COMMUNAL_DUTY_IDS.has(value.dutyId) &&
+    typeof value.residentId === 'string' &&
+    VALID_RESIDENT_IDS.has(value.residentId) &&
+    isValidModuleId(value.roomId) &&
+    isNumber(value.comfortGain) &&
+    hasOptionalConditionRepair(value.conditionRepair) &&
+    typeof value.resultKey === 'string' &&
+    isNumber(value.claimedAt)
+  );
 }
 
 /**
@@ -174,7 +252,10 @@ function isGameStateShape(value: unknown): value is GameState {
     hasOptionalNumber(value.dailyStreak) &&
     hasOptionalAchievements(value.unlockedAchievements) &&
     hasOptionalStories(value.completedStories) &&
-    hasOptionalRoomConditions(value.roomConditions)
+    hasOptionalRoomConditions(value.roomConditions) &&
+    hasOptionalCommunalDuty(value.communalDuty) &&
+    hasOptionalNumber(value.lastCommunalDutyResolvedAt) &&
+    hasOptionalCommunalDutyResult(value.lastCommunalDutyResult)
   );
 }
 
