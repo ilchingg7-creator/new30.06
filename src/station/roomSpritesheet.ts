@@ -1,32 +1,17 @@
-import { Assets, Container, Rectangle, Sprite, Texture } from 'pixi.js';
+import { Assets, Container, Sprite, Texture } from 'pixi.js';
 import type { ModuleId } from '../game/types';
 
 /**
  * Spritesheet-based room renderer.
  *
- * Loads a single PNG spritesheet per room and extracts 10 frames (2 rows ×
- * 5 columns). Each frame corresponds to a detail level (1..10). The frame
- * is displayed as a centered sprite that replaces the hardcoded Graphics
- * room scene.
+ * Loads individual PNG files per detail level (tier-1.png .. tier-10.png)
+ * from /sprites/rooms/<moduleId>/. Each frame corresponds to a detail
+ * level (1..10). The frame is displayed as a centered sprite on top of
+ * the hardcoded Graphics room scene.
  *
- * The spritesheet is expected at /sprites/rooms/<moduleId>/spritesheet.png
- * with a 5×2 grid layout. If the file is missing, the renderer returns null
- * and the caller falls back to the Graphics scene.
+ * If a texture is missing, the renderer returns null and the caller
+ * falls back to the Graphics-only scene.
  */
-
-interface SpritesheetConfig {
-  url: string;
-  cols: number;
-  rows: number;
-}
-
-const spritesheetConfigs: Partial<Record<ModuleId, SpritesheetConfig>> = {
-  tenant_capsule: {
-    url: '/sprites/rooms/tenant_capsule/spritesheet.png',
-    cols: 5,
-    rows: 2
-  }
-};
 
 const textureCache = new Map<string, Promise<Texture | null>>();
 
@@ -49,74 +34,75 @@ function loadTexture(url: string): Promise<Texture | null> {
 }
 
 /**
+ * Rooms that have sprite art available. Add a module ID here when
+ * sprites are placed in public/sprites/rooms/<moduleId>/tier-N.png.
+ */
+const SPRITE_ROOMS: Partial<Record<ModuleId, true>> = {
+  tenant_capsule: true
+};
+
+/**
  * Build a sprite container for a room at the given detail level.
- * Returns null if no spritesheet is available for this room.
+ * Returns null if no sprite is available for this room/level.
  *
- * The sprite is centered in the 840×480 canvas and scaled to fit
- * while preserving aspect ratio.
+ * The sprite is centered in the 840×480 canvas and scaled to fill
+ * the room interior (~600×340px) while preserving aspect ratio.
  */
 export async function buildSpritesheetRoom(
   moduleId: ModuleId,
   detailLevel: number
 ): Promise<Container | null> {
-  const config = spritesheetConfigs[moduleId];
-
-  if (!config) {
+  if (!SPRITE_ROOMS[moduleId]) {
     return null;
   }
 
-  const texture = await loadTexture(config.url);
+  // Try the exact tier for this detail level, then fall back to older tiers.
+  for (let tier = Math.min(10, Math.max(1, detailLevel)); tier >= 1; tier -= 1) {
+    const url = `/sprites/rooms/${moduleId}/tier-${tier}.png`;
+    const texture = await loadTexture(url);
 
-  if (!texture) {
-    return null;
+    if (!texture) {
+      continue;
+    }
+
+    const sprite = new Sprite(texture);
+    sprite.anchor.set(0.5, 0.5);
+    sprite.position.set(420, 240); // center of 840×480 canvas
+
+    // Scale to fill the room interior. The room shell interior is roughly
+    // 572×224px (from the Graphics renderer). We want the sprite to be
+    // large and visible — target ~600px wide, ~340px tall, whichever is smaller.
+    const targetW = 600;
+    const targetH = 340;
+    const scale = Math.min(targetW / texture.width, targetH / texture.height);
+    sprite.scale.set(scale);
+
+    const container = new Container();
+    container.addChild(sprite);
+
+    return container;
   }
 
-  // Calculate frame rectangle from the grid.
-  const frameIndex = Math.max(0, Math.min(9, detailLevel - 1));
-  const col = frameIndex % config.cols;
-  const row = Math.floor(frameIndex / config.cols);
-  const frameW = Math.floor(texture.width / config.cols);
-  const frameH = Math.floor(texture.height / config.rows);
-  const frameRect = new Rectangle(col * frameW, row * frameH, frameW, frameH);
-
-  // Create a sub-texture for the specific frame.
-  const frameTexture = new Texture({
-    source: texture.source,
-    frame: frameRect
-  });
-
-  const sprite = new Sprite(frameTexture);
-  sprite.anchor.set(0.5, 0.5);
-  sprite.position.set(420, 240); // center of 840×480 canvas
-
-  // Scale to fit the canvas while preserving aspect ratio.
-  // Target: ~440px wide (fits inside the room shell) while keeping height ≤ 300px.
-  const targetW = 440;
-  const targetH = 300;
-  const scale = Math.min(targetW / frameW, targetH / frameH);
-  sprite.scale.set(scale);
-
-  const container = new Container();
-  container.addChild(sprite);
-
-  return container;
+  return null;
 }
 
 /**
- * Check if a spritesheet is available for a room.
+ * Check if sprite art is available for a room.
  */
 export function hasRoomSpritesheet(moduleId: ModuleId): boolean {
-  return Boolean(spritesheetConfigs[moduleId]);
+  return Boolean(SPRITE_ROOMS[moduleId]);
 }
 
 /**
- * Preload the spritesheet for a room.
+ * Preload all tier textures for a room.
  */
 export async function preloadRoomSpritesheet(moduleId: ModuleId): Promise<void> {
-  const config = spritesheetConfigs[moduleId];
+  if (!SPRITE_ROOMS[moduleId]) {
+    return;
+  }
 
-  if (config) {
-    await loadTexture(config.url);
+  for (let tier = 1; tier <= 10; tier += 1) {
+    void loadTexture(`/sprites/rooms/${moduleId}/tier-${tier}.png`);
   }
 }
 
