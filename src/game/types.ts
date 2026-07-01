@@ -160,6 +160,56 @@ export interface TimedBonus {
   expiresAt: number;
 }
 
+export type CommunalDutyId =
+  | 'capsule_quiet_hours'
+  | 'kitchen_soup_escape'
+  | 'garden_vacuum_sprout'
+  | 'laundry_sock_orbit';
+
+export type CommunalDutyStatus = 'available' | 'in_progress' | 'ready_to_claim';
+
+export interface CommunalDutyReward {
+  comfortGain?: number;
+  conditionRepair?: Partial<Record<ModuleId, number>>;
+  timedBonus?: TimedBonus;
+}
+
+export interface CommunalDutyResidentOutcome {
+  residentId: ResidentId;
+  reward: CommunalDutyReward;
+  resultKey: string;
+}
+
+export interface CommunalDutyDefinition {
+  id: CommunalDutyId;
+  roomId: ModuleId;
+  eligibleResidentIds: ResidentId[];
+  bestResidentId: ResidentId;
+  durationMs: number;
+  outcomes: CommunalDutyResidentOutcome[];
+}
+
+export interface CommunalDutyState {
+  id: string;
+  dutyId: CommunalDutyId;
+  roomId: ModuleId;
+  status: CommunalDutyStatus;
+  createdAt: number;
+  assignedResidentId?: ResidentId;
+  startedAt?: number;
+  completesAt?: number;
+}
+
+export interface CommunalDutyResult {
+  dutyId: CommunalDutyId;
+  residentId: ResidentId;
+  roomId: ModuleId;
+  comfortGain: number;
+  conditionRepair: Partial<Record<ModuleId, number>>;
+  resultKey: string;
+  claimedAt: number;
+}
+
 export interface GameState {
   credits: number;
   totalEarnedCredits: number;
@@ -191,6 +241,9 @@ export interface GameState {
    * multiplier; low condition shows visual problems in the scene.
    */
   roomConditions?: Partial<Record<ModuleId, number>>;
+  communalDuty?: CommunalDutyState;
+  lastCommunalDutyResolvedAt?: number;
+  lastCommunalDutyResult?: CommunalDutyResult;
   /**
    * Save schema version. Injected by `serializeGameState` and validated by
    * `parseGameState`. Not set on fresh in-memory states created by
