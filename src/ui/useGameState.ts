@@ -180,6 +180,8 @@ export function useGameState(
     }
 
     const intervalId = window.setInterval(() => {
+      // Pause game tick when the tab is hidden (requirement 1.19.4).
+      if (document.hidden) return;
       setGameState((current) => maybeCreateCommunalDuty(advanceGame(current, 1)));
     }, 1_000);
 
@@ -194,6 +196,8 @@ export function useGameState(
     }
 
     const intervalId = window.setInterval(() => {
+      // Pause decay when the tab is hidden (requirement 1.19.4).
+      if (document.hidden) return;
       setGameState((current) => decayRoomConditions(current));
     }, DECAY_INTERVAL_SECONDS * 1_000);
 

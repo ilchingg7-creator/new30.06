@@ -141,7 +141,32 @@ export function toggleMuted(): boolean {
   return muted;
 }
 
-// Initialize from storage on module load.
+/**
+ * Suspend the AudioContext when the page is hidden (requirement 1.3).
+ * Browsers do this automatically in some cases, but explicit suspension
+ * is required for Yandex Games moderation.
+ */
+export function suspendAudio(): void {
+  if (ctx && ctx.state === 'running') {
+    void ctx.suspend();
+  }
+}
+
+export function resumeAudio(): void {
+  if (ctx && ctx.state === 'suspended') {
+    void ctx.resume();
+  }
+}
+
+// Initialize from storage on module load + wire visibility change.
 if (typeof window !== 'undefined') {
   muted = getMutedFromStorage();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      suspendAudio();
+    } else {
+      resumeAudio();
+    }
+  });
 }

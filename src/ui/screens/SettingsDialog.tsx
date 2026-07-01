@@ -1,4 +1,4 @@
-import { HelpCircle, Info, RotateCcw, Settings, Volume2, VolumeX, X } from 'lucide-react';
+import { HelpCircle, Info, Mail, RotateCcw, Settings, Volume2, VolumeX, X } from 'lucide-react';
 import { useState } from 'react';
 import type { Language, Translation } from '../../platform/i18n';
 
@@ -118,6 +118,10 @@ export function SettingsDialog({
           <p className="panel-copy">{t.aboutText}</p>
           <p className="panel-copy">{t.aboutHint1}</p>
           <p className="panel-copy">{t.aboutHint2}</p>
+          <div className="settings-email">
+            <Mail aria-hidden="true" size={14} />
+            <a href={`mailto:${t.feedbackEmail}`}>{t.feedbackEmail}</a>
+          </div>
         </div>
       </section>
     </div>

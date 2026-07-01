@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
 import { createInitialState } from '../game/economy';
 import type { GameState, ResidentId } from '../game/types';
@@ -9,6 +9,15 @@ import { MobileLayout } from '../ui/layouts/MobileLayout';
 import type { UseGameStateResult } from '../ui/useGameState';
 
 const t = translations.ru;
+
+// Ensure tests run in Russian (navigator.language defaults to en-US in jsdom).
+beforeEach(() => {
+  Object.defineProperty(navigator, 'language', {
+    configurable: true,
+    value: 'ru-RU'
+  });
+  window.localStorage.removeItem('cosmic-communalka-language');
+});
 
 function setViewportWidth(width: number) {
   Object.defineProperty(window, 'innerWidth', {

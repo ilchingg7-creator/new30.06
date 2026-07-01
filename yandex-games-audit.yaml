@@ -1,0 +1,31 @@
+version: 1
+project:
+  name: Космическая коммуналка
+commands:
+  build: npm run build
+  serve: npm run preview -- --host 127.0.0.1
+runtime:
+  url: http://127.0.0.1:4173
+paths:
+  build: dist
+  archive: release/game.zip
+  texts: publication
+  promo: promo
+targets:
+  desktop: true
+  mobile: true
+  tv: false
+orientation: any
+locales:
+  - ru
+  - en
+sdk:
+  ads: true
+  purchases: false
+  cloudSaves: true
+scenarios:
+  ads: Trigger rewarded ads from bonus buttons (x2 rent, VIP resident, double offline)
+  saves: Save progress via localStorage + Yandex cloud, reload and verify restoration
+  resize: Resize during gameplay and between desktop/mobile layouts
+  orientation: Any orientation on mobile
+  return: Background and restore the game

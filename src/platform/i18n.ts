@@ -160,6 +160,7 @@ export interface Translation {
   // About (replaced)
   aboutHint1: string;
   aboutHint2: string;
+  feedbackEmail: string;
   // Resident stories
   storyTitle: string;
   storyProgress: string;
@@ -344,6 +345,7 @@ const ru: Translation = {
   rewardType: 'Тип награды',
   aboutHint1: 'Кликайте по комнате — каждый клик даёт копейки. Развивайте станцию, заселяйте жильцов и делайте реновацию орбиты!',
   aboutHint2: 'Спасибо за игру! Ваша обратная связь помогает делать коммуналку уютнее.',
+  feedbackEmail: 'seme4kak@yandex.ru',
   storyTitle: 'Просьба жильца',
   storyProgress: 'Прогресс',
   storyReward: 'Награда',
@@ -728,6 +730,7 @@ const en: Translation = {
   rewardType: 'Reward type',
   aboutHint1: 'Click the room — every click gives kopeks. Develop the station, settle residents and renovate the orbit!',
   aboutHint2: 'Thanks for playing! Your feedback helps make the communalka cozier.',
+  feedbackEmail: 'seme4kak@yandex.ru',
   storyTitle: 'Resident Request',
   storyProgress: 'Progress',
   storyReward: 'Reward',
@@ -980,13 +983,25 @@ export function getDefaultLanguage(): Language {
     return 'ru';
   }
 
+  // Stored preference takes priority.
   const stored = window.localStorage.getItem(LANGUAGE_KEY);
 
   if (stored === 'ru' || stored === 'en') {
     return stored;
   }
 
-  return 'ru';
+  // Auto-detect from browser/Yandex environment (requirement 2.14).
+  // Check Yandex SDK environment first, then fall back to navigator.language.
+  const yaEnv = (window as unknown as { YaGames?: { environment?: { i18n?: { lang?: string } } } }).YaGames;
+  const yaLang = yaEnv?.environment?.i18n?.lang;
+
+  if (yaLang) {
+    return yaLang.startsWith('en') ? 'en' : 'ru';
+  }
+
+  const navLang = navigator.language ?? 'ru';
+
+  return navLang.startsWith('en') ? 'en' : 'ru';
 }
 
 export function setStoredLanguage(lang: Language): void {

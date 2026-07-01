@@ -1,9 +1,18 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { App } from '../App';
 import { translations } from '../platform/i18n';
 
 const t = translations.ru;
+
+// Ensure tests run in Russian (navigator.language defaults to en-US in jsdom).
+beforeEach(() => {
+  Object.defineProperty(navigator, 'language', {
+    configurable: true,
+    value: 'ru-RU'
+  });
+  window.localStorage.removeItem('cosmic-communalka-language');
+});
 
 function setViewportWidth(width: number) {
   Object.defineProperty(window, 'innerWidth', {
