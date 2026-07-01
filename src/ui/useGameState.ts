@@ -9,10 +9,11 @@ import {
   performPrestige,
   createInitialState
 } from '../game/economy';
+import { applyRoomClickReward } from '../game/roomClicks';
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
 import type { ActiveResidentStory, GameState, ModuleId, PrestigeUpgradeId, WindowLightColor } from '../game/types';
 import { getActiveResidentStory } from '../game/residentStories';
-import { decayRoomConditions, DECAY_INTERVAL_SECONDS, repairRoom } from '../game/roomConditions';
+import { decayRoomConditions, DECAY_INTERVAL_SECONDS } from '../game/roomConditions';
 import {
   acceptVisitor,
   declineVisitor,
@@ -456,19 +457,9 @@ export function useGameState(
   }, [storage]);
 
   const clickRoom = useCallback(() => {
-    // Clicker mechanic: each click gives kopeks AND repairs the selected room.
-    setGameState((current) => {
-      const bonus = 1 + Math.floor(calculateIncomePerSecond(current) * 0.5);
-      const repaired = repairRoom(current, selectedRoomId);
-
-      return {
-        ...repaired,
-        credits: repaired.credits + bonus,
-        totalEarnedCredits: repaired.totalEarnedCredits + bonus
-      };
-    });
+    setGameState((current) => applyRoomClickReward(current));
     playSound('click');
-  }, [selectedRoomId]);
+  }, []);
 
   return {
     gameState,

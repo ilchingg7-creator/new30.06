@@ -8,6 +8,7 @@ import {
   getRoomConditionStatus,
   initializeRoomCondition,
   repairRoom,
+  DECAY_INTERVAL_SECONDS,
   INITIAL_CONDITION,
   REPAIR_PER_CLICK,
   PRISTINE_THRESHOLD,
@@ -84,6 +85,10 @@ describe('room condition system', () => {
     const decayed = decayRoomConditions(state);
 
     expect(decayed.roomConditions?.tenant_capsule).toBe(0);
+  });
+
+  it('decays room condition on the slower communal-duty rhythm', () => {
+    expect(DECAY_INTERVAL_SECONDS).toBe(180);
   });
 });
 

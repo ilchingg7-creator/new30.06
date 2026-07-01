@@ -17,7 +17,7 @@ import type { GameState, ModuleId } from './types';
 export const INITIAL_CONDITION = 60;
 export const REPAIR_PER_CLICK = 8;
 export const DECAY_PER_TICK = 1;
-export const DECAY_INTERVAL_SECONDS = 5;
+export const DECAY_INTERVAL_SECONDS = 180;
 export const PRISTINE_THRESHOLD = 80;
 export const BROKEN_THRESHOLD = 0;
 export const WORN_THRESHOLD = 30;

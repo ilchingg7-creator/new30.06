@@ -364,7 +364,7 @@ const ru: Translation = {
   conditionWorking: 'Рабочее',
   conditionWorn: 'Изношенное',
   conditionBroken: 'Сломано',
-  conditionHint: 'Кликайте по комнате, чтобы починить!',
+  conditionHint: 'Назначьте дежурство жильцу, чтобы починить комнату.',
   perSecond: '/сек',
   content: {
     modules: {
@@ -699,7 +699,7 @@ const en: Translation = {
   conditionWorking: 'Working',
   conditionWorn: 'Worn',
   conditionBroken: 'Broken',
-  conditionHint: 'Click the room to repair it!',
+  conditionHint: 'Assign a resident duty to repair this room.',
   perSecond: '/sec',
   content: {
     modules: {
