@@ -5,8 +5,9 @@
 html,
 body,
 #root {
-  min-height: 100%;
+  height: 100%;
   margin: 0;
+  overflow: hidden;
 }
 
 body {
@@ -28,12 +29,14 @@ input {
 }
 
 .app-shell {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 24px;
   position: relative;
+  overflow-y: auto;
+  overscroll-behavior: none;
 }
 
 .app-shell::before {
@@ -350,7 +353,8 @@ input {
 }
 
 .mobile-layout {
-  min-height: calc(100vh - 96px);
+  min-height: 0;
+  flex: 1;
   display: grid;
   grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;
   gap: 4px;
