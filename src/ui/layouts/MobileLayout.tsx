@@ -68,7 +68,6 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
           <>
             <GoalPanel gameState={game.gameState} t={t} />
             <ResidentCollectionBook gameState={game.gameState} t={t} />
-            <ResidentsPanel gameState={game.gameState} t={t} />
             <AchievementsPanel gameState={game.gameState} t={t} />
             <StatsPanel gameState={game.gameState} t={t} />
           </>

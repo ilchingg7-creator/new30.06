@@ -58,7 +58,6 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
       </div>
       <aside className="side-panel">
         <GoalPanel gameState={game.gameState} t={t} />
-        <ResidentsPanel gameState={game.gameState} t={t} />
         <ResidentCollectionBook gameState={game.gameState} t={t} />
         <BonusPanel
           onIncomeBoost={game.activateIncomeBoost}
