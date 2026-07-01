@@ -921,6 +921,53 @@ input {
   font-size: 0.78rem;
 }
 
+.communal-duty-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.communal-duty-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.communal-duty-heading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.communal-duty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.communal-duty-panel.compact {
+  padding: 8px 10px;
+  gap: 6px;
+}
+
+.communal-duty-panel.compact .communal-duty-heading h2 {
+  font-size: 0.78rem;
+}
+
+.communal-duty-panel.compact strong {
+  font-size: 0.9rem;
+}
+
+.communal-duty-panel.compact .panel-copy {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
+.communal-duty-panel.compact button {
+  min-height: 32px;
+  padding: 0 10px;
+  font-size: 0.72rem;
+}
+
 .panel-heading {
   display: flex;
   align-items: center;

@@ -170,6 +170,20 @@ export interface Translation {
   conditionWorn: string;
   conditionBroken: string;
   conditionHint: string;
+  // Communal duties
+  communalDutyTitle: string;
+  communalDutyAssign: string;
+  communalDutyInProgress: string;
+  communalDutyReady: string;
+  communalDutyClaim: string;
+  communalDutyBestMatch: string;
+  communalDutyNoResidents: string;
+  communalDuties: Record<string, {
+    title: string;
+    request: string;
+    resultBest: string;
+    resultAlternate: string;
+  }>;
   // Format helpers
   perSecond: string;
   // Game content (modules, residents, goals, achievements, prestige
@@ -365,6 +379,39 @@ const ru: Translation = {
   conditionWorn: 'Изношенное',
   conditionBroken: 'Сломано',
   conditionHint: 'Назначьте дежурство жильцу, чтобы починить комнату.',
+  communalDutyTitle: 'Дежурство',
+  communalDutyAssign: 'Назначить',
+  communalDutyInProgress: 'Жилец на дежурстве',
+  communalDutyReady: 'Дежурство завершено',
+  communalDutyClaim: 'Забрать результат',
+  communalDutyBestMatch: 'Лучший выбор',
+  communalDutyNoResidents: 'Пока нет подходящих жильцов',
+  communalDuties: {
+    capsule_quiet_hours: {
+      title: 'Тихий час в капсуле',
+      request: 'Лампа в капсуле гудит как старый радиоприемник. Кто-то должен ее успокоить.',
+      resultBest: 'В капсуле снова тихо и тепло.',
+      resultAlternate: 'Капсула стала спокойнее, хотя все еще имеет мнение.'
+    },
+    kitchen_soup_escape: {
+      title: 'Суп ушел в невесомость',
+      request: 'Кухонный суп кружит под потолком и явно гордится собой.',
+      resultBest: 'Суп вернулся в кастрюлю с достоинством.',
+      resultAlternate: 'С супом договорились, и он приблизился к столу.'
+    },
+    garden_vacuum_sprout: {
+      title: 'Проверка вакуумного ростка',
+      request: 'Маленький росток требует орбитального уважения.',
+      resultBest: 'Росток официально принят в состав станции.',
+      resultAlternate: 'Росток согласился на компромисс.'
+    },
+    laundry_sock_orbit: {
+      title: 'Уборка носочной орбиты',
+      request: 'Носки из прачечной образовали маленькую независимую орбиту.',
+      resultBest: 'Носки вернулись к коммунальному порядку.',
+      resultAlternate: 'Большинство носков вернулось. Остальные под наблюдением.'
+    }
+  },
   perSecond: '/сек',
   content: {
     modules: {
@@ -700,6 +747,39 @@ const en: Translation = {
   conditionWorn: 'Worn',
   conditionBroken: 'Broken',
   conditionHint: 'Assign a resident duty to repair this room.',
+  communalDutyTitle: 'Communal duty',
+  communalDutyAssign: 'Assign',
+  communalDutyInProgress: 'Resident on duty',
+  communalDutyReady: 'Duty complete',
+  communalDutyClaim: 'Claim result',
+  communalDutyBestMatch: 'Best match',
+  communalDutyNoResidents: 'No eligible residents yet',
+  communalDuties: {
+    capsule_quiet_hours: {
+      title: 'Quiet hours in the capsule',
+      request: 'The capsule lamp hums like an old radio. Someone should calm it down.',
+      resultBest: 'The capsule is quiet and warm again.',
+      resultAlternate: 'The capsule is calmer, though still opinionated.'
+    },
+    kitchen_soup_escape: {
+      title: 'Soup escaped into zero-G',
+      request: 'The kitchen soup is orbiting the ceiling and looking proud.',
+      resultBest: 'The soup returned to the pot with dignity.',
+      resultAlternate: 'The soup was negotiated back toward the table.'
+    },
+    garden_vacuum_sprout: {
+      title: 'Vacuum sprout inspection',
+      request: 'A tiny sprout demands proper orbital respect.',
+      resultBest: 'The sprout is officially part of the station.',
+      resultAlternate: 'The sprout accepts the compromise.'
+    },
+    laundry_sock_orbit: {
+      title: 'Sock orbit cleanup',
+      request: 'The laundry socks formed a small independent orbit.',
+      resultBest: 'The socks returned to civic order.',
+      resultAlternate: 'Most socks returned. The rest are being watched.'
+    }
+  },
   perSecond: '/sec',
   content: {
     modules: {
