@@ -1,4 +1,5 @@
 import { checkAchievements } from './achievements';
+import { advanceCommunalDuty } from './communalDuties';
 import { modules } from './content/modules';
 import { prestigeUpgrades } from './content/prestigeUpgrades';
 import { completeEligibleGoals } from './goals';
@@ -139,7 +140,7 @@ export function advanceGame(state: GameState, seconds: number, now = Date.now())
     totalPlaySeconds: (state.totalPlaySeconds ?? 0) + elapsedSeconds
   };
 
-  return checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))));
+  return advanceCommunalDuty(checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)))), now);
 }
 
 export function calculateOfflineReward(
@@ -177,7 +178,10 @@ export function performPrestige(state: GameState, now = Date.now()): GameState {
     // Lifetime stats survive renovation.
     totalPlaySeconds: state.totalPlaySeconds,
     totalModulesBought: state.totalModulesBought,
-    prestigeCount: (state.prestigeCount ?? 0) + 1
+    prestigeCount: (state.prestigeCount ?? 0) + 1,
+    communalDuty: undefined,
+    lastCommunalDutyResult: undefined,
+    lastCommunalDutyResolvedAt: state.lastCommunalDutyResolvedAt
   };
 
   return checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))));

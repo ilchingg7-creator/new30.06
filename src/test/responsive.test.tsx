@@ -2,7 +2,11 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
+import { createInitialState } from '../game/economy';
+import type { GameState, ResidentId } from '../game/types';
 import { translations } from '../platform/i18n';
+import { MobileLayout } from '../ui/layouts/MobileLayout';
+import type { UseGameStateResult } from '../ui/useGameState';
 
 const t = translations.ru;
 
@@ -25,6 +29,65 @@ function setMediaQueryMatches(matches: boolean) {
     removeListener: vi.fn(),
     dispatchEvent: vi.fn()
   }));
+}
+
+function buildDutyGameState(): GameState {
+  const base = createInitialState(1_000);
+
+  return {
+    ...base,
+    moduleLevels: {
+      ...base.moduleLevels,
+      tenant_capsule: 10
+    },
+    unlockedResidents: ['sleepy_engineer'],
+    roomConditions: {
+      tenant_capsule: 45
+    },
+    communalDuty: {
+      id: 'duty-1',
+      dutyId: 'capsule_quiet_hours',
+      roomId: 'tenant_capsule',
+      status: 'available',
+      createdAt: 1_000
+    }
+  };
+}
+
+function buildDutyGame(): UseGameStateResult {
+  const gameState = buildDutyGameState();
+
+  return {
+    gameState,
+    incomePerSecond: 1,
+    offlineReward: null,
+    dailyReward: null,
+    ready: true,
+    selectedRoomId: 'tenant_capsule',
+    adPending: false,
+    adsAvailable: false,
+    buyLevel: vi.fn(),
+    selectRoom: vi.fn(),
+    renovateOrbit: vi.fn(),
+    dismissOfflineReward: vi.fn(),
+    dismissDailyReward: vi.fn(),
+    activateIncomeBoost: vi.fn(),
+    activateVipResident: vi.fn(),
+    doubleOfflineReward: vi.fn(),
+    setWindowLightColor: vi.fn(),
+    buyPrestigeUpgrade: vi.fn(),
+    toggleSound: vi.fn(),
+    soundMuted: false,
+    acceptVisitor: vi.fn(),
+    declineVisitor: vi.fn(),
+    resetSave: vi.fn(),
+    clickRoom: vi.fn(),
+    activeStory: null,
+    storyDismissed: false,
+    dismissStory: vi.fn(),
+    assignCommunalDuty: vi.fn() as (residentId: ResidentId) => void,
+    claimCommunalDuty: vi.fn()
+  };
 }
 
 afterEach(() => {
@@ -140,6 +203,13 @@ describe('responsive layout rendering', () => {
     await screen.findAllByText(t.content.modules.tenant_capsule.name);
 
     expect(container.querySelector('.mobile-layout .top-bar.compact')).not.toBeNull();
+  });
+
+  it('renders compact communal duty panel when mobile layout has an active duty', () => {
+    setViewportWidth(390);
+    const { container } = render(<MobileLayout game={buildDutyGame()} t={t} />);
+
+    expect(container.querySelector('.mobile-layout .communal-duty-panel.compact')).not.toBeNull();
   });
 
   it('renders one room selector navigation for the active layout', async () => {

@@ -9,9 +9,14 @@ import {
   performPrestige,
   createInitialState
 } from '../game/economy';
+import {
+  assignCommunalDuty as assignCommunalDutyState,
+  claimCommunalDuty as claimCommunalDutyState,
+  maybeCreateCommunalDuty
+} from '../game/communalDuties';
 import { applyRoomClickReward } from '../game/roomClicks';
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
-import type { ActiveResidentStory, GameState, ModuleId, PrestigeUpgradeId, WindowLightColor } from '../game/types';
+import type { ActiveResidentStory, GameState, ModuleId, PrestigeUpgradeId, ResidentId, WindowLightColor } from '../game/types';
 import { getActiveResidentStory } from '../game/residentStories';
 import { decayRoomConditions, DECAY_INTERVAL_SECONDS } from '../game/roomConditions';
 import {
@@ -64,6 +69,8 @@ export interface UseGameStateResult {
   declineVisitor(): void;
   resetSave(): void;
   clickRoom(): void;
+  assignCommunalDuty(residentId: ResidentId): void;
+  claimCommunalDuty(): void;
   activeStory: ActiveResidentStory | null;
   storyDismissed: boolean;
   dismissStory(): void;
@@ -173,14 +180,14 @@ export function useGameState(
     }
 
     const intervalId = window.setInterval(() => {
-      setGameState((current) => advanceGame(current, 1));
+      setGameState((current) => maybeCreateCommunalDuty(advanceGame(current, 1)));
     }, 1_000);
 
     return () => window.clearInterval(intervalId);
   }, [ready]);
 
   // Room condition decay: every DECAY_INTERVAL_SECONDS, all room conditions
-  // drop by 1. The player repairs them by clicking the room.
+  // drop by 1. Communal duties are the primary repair source.
   useEffect(() => {
     if (!ready) {
       return undefined;
@@ -461,6 +468,16 @@ export function useGameState(
     playSound('click');
   }, []);
 
+  const assignDuty = useCallback((residentId: ResidentId) => {
+    setGameState((current) => assignCommunalDutyState(current, residentId));
+    playSound('click');
+  }, []);
+
+  const claimDuty = useCallback(() => {
+    setGameState((current) => claimCommunalDutyState(current));
+    playSound('reward');
+  }, []);
+
   return {
     gameState,
     incomePerSecond: calculateIncomePerSecond(gameState),
@@ -486,6 +503,8 @@ export function useGameState(
     declineVisitor: handleDeclineVisitor,
     resetSave,
     clickRoom,
+    assignCommunalDuty: assignDuty,
+    claimCommunalDuty: claimDuty,
     activeStory: storyDismissed ? null : getActiveResidentStory(gameState),
     storyDismissed,
     dismissStory: useCallback(() => setStoryDismissed(true), [])

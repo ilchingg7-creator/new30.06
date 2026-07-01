@@ -4,6 +4,7 @@ import { buyModuleLevel, calculateIncomePerSecond, createInitialState } from '..
 import { getStationGuidance } from '../game/stationDirector';
 import { translations } from '../platform/i18n';
 import { BonusPanel } from '../ui/components/BonusPanel';
+import { CommunalDutyPanel } from '../ui/components/CommunalDutyPanel';
 import { GoalPanel } from '../ui/components/GoalPanel';
 import { ModuleList } from '../ui/components/ModuleList';
 import { PixiStationScene } from '../ui/components/PixiStationScene';
@@ -22,6 +23,17 @@ describe('core UI components', () => {
       state: gameState,
       incomePerSecond: calculateIncomePerSecond(gameState)
     });
+    const dutyState = {
+      ...gameState,
+      unlockedResidents: ['sleepy_engineer'],
+      communalDuty: {
+        id: 'duty-1',
+        dutyId: 'capsule_quiet_hours' as const,
+        roomId: 'tenant_capsule' as const,
+        status: 'available' as const,
+        createdAt: 1_000
+      }
+    };
 
     render(
       <>
@@ -29,6 +41,7 @@ describe('core UI components', () => {
         <StationTaskPanel guidance={guidance} onSelectRoom={vi.fn()} onRenovate={vi.fn()} t={t} />
         <RoomSelector gameState={gameState} selectedRoomId="tenant_capsule" onSelectRoom={vi.fn()} t={t} />
         <PixiStationScene gameState={gameState} selectedRoomId="tenant_capsule" ariaLabel={t.stationView} />
+        <CommunalDutyPanel gameState={dutyState} onAssign={vi.fn()} onClaim={vi.fn()} t={t} />
         <ModuleList gameState={gameState} onBuyLevel={vi.fn()} t={t} />
         <GoalPanel gameState={gameState} t={t} />
         <BonusPanel
@@ -46,6 +59,7 @@ describe('core UI components', () => {
     expect(screen.getByRole('navigation', { name: 'Комнаты' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: t.currentTask })).toBeInTheDocument();
     expect(screen.getByLabelText(t.stationView)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: t.communalDutyTitle })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Комнаты' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Цели' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Бонусы' })).toBeInTheDocument();

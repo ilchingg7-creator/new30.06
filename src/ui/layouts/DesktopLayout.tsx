@@ -3,6 +3,7 @@ import type { Translation } from '../../platform/i18n';
 import { getStationGuidance } from '../../game/stationDirector';
 import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
+import { CommunalDutyPanel } from '../components/CommunalDutyPanel';
 import { CosmeticsPanel } from '../components/CosmeticsPanel';
 import { GoalPanel } from '../components/GoalPanel';
 import { ModuleList } from '../components/ModuleList';
@@ -37,6 +38,12 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
           guidance={stationGuidance}
           onSelectRoom={game.selectRoom}
           onRenovate={game.renovateOrbit}
+          t={t}
+        />
+        <CommunalDutyPanel
+          gameState={game.gameState}
+          onAssign={game.assignCommunalDuty}
+          onClaim={game.claimCommunalDuty}
           t={t}
         />
         <RoomSelector
