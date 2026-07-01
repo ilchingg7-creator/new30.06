@@ -11,6 +11,7 @@ import { PixiStationScene } from '../components/PixiStationScene';
 import { PrestigePanel } from '../components/PrestigePanel';
 import { RoomConditionBar } from '../components/RoomConditionBar';
 import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
+import { ResidentCollectionBook } from '../components/ResidentCollectionBook';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
 import { StationTaskPanel } from '../components/StationTaskPanel';
@@ -58,6 +59,7 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
       <aside className="side-panel">
         <GoalPanel gameState={game.gameState} t={t} />
         <ResidentsPanel gameState={game.gameState} t={t} />
+        <ResidentCollectionBook gameState={game.gameState} t={t} />
         <BonusPanel
           onIncomeBoost={game.activateIncomeBoost}
           onVipResident={game.activateVipResident}

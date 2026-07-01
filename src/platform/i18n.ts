@@ -195,7 +195,7 @@ export interface Translation {
   // visitor keys are the `template` field set in src/game/visitors.ts.
   content: {
     modules: Record<string, { name: string; role: string }>;
-    residents: Record<string, { name: string; unlockText: string; bonusText: string }>;
+    residents: Record<string, { name: string; unlockText: string; bonusText: string; bio: string }>;
     goals: Record<string, { title: string; rewardLabel: string }>;
     achievements: Record<string, { title: string; description: string }>;
     prestigeUpgrades: Record<string, { name: string; description: string }>;
@@ -438,42 +438,50 @@ const ru: Translation = {
       sleepy_engineer: {
         name: 'Сонный инженер',
         unlockText: 'Капсула арендатора достигла 10 уровня.',
-        bonusText: '+5% к доходу капсул'
+        bonusText: '+5% к доходу капсул',
+        bio: 'Бывший инженер орбитальной станции «Восход-7». После выхода на пенсию не нашёл себе места на Земле и вернулся в космос. Спит по 14 часов в сутки, но чинит всё, что ломается, даже во сне. Любит растворимый кофе и старые технические журналы.'
       },
       mist_cook: {
         name: 'Повар с туманной планеты',
         unlockText: 'Космо-кухня достигла 10 уровня.',
-        bonusText: '+10% к доходу кухни'
+        bonusText: '+10% к доходу кухни',
+        bio: 'Прилетел с планеты, покрытой вечным туманом. Готовит супы из космических водорослей, которые никто кроме него не умеет варить. Утверждает, что его бабушка готовила лучше, но рецепта не оставила. Разговаривает с кастрюлями.'
       },
       vacuum_gardener: {
         name: 'Садовник вакуума',
         unlockText: 'Открыт кислородный сад.',
-        bonusText: '+5 комфорта'
+        bonusText: '+5 комфорта',
+        bio: 'Единственный человек на станции, который умеет выращивать помидоры в открытом космосе. Тихий, дружелюбный, всегда предлагает свежий укроп. Коллекционирует семена с разных планет и ведёт дневник наблюдений за каждым ростком.'
       },
       sock_master: {
         name: 'Мастер носков в невесомости',
         unlockText: 'Прачечная невесомости достигла 10 уровня.',
-        bonusText: '+10% к сервисному доходу'
+        bonusText: '+10% к сервисному доходу',
+        bio: 'Легенда станции. Может поймать летящий носок на лету с закрытыми глазами. Превратил стирку в искусство — его носки развешаны по всей станции как декор. Никто не знает, откуда у него 247 пар одинаковых носков.'
       },
       teleport_courier: {
         name: 'Курьер через телепорт',
         unlockText: 'Открыта телепорт-прихожая.',
-        bonusText: '+5% к общему доходу'
+        bonusText: '+5% к общему доходу',
+        bio: 'Самый быстрый курьер в галактике. Доставляет посылки через телепорт за 0.3 секунды. Постоянно путает адреса, но всегда приходит извиняться. Коллекционирует марки с разных планет, хотя они давно вышли из обращения.'
       },
       vip_astroteenant: {
         name: 'VIP-астроарендатор',
         unlockText: 'Добровольный рекламный бонус или редкое событие.',
-        bonusText: 'x2 доход на 10 минут'
+        bonusText: 'x2 доход на 10 минут',
+        bio: 'Таинственный жилец, который появляется только когда станции нужна помощь. Никто не знает его настоящего имени. Платит вдвое за аренду, но требует лучших условий. Говорит, что был на каждой станции в галактике.'
       },
       retired_cosmonaut: {
         name: 'Сосед-отставной космонавт',
         unlockText: 'Первая реновация орбиты.',
-        bonusText: '+10% к стартовому доходу после реновации'
+        bonusText: '+10% к стартовому доходу после реновации',
+        bio: 'Ветеран трёх орбитальных программ. Прошёл 12 реноваций и каждый раз возвращался. Знает каждый закоулок станции и каждую трещину в обшивке. Сидит у иллюминатора и рассказывает истории молодым жильцам. Его эмалированная кружка — предмет зависти.'
       },
       three_eyed_housekeeper: {
         name: 'Трёхглазая комендантша',
         unlockText: 'Комфорт станции достиг 40.',
-        bonusText: '-8% к цене первых модулей'
+        bonusText: '-8% к цене первых модулей',
+        bio: 'Третий глаз видит все неполадки на станции одновременно. Строгая, но справедливая. Ведёт журнал проверок и знает, кто не убрал за собой на кухне. Договаривается с поставщиками о скидках на модули. Любит кактусы и порядок.'
       }
     },
     goals: {
@@ -810,42 +818,50 @@ const en: Translation = {
       sleepy_engineer: {
         name: 'Sleepy Engineer',
         unlockText: 'Tenant Capsule reached level 10.',
-        bonusText: '+5% to capsule income'
+        bonusText: '+5% to capsule income',
+        bio: 'Former engineer of orbital station Voskhod-7. After retirement he could not find his place on Earth and returned to space. Sleeps 14 hours a day but fixes everything that breaks, even in his sleep. Loves instant coffee and old technical magazines.'
       },
       mist_cook: {
         name: 'Mist-Planet Cook',
         unlockText: 'Cosmo-Kitchen reached level 10.',
-        bonusText: '+10% to kitchen income'
+        bonusText: '+10% to kitchen income',
+        bio: 'Arrived from a planet covered in eternal mist. Cooks soups from space algae that nobody else can prepare. Claims his grandmother cooked better but left no recipe. Talks to his pots.'
       },
       vacuum_gardener: {
         name: 'Vacuum Gardener',
         unlockText: 'Oxygen Garden unlocked.',
-        bonusText: '+5 comfort'
+        bonusText: '+5 comfort',
+        bio: 'The only person on the station who can grow tomatoes in open space. Quiet, friendly, always offers fresh dill. Collects seeds from different planets and keeps a diary of every sprout.'
       },
       sock_master: {
         name: 'Zero-G Sock Master',
         unlockText: 'Zero-G Laundry reached level 10.',
-        bonusText: '+10% to service income'
+        bonusText: '+10% to service income',
+        bio: 'A station legend. Can catch a flying sock blindfolded. Turned laundry into art — his socks are hung across the station as decoration. Nobody knows where he got 247 pairs of identical socks.'
       },
       teleport_courier: {
         name: 'Teleport Courier',
         unlockText: 'Teleport Foyer unlocked.',
-        bonusText: '+5% to total income'
+        bonusText: '+5% to total income',
+        bio: 'The fastest courier in the galaxy. Delivers packages through the teleport in 0.3 seconds. Constantly mixes up addresses but always comes back to apologize. Collects stamps from different planets, though they are long obsolete.'
       },
       vip_astroteenant: {
         name: 'VIP Astroteenant',
         unlockText: 'Voluntary ad bonus or a rare event.',
-        bonusText: 'x2 income for 10 minutes'
+        bonusText: 'x2 income for 10 minutes',
+        bio: 'A mysterious tenant who appears only when the station needs help. Nobody knows his real name. Pays double rent but demands the best conditions. Claims to have been to every station in the galaxy.'
       },
       retired_cosmonaut: {
         name: 'Retired Cosmonaut Neighbor',
         unlockText: 'First orbit renovation.',
-        bonusText: '+10% to starting income after renovation'
+        bonusText: '+10% to starting income after renovation',
+        bio: 'Veteran of three orbital programs. Survived 12 renovations and came back every time. Knows every corner of the station and every crack in the hull. Sits by the porthole and tells stories to younger residents. His enamel mug is the envy of all.'
       },
       three_eyed_housekeeper: {
         name: 'Three-Eyed Housekeeper',
         unlockText: 'Station comfort reached 40.',
-        bonusText: '-8% to first-module cost'
+        bonusText: '-8% to first-module cost',
+        bio: 'Her third eye sees every malfunction on the station at once. Strict but fair. Keeps an inspection log and knows who did not clean up in the kitchen. Negotiates discounts on modules with suppliers. Loves cacti and order.'
       }
     },
     goals: {

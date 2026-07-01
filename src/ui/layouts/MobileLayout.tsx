@@ -13,6 +13,7 @@ import { PixiStationScene } from '../components/PixiStationScene';
 import { RoomConditionBar } from '../components/RoomConditionBar';
 import { PrestigePanel } from '../components/PrestigePanel';
 import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
+import { ResidentCollectionBook } from '../components/ResidentCollectionBook';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
 import { StationTaskPanel } from '../components/StationTaskPanel';
@@ -66,6 +67,7 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
         {activeTab === 'goals' && (
           <>
             <GoalPanel gameState={game.gameState} t={t} />
+            <ResidentCollectionBook gameState={game.gameState} t={t} />
             <ResidentsPanel gameState={game.gameState} t={t} />
             <AchievementsPanel gameState={game.gameState} t={t} />
             <StatsPanel gameState={game.gameState} t={t} />
