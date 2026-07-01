@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { buyModuleLevel, calculateIncomePerSecond, createInitialState } from '../game/economy';
 import { getStationGuidance } from '../game/stationDirector';
+import type { GameState } from '../game/types';
 import { translations } from '../platform/i18n';
 import { BonusPanel } from '../ui/components/BonusPanel';
 import { CommunalDutyPanel } from '../ui/components/CommunalDutyPanel';
@@ -23,7 +24,7 @@ describe('core UI components', () => {
       state: gameState,
       incomePerSecond: calculateIncomePerSecond(gameState)
     });
-    const dutyState = {
+    const dutyState: GameState = {
       ...gameState,
       unlockedResidents: ['sleepy_engineer'],
       communalDuty: {

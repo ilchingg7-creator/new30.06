@@ -138,3 +138,9 @@ Goal behavior:
 - completed goals are removed from the active goal list;
 - goals should guide the next action and should not remain as permanent completed entries in the main panel;
 - goal rewards should no longer be credits in MVP. Use comfort, visual detail unlocks, resident-related details or temporary boosts.
+
+## Communal Duty Content
+
+The first duty slice covers tenant capsule, cosmo kitchen, oxygen garden and
+zero-g laundry. Each duty has 2-3 eligible residents and one best match, but
+every eligible resident succeeds with a useful result.

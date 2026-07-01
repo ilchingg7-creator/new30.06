@@ -145,3 +145,10 @@ Use goals for progression guidance and non-credit rewards:
 - prestige education or acknowledgement.
 
 Completed goals must be applied once and then removed from the active visible goal list. They may remain in save data as `completedGoals` for persistence and analytics, but the main goal panel should show only incomplete next goals.
+
+## Condition And Clicks
+
+Room condition decays slowly at `-1` every 3 minutes. Room clicks no longer
+repair condition; they only grant a small active kopek reward. Condition repair
+comes primarily from Communal Duties so the resident system carries the repair
+decision.

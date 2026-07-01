@@ -51,6 +51,11 @@
 
 - First purchase is possible immediately with 15 starting credits.
 - First new module becomes reachable in the first 45-90 seconds.
+- Communal duty appears only when a related room and resident are unlocked.
+- Assigning a resident starts a 3-minute duty.
+- Claiming a completed duty applies reward once.
+- Clicking rooms gives kopeks but does not repair condition.
+- Condition decays at the 3-minute rhythm.
 - Station Director panel is visible in the active desktop layout.
 - Station Director panel is visible in the active mobile layout.
 - The panel shows one current task derived from state, not a hardcoded tutorial.
@@ -79,7 +84,7 @@
 
 This project was developed in a sandbox that only exposes one external port (3000, used by a Next.js host). Running the Vite dev server on a different port for in-browser visual QA via `agent-browser` is not possible because background processes on non-3000 ports are killed by the sandbox. Visual verification therefore relies on:
 
-- `npm test` — 78 tests across 18 files, including React component smoke tests via jsdom with a hardened canvas mock (roundRect, quadraticCurveTo, gradients) so PixiJS Graphics render paths work in the test environment.
+- `npm test` — 180 tests across 29 files, including React component smoke tests via jsdom with a hardened canvas mock (roundRect, quadraticCurveTo, gradients) so PixiJS Graphics render paths work in the test environment.
 - `npm run build` — Vite production build must succeed.
 - `src/test/responsive.test.tsx` — verifies both desktop and mobile layouts mount, all four top-bar metrics render, all four mobile bottom tabs render, and the room selector appears on both layouts.
 - `src/test/app-smoke.test.tsx` — end-to-end App render through the real `useGameState` hook.

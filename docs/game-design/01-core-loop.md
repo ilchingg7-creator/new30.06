@@ -15,6 +15,13 @@ It derives one current task from game state, income, goals, visitors and
 prestige readiness. It does not force the player into a quest chain; it simply
 keeps the next useful action visible on both desktop and mobile.
 
+## Communal Duties
+
+Communal Duties are the short resident-driven decision beat. One station
+situation can be active at a time. The player assigns an unlocked resident,
+waits for the duty to finish, then claims comfort, condition repair or a
+temporary boost. Duties do not grant direct kopeks and do not replace goals.
+
 ## Ресурсы цикла
 
 - **Кредиты** - основная валюта, идет на модули, апгрейды и обслуживание.
