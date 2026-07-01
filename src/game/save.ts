@@ -29,7 +29,10 @@ function hasValidModuleLevels(value: unknown): boolean {
     return false;
   }
 
-  return modules.every((module) => isNumber(value[module.id]));
+  // All existing module levels must be valid numbers. New modules added
+  // after the save was created will be missing — they default to 0
+  // via `createEmptyModuleLevels` merge in the migration path.
+  return modules.every((module) => isNumber(value[module.id]) || value[module.id] === undefined);
 }
 
 function hasValidTimedBonuses(value: unknown): boolean {

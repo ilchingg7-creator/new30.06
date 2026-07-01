@@ -8,7 +8,11 @@ export type ModuleId =
   | 'panorama_dome'
   | 'saucer_dock'
   | 'radiator_balcony'
-  | 'mail_tube_office';
+  | 'mail_tube_office'
+  | 'meteorite_pantry'
+  | 'shared_observatory'
+  | 'comet_water_tank'
+  | 'orbital_library';
 
 export type ResidentId =
   | 'sleepy_engineer'

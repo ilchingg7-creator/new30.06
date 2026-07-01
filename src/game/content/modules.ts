@@ -100,5 +100,45 @@ export const modules: ModuleDefinition[] = [
     comfortBonus: 8,
     unlockAtCredits: 200000000,
     visualKey: 'mail-tube'
+  },
+  {
+    id: 'meteorite_pantry',
+    name: 'Метеоритная кладовая',
+    role: 'Запасы и офлайн-доход',
+    baseCost: 150000000,
+    baseIncomePerSecond: 400000,
+    comfortBonus: 10,
+    unlockAtCredits: 700000000,
+    visualKey: 'meteorite-pantry'
+  },
+  {
+    id: 'shared_observatory',
+    name: 'Общая обсерватория',
+    role: 'Репутация и звёзды',
+    baseCost: 400000000,
+    baseIncomePerSecond: 1000000,
+    comfortBonus: 12,
+    unlockAtCredits: 1200000000,
+    visualKey: 'observatory-dome'
+  },
+  {
+    id: 'comet_water_tank',
+    name: 'Кометный водяной бак',
+    role: 'Комфорт и сервис',
+    baseCost: 1000000000,
+    baseIncomePerSecond: 3000000,
+    comfortBonus: 15,
+    unlockAtCredits: 3000000000,
+    visualKey: 'comet-tank'
+  },
+  {
+    id: 'orbital_library',
+    name: 'Орбитальная библиотека',
+    role: 'Престиж и тишина',
+    baseCost: 2500000000,
+    baseIncomePerSecond: 8000000,
+    comfortBonus: 20,
+    unlockAtCredits: 7500000000,
+    visualKey: 'orbital-library'
   }
 ];

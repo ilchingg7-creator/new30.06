@@ -81,7 +81,11 @@ const roomAccentColors: Record<ModuleId, number> = {
   panorama_dome: stationTheme.lampAmber,
   saucer_dock: stationTheme.utilityBlue,
   radiator_balcony: stationTheme.signalRed,
-  mail_tube_office: stationTheme.utilityBlue
+  mail_tube_office: stationTheme.utilityBlue,
+  meteorite_pantry: stationTheme.signalRed,
+  shared_observatory: stationTheme.utilityBlue,
+  comet_water_tank: stationTheme.enamelGreen,
+  orbital_library: stationTheme.lampAmber
 };
 
 export function getRoomDetailTier(level: number): RoomDetailTier {
@@ -189,6 +193,14 @@ function createBaseProps(moduleId: ModuleId, accentColor: number): RoomSceneProp
       return [lamp, patch, { kind: 'radiator', x: 420, y: 260, color: accentColor }];
     case 'mail_tube_office':
       return [lamp, patch, { kind: 'mail_tube', x: 420, y: 260, color: accentColor }];
+    case 'meteorite_pantry':
+      return [lamp, patch, { kind: 'patch', x: 420, y: 260, color: accentColor }];
+    case 'shared_observatory':
+      return [lamp, patch, { kind: 'window_seat', x: 420, y: 292, color: accentColor }];
+    case 'comet_water_tank':
+      return [lamp, patch, { kind: 'plant', x: 420, y: 260, color: accentColor }];
+    case 'orbital_library':
+      return [lamp, patch, { kind: 'window_seat', x: 420, y: 292, color: accentColor }];
   }
 }
 

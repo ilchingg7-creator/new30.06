@@ -37,7 +37,11 @@ function createEmptyModuleLevels(): ModuleLevels {
     panorama_dome: 0,
     saucer_dock: 0,
     radiator_balcony: 0,
-    mail_tube_office: 0
+    mail_tube_office: 0,
+    meteorite_pantry: 0,
+    shared_observatory: 0,
+    comet_water_tank: 0,
+    orbital_library: 0
   };
 }
 

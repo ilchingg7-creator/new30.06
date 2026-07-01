@@ -432,7 +432,11 @@ const ru: Translation = {
       panorama_dome: { name: 'Панорамный купол', role: 'Премиум зона' },
       saucer_dock: { name: 'Док для мини-тарелок', role: 'Поздний MVP' },
       radiator_balcony: { name: 'Радиаторный балкон', role: 'Тепло и комфорт' },
-      mail_tube_office: { name: 'Почтовая труба-контора', role: 'Пневмопочта станции' }
+      mail_tube_office: { name: 'Почтовая труба-контора', role: 'Пневмопочта станции' },
+      meteorite_pantry: { name: 'Метеоритная кладовая', role: 'Запасы и офлайн-доход' },
+      shared_observatory: { name: 'Общая обсерватория', role: 'Репутация и звёзды' },
+      comet_water_tank: { name: 'Кометный водяной бак', role: 'Комфорт и сервис' },
+      orbital_library: { name: 'Орбитальная библиотека', role: 'Престиж и тишина' }
     },
     residents: {
       sleepy_engineer: {
@@ -812,7 +816,11 @@ const en: Translation = {
       panorama_dome: { name: 'Panorama Dome', role: 'Premium zone' },
       saucer_dock: { name: 'Mini-Saucer Dock', role: 'Late MVP' },
       radiator_balcony: { name: 'Radiator Balcony', role: 'Warmth and comfort' },
-      mail_tube_office: { name: 'Mail-Tube Office', role: 'Station pneumatic mail' }
+      mail_tube_office: { name: 'Mail-Tube Office', role: 'Station pneumatic mail' },
+      meteorite_pantry: { name: 'Meteorite Pantry', role: 'Supplies and offline income' },
+      shared_observatory: { name: 'Shared Observatory', role: 'Reputation and stars' },
+      comet_water_tank: { name: 'Comet Water Tank', role: 'Comfort and service' },
+      orbital_library: { name: 'Orbital Library', role: 'Prestige and silence' }
     },
     residents: {
       sleepy_engineer: {
