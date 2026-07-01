@@ -352,18 +352,24 @@ input {
 .mobile-layout {
   min-height: calc(100vh - 96px);
   display: grid;
-  grid-template-rows: auto auto auto auto 240px minmax(0, 1fr) auto;
-  gap: 8px;
+  grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;
+  gap: 4px;
+}
+
+.mobile-room-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .mobile-layout .station-view {
   min-height: 0;
-  height: 240px;
+  height: 220px;
 }
 
 .mobile-tab-content {
-  min-height: 240px;
-  padding-bottom: 72px;
+  min-height: 200px;
+  padding-bottom: 56px;
 }
 
 .bottom-tabs {

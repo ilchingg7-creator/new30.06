@@ -60,8 +60,10 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
         t={t}
       />
       <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} t={t} />
-      <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} ariaLabel={t.stationView} />
-      <RoomConditionBar gameState={game.gameState} roomId={game.selectedRoomId} t={t} />
+      <div className="mobile-room-area">
+        <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} ariaLabel={t.stationView} />
+        <RoomConditionBar gameState={game.gameState} roomId={game.selectedRoomId} t={t} />
+      </div>
       <div className="mobile-tab-content">
         {activeTab === 'modules' && <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} t={t} />}
         {activeTab === 'goals' && (
