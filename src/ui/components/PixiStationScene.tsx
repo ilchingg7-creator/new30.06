@@ -1,9 +1,7 @@
 import { Application, type Container, type Ticker } from 'pixi.js';
 import { useEffect, useRef } from 'react';
 import type { GameState, ModuleId } from '../../game/types';
-import { getRoomDetailLevel } from '../../station/roomScenes';
 import { buildRoomContainer, calculateRoomSceneFit } from '../../station/roomScenes';
-import { buildSpritesheetRoom, hasRoomSpritesheet } from '../../station/roomSpritesheet';
 import { stationTheme } from '../../station/stationTheme';
 
 interface PixiStationSceneProps {
@@ -20,9 +18,7 @@ export function PixiStationScene({ gameState, selectedRoomId, onRoomClick, ariaL
   const selectedRoomIdRef = useRef(selectedRoomId);
   const onRoomClickRef = useRef(onRoomClick);
   const sceneRef = useRef<Container | null>(null);
-  const spriteLayerRef = useRef<Container | null>(null);
   const pulseTimeRef = useRef(0);
-  const sceneTokenRef = useRef(0);
 
   function applySceneFit(app: Application, scene: Container) {
     const fit = calculateRoomSceneFit(app.renderer.width, app.renderer.height);
@@ -38,30 +34,6 @@ export function PixiStationScene({ gameState, selectedRoomId, onRoomClick, ariaL
     app.stage.addChild(scene);
     applySceneFit(app, scene);
     sceneRef.current = scene;
-    spriteLayerRef.current = null;
-
-    // If a spritesheet is available for this room, load the appropriate
-    // frame and composite it on top of the Graphics scene.
-    const token = ++sceneTokenRef.current;
-
-    if (hasRoomSpritesheet(nextSelectedRoomId)) {
-      const detailLevel = getRoomDetailLevel(nextGameState.moduleLevels[nextSelectedRoomId] ?? 0);
-
-      void buildSpritesheetRoom(nextSelectedRoomId, detailLevel).then((spriteLayer) => {
-        if (token !== sceneTokenRef.current || !spriteLayer) {
-          return;
-        }
-
-        const currentScene = sceneRef.current;
-
-        if (!currentScene) {
-          return;
-        }
-
-        currentScene.addChild(spriteLayer);
-        spriteLayerRef.current = spriteLayer;
-      });
-    }
   }
 
   useEffect(() => {
@@ -127,7 +99,6 @@ export function PixiStationScene({ gameState, selectedRoomId, onRoomClick, ariaL
         setScene(app, gameStateRef.current, selectedRoomIdRef.current);
         app.ticker.add(animateAmbientLights);
 
-        // Clicker mechanic: clicking the room canvas gives kopeks.
         const canvas = app.canvas;
 
         canvas.style.cursor = 'pointer';
