@@ -732,6 +732,12 @@ input {
   animation: metric-pulse 0.3s ease;
 }
 
+.metric-bonus {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-enamel-green);
+}
+
 @keyframes metric-pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.06); }

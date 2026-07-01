@@ -22,7 +22,7 @@ export function TopBar({ gameState, incomePerSecond, variant = 'default', t }: T
       </div>
       <div className="metric-pulse" key={`comfort-${gameState.comfort}`}>
         <span>{t.comfort}</span>
-        <strong>{gameState.comfort}</strong>
+        <strong>{gameState.comfort} <small className="metric-bonus">+{gameState.comfort}%</small></strong>
       </div>
       <div className="metric-pulse" key={`rep-${gameState.reputation}`}>
         <span>{t.reputation}</span>
