@@ -22,6 +22,10 @@ export interface Translation {
   taskVisitorBody: string;
   taskDailyTitle: string;
   taskDailyBody: string;
+  taskCommunalDutyClaimTitle: string;
+  taskCommunalDutyClaimBody: string;
+  taskCommunalDutyAssignTitle: string;
+  taskCommunalDutyAssignBody: string;
   taskGoalTitle: string;
   taskGoalBody: string;
   taskModuleBuyTitle: string;
@@ -218,6 +222,10 @@ const ru: Translation = {
   taskVisitorBody: 'Гость даст комфорт, если сейчас его принять.',
   taskDailyTitle: 'Забрать ежедневную награду',
   taskDailyBody: 'Это быстрый старт для следующей покупки.',
+  taskCommunalDutyClaimTitle: 'Забрать результат дежурства',
+  taskCommunalDutyClaimBody: 'Жилец уже помог станции. Заберите итог и ремонт комнаты.',
+  taskCommunalDutyAssignTitle: 'Назначить дежурство',
+  taskCommunalDutyAssignBody: 'Комнате нужна маленькая услуга. Выберите жильца, который справится.',
   taskGoalTitle: 'Дожать близкую цель',
   taskGoalBody: 'Цель уже почти готова, и она поможет станции расти.',
   taskModuleBuyTitle: 'Купить улучшение комнаты',
@@ -586,6 +594,10 @@ const en: Translation = {
   taskVisitorBody: 'The visitor adds comfort if you accept the request now.',
   taskDailyTitle: 'Collect the daily reward',
   taskDailyBody: 'This gives a quick start toward the next purchase.',
+  taskCommunalDutyClaimTitle: 'Claim a communal duty',
+  taskCommunalDutyClaimBody: 'A resident finished helping the station. Claim the result now.',
+  taskCommunalDutyAssignTitle: 'Assign a communal duty',
+  taskCommunalDutyAssignBody: 'A room needs a small favor. Pick a resident and let them handle it.',
   taskGoalTitle: 'Finish a close goal',
   taskGoalBody: 'This goal is almost done and will help the station grow.',
   taskModuleBuyTitle: 'Buy a room upgrade',

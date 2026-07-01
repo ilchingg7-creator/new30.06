@@ -1,11 +1,13 @@
 import { modules } from './content/modules';
 import { calculateModuleCost, calculatePrestigeReward } from './economy';
 import { getVisibleGoals } from './goals';
-import type { GameState, GoalId, ModuleId } from './types';
+import type { CommunalDutyId, GameState, GoalId, ModuleId } from './types';
 
 export type StationGuidanceCopyKey =
   | 'visitor'
   | 'daily'
+  | 'communal_duty_claim'
+  | 'communal_duty_assign'
   | 'goal'
   | 'module_buy'
   | 'module_wait'
@@ -13,7 +15,7 @@ export type StationGuidanceCopyKey =
   | 'prestige';
 
 interface StationGuidanceBase {
-  kind: 'visitor' | 'daily' | 'goal' | 'module' | 'prestige';
+  kind: 'visitor' | 'daily' | 'communal_duty' | 'goal' | 'module' | 'prestige';
   priority: number;
   copyKey: StationGuidanceCopyKey;
   targetRoomId?: ModuleId;
@@ -28,6 +30,11 @@ export interface VisitorGuidance extends StationGuidanceBase {
 
 export interface DailyGuidance extends StationGuidanceBase {
   kind: 'daily';
+}
+
+export interface CommunalDutyGuidance extends StationGuidanceBase {
+  kind: 'communal_duty';
+  dutyId: CommunalDutyId;
 }
 
 export interface GoalGuidance extends StationGuidanceBase {
@@ -54,6 +61,7 @@ export interface PrestigeGuidance extends StationGuidanceBase {
 export type StationGuidance =
   | VisitorGuidance
   | DailyGuidance
+  | CommunalDutyGuidance
   | GoalGuidance
   | ModuleGuidance
   | PrestigeGuidance;
@@ -198,6 +206,28 @@ export function getStationGuidance({
       priority: 90,
       copyKey: 'daily',
       canActNow: true
+    };
+  }
+
+  if (state.communalDuty?.status === 'ready_to_claim') {
+    return {
+      kind: 'communal_duty',
+      priority: 95,
+      copyKey: 'communal_duty_claim',
+      canActNow: true,
+      dutyId: state.communalDuty.dutyId,
+      targetRoomId: state.communalDuty.roomId
+    };
+  }
+
+  if (state.communalDuty?.status === 'available') {
+    return {
+      kind: 'communal_duty',
+      priority: 85,
+      copyKey: 'communal_duty_assign',
+      canActNow: true,
+      dutyId: state.communalDuty.dutyId,
+      targetRoomId: state.communalDuty.roomId
     };
   }
 

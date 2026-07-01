@@ -20,6 +20,10 @@ function getTitle(copyKey: StationGuidanceCopyKey, t: Translation): string {
       return t.taskVisitorTitle;
     case 'daily':
       return t.taskDailyTitle;
+    case 'communal_duty_claim':
+      return t.taskCommunalDutyClaimTitle;
+    case 'communal_duty_assign':
+      return t.taskCommunalDutyAssignTitle;
     case 'goal':
       return t.taskGoalTitle;
     case 'module_buy':
@@ -39,6 +43,10 @@ function getBody(copyKey: StationGuidanceCopyKey, t: Translation): string {
       return t.taskVisitorBody;
     case 'daily':
       return t.taskDailyBody;
+    case 'communal_duty_claim':
+      return t.taskCommunalDutyClaimBody;
+    case 'communal_duty_assign':
+      return t.taskCommunalDutyAssignBody;
     case 'goal':
       return t.taskGoalBody;
     case 'module_buy':

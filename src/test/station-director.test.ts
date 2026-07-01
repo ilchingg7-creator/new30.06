@@ -56,6 +56,45 @@ describe('station director guidance', () => {
     expect(guidance.progressTarget).toBe(10);
   });
 
+  it('prioritizes a ready communal duty above normal purchases', () => {
+    const state: GameState = {
+      ...createInitialState(1_000),
+      communalDuty: {
+        id: 'duty-1',
+        dutyId: 'capsule_quiet_hours',
+        roomId: 'tenant_capsule',
+        status: 'ready_to_claim',
+        createdAt: 1_000,
+        assignedResidentId: 'sleepy_engineer',
+        startedAt: 1_000,
+        completesAt: 181_000
+      }
+    };
+
+    const guidance = getStationGuidance({ state, incomePerSecond: 0 });
+
+    expect(guidance.kind).toBe('communal_duty');
+    expect(guidance.priority).toBe(95);
+  });
+
+  it('surfaces an available communal duty before close goals', () => {
+    const state: GameState = {
+      ...withCapsuleLevel(9),
+      communalDuty: {
+        id: 'duty-1',
+        dutyId: 'capsule_quiet_hours',
+        roomId: 'tenant_capsule',
+        status: 'available',
+        createdAt: 1_000
+      }
+    };
+
+    const guidance = getStationGuidance({ state, incomePerSecond: 5 });
+
+    expect(guidance.kind).toBe('communal_duty');
+    expect(guidance.priority).toBe(85);
+  });
+
   it('recommends an affordable room upgrade with a room target', () => {
     const state = {
       ...createInitialState(1_000),
