@@ -1,6 +1,7 @@
 'use client';
 
-import { BookOpen, Check, Lock } from 'lucide-react';
+import { BookOpen, Check, ChevronDown, Lock } from 'lucide-react';
+import { useState } from 'react';
 import { residents } from '../../game/content/residents';
 import type { GameState } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
@@ -13,6 +14,11 @@ interface ResidentCollectionBookProps {
 export function ResidentCollectionBook({ gameState, t }: ResidentCollectionBookProps) {
   const unlocked = new Set(gameState.unlockedResidents);
   const unlockedCount = unlocked.size;
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  function toggle(id: string) {
+    setExpanded((current) => (current === id ? null : id));
+  }
 
   return (
     <section className="panel" aria-labelledby="collection-book-title">
@@ -30,26 +36,45 @@ export function ResidentCollectionBook({ gameState, t }: ResidentCollectionBookP
           const bonusText = copy?.bonusText ?? resident.bonusText;
           const bio = copy?.bio ?? '';
           const unlockText = copy?.unlockText ?? resident.unlockText;
+          const isOpen = expanded === resident.id;
 
           return (
             <li
               key={resident.id}
               className={isUnlocked ? 'collection-card' : 'collection-card locked'}
             >
-              <div className="collection-card-header">
+              <button
+                type="button"
+                className="collection-card-header"
+                onClick={() => toggle(resident.id)}
+                aria-expanded={isOpen}
+              >
                 {isUnlocked ? (
                   <Check aria-hidden="true" size={14} className="collection-icon-unlocked" />
                 ) : (
                   <Lock aria-hidden="true" size={14} className="collection-icon-locked" />
                 )}
                 <strong>{name}</strong>
-              </div>
-              {isUnlocked ? (
+                {isUnlocked && (
+                  <ChevronDown
+                    aria-hidden="true"
+                    size={14}
+                    className="collection-chevron"
+                    style={{
+                      marginLeft: 'auto',
+                      transition: 'transform 0.2s',
+                      transform: isOpen ? 'rotate(180deg)' : 'none'
+                    }}
+                  />
+                )}
+              </button>
+              {isUnlocked && isOpen && (
                 <>
                   <p className="collection-bio">{bio}</p>
                   <div className="collection-bonus">{bonusText}</div>
                 </>
-              ) : (
+              )}
+              {!isUnlocked && (
                 <p className="collection-locked-hint">{unlockText}</p>
               )}
             </li>

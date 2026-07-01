@@ -810,7 +810,23 @@ input {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 6px;
+  margin-bottom: 0;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 2px 0;
+  font: inherit;
+  text-align: left;
+}
+
+.collection-card-header:hover {
+  opacity: 0.8;
+}
+
+.collection-chevron {
+  color: var(--color-utility-blue);
+  flex: 0 0 auto;
 }
 
 .collection-card-header strong {
