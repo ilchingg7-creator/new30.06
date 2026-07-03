@@ -5,8 +5,11 @@
 html,
 body,
 #root {
-  min-height: 100%;
+  width: 100%;
+  height: 100%;
   margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 body {
@@ -20,6 +23,7 @@ body {
     radial-gradient(1px 1px at 42% 88%, var(--color-soft-white) 50%, transparent 51%);
   background-attachment: fixed;
   color: var(--color-soft-white);
+  touch-action: manipulation;
 }
 
 button,
@@ -28,12 +32,20 @@ input {
 }
 
 .app-shell {
-  min-height: 100vh;
+  height: 100dvh;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 24px;
   position: relative;
+  overflow: hidden;
+}
+
+@supports not (height: 100dvh) {
+  .app-shell {
+    height: 100vh;
+  }
 }
 
 .app-shell::before {
@@ -250,9 +262,11 @@ input {
 
 .station-stack {
   min-width: 0;
+  min-height: 0;
   display: grid;
   align-content: start;
   gap: 4px;
+  overflow: hidden;
 }
 
 .room-selector {
@@ -316,6 +330,8 @@ input {
 
 .desktop-layout {
   width: min(100%, 1280px);
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(420px, 1fr) minmax(260px, 320px);
   grid-template-areas:
@@ -323,6 +339,7 @@ input {
     "modules station side";
   gap: 14px;
   margin: 0 auto;
+  overflow: hidden;
 }
 
 .desktop-layout .top-bar {
@@ -331,6 +348,9 @@ input {
 
 .desktop-layout .module-panel {
   grid-area: modules;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .desktop-layout .station-stack {
@@ -344,16 +364,21 @@ input {
 
 .side-panel {
   grid-area: side;
+  min-height: 0;
   display: grid;
   align-content: start;
   gap: 14px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .mobile-layout {
-  min-height: calc(100vh - 96px);
+  flex: 1 1 auto;
+  min-height: 0;
   display: grid;
   grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;
   gap: 4px;
+  overflow: hidden;
 }
 
 .mobile-room-area {
@@ -368,7 +393,9 @@ input {
 }
 
 .mobile-tab-content {
-  min-height: 200px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding-bottom: 56px;
 }
 

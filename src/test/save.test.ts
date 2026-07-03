@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createInitialState } from '../game/economy';
+import { calculateIncomePerSecond, createInitialState } from '../game/economy';
 import { CURRENT_SCHEMA_VERSION, parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
 
 describe('save serialization', () => {
@@ -108,6 +108,34 @@ describe('save serialization', () => {
     expect(migrated?.windowLightColor).toBe('green');
     expect(migrated?.dailyStreak).toBe(3);
     expect(JSON.parse(serializeGameState(migrated!)).schemaVersion).toBe(CURRENT_SCHEMA_VERSION);
+  });
+
+  it('backfills module levels added after an existing v2 save was created', () => {
+    const legacyV2 = {
+      ...createInitialState(1_000),
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      moduleLevels: {
+        tenant_capsule: 1,
+        cosmo_kitchen: 0,
+        oxygen_garden: 0,
+        zero_g_laundry: 0,
+        teleport_entry: 0,
+        antigrav_gym: 0,
+        panorama_dome: 0,
+        saucer_dock: 0,
+        radiator_balcony: 0,
+        mail_tube_office: 0
+      }
+    };
+
+    const migrated = parseGameState(JSON.stringify(legacyV2));
+
+    expect(migrated).not.toBeNull();
+    expect(migrated?.moduleLevels.meteorite_pantry).toBe(0);
+    expect(migrated?.moduleLevels.shared_observatory).toBe(0);
+    expect(migrated?.moduleLevels.comet_water_tank).toBe(0);
+    expect(migrated?.moduleLevels.orbital_library).toBe(0);
+    expect(Number.isFinite(calculateIncomePerSecond(migrated!, 1_000))).toBe(true);
   });
 
   it('parses saves without communal duty fields as valid legacy-compatible state', () => {

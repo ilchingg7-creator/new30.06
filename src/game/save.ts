@@ -198,6 +198,24 @@ function hasOptionalCommunalDutyResult(value: unknown): boolean {
   );
 }
 
+function createDefaultModuleLevels(): Record<string, number> {
+  return Object.fromEntries(modules.map((module) => [module.id, 0]));
+}
+
+function backfillModuleLevels(value: UnknownRecord): UnknownRecord {
+  if (!isRecord(value.moduleLevels)) {
+    return value;
+  }
+
+  return {
+    ...value,
+    moduleLevels: {
+      ...createDefaultModuleLevels(),
+      ...value.moduleLevels
+    }
+  };
+}
+
 /**
  * Pre-versioned saves (no schemaVersion field) are treated as version 1.
  * They predate cosmetics, prestige upgrades, daily login and achievements.
@@ -231,7 +249,7 @@ function migrateGameState(value: UnknownRecord): UnknownRecord {
 
   // Future migrations (2 -> 3, 3 -> 4, ...) go here.
 
-  return current;
+  return backfillModuleLevels(current);
 }
 
 function isGameStateShape(value: unknown): value is GameState {
