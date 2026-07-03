@@ -133,6 +133,13 @@ Room switching:
 - buying a module level automatically focuses that room;
 - after prestige or invalid saved selection, focus returns to the first unlocked room, then to the capsule.
 
+Sprite progression:
+
+- `tenant_capsule` now uses raster room sprites instead of the vector fallback scene;
+- sprite slots are named `tenant_capsule_01.png` through `tenant_capsule_10.png`;
+- each slot maps to one 10-level band: levels 1-10 use slot 01, 11-20 use slot 02, and so on up to 91-100+ using slot 10;
+- the first implementation keeps all ten slots as copies of the first tenant room sprite until unique progression art is ready.
+
 Goal behavior:
 
 - completed goals are removed from the active goal list;

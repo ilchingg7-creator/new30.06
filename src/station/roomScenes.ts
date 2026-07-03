@@ -1,4 +1,4 @@
-import { Container, Graphics } from 'pixi.js';
+import { Assets, Cache, Container, Graphics, Sprite, Texture } from 'pixi.js';
 import { modules } from '../game/content/modules';
 import type { GameState, ModuleId, RoomDetailLevel, WindowLightColor } from '../game/types';
 import { stationTheme } from './stationTheme';
@@ -56,6 +56,67 @@ export interface RoomSceneDescriptor {
 
 export const ROOM_SCENE_WIDTH = 840;
 export const ROOM_SCENE_HEIGHT = 480;
+
+interface RoomSpriteAsset {
+  alias: string;
+  src: string;
+}
+
+const tenantCapsuleSpriteAssets: Record<Exclude<RoomDetailLevel, 0>, RoomSpriteAsset> = {
+  1: { alias: 'tenant-capsule-room-01', src: '/assets/rooms/tenant_capsule/tenant_capsule_01.png' },
+  2: { alias: 'tenant-capsule-room-02', src: '/assets/rooms/tenant_capsule/tenant_capsule_02.png' },
+  3: { alias: 'tenant-capsule-room-03', src: '/assets/rooms/tenant_capsule/tenant_capsule_03.png' },
+  4: { alias: 'tenant-capsule-room-04', src: '/assets/rooms/tenant_capsule/tenant_capsule_04.png' },
+  5: { alias: 'tenant-capsule-room-05', src: '/assets/rooms/tenant_capsule/tenant_capsule_05.png' },
+  6: { alias: 'tenant-capsule-room-06', src: '/assets/rooms/tenant_capsule/tenant_capsule_06.png' },
+  7: { alias: 'tenant-capsule-room-07', src: '/assets/rooms/tenant_capsule/tenant_capsule_07.png' },
+  8: { alias: 'tenant-capsule-room-08', src: '/assets/rooms/tenant_capsule/tenant_capsule_08.png' },
+  9: { alias: 'tenant-capsule-room-09', src: '/assets/rooms/tenant_capsule/tenant_capsule_09.png' },
+  10: { alias: 'tenant-capsule-room-10', src: '/assets/rooms/tenant_capsule/tenant_capsule_10.png' }
+};
+
+let roomSpriteAssetsRegistered = false;
+
+function getRoomSpriteAssetDefinition(moduleId: ModuleId, detailLevel: RoomDetailLevel): RoomSpriteAsset | null {
+  if (moduleId !== 'tenant_capsule' || detailLevel === 0) {
+    return null;
+  }
+
+  return tenantCapsuleSpriteAssets[detailLevel];
+}
+
+export function getRoomSpriteAsset(moduleId: ModuleId, detailLevel: RoomDetailLevel): string | null {
+  return getRoomSpriteAssetDefinition(moduleId, detailLevel)?.src ?? null;
+}
+
+function registerRoomSpriteAssets() {
+  if (roomSpriteAssetsRegistered) {
+    return;
+  }
+
+  Object.values(tenantCapsuleSpriteAssets).forEach((asset) => {
+    Assets.add({
+      alias: asset.alias,
+      src: asset.src,
+      data: {
+        scaleMode: 'nearest'
+      }
+    });
+  });
+  roomSpriteAssetsRegistered = true;
+}
+
+export async function loadRoomSpriteAssetForState(gameState: GameState, selectedRoomId: ModuleId): Promise<void> {
+  const descriptor = createRoomSceneDescriptor(gameState, selectedRoomId);
+  const asset = getRoomSpriteAssetDefinition(descriptor.moduleId, getRoomDetailLevel(descriptor.level));
+
+  if (!asset || Cache.has(asset.alias)) {
+    return;
+  }
+
+  registerRoomSpriteAssets();
+  await Assets.load(asset.alias);
+}
 
 export function calculateRoomSceneFit(canvasWidth: number, canvasHeight: number) {
   const scale = Math.min(canvasWidth / ROOM_SCENE_WIDTH, canvasHeight / ROOM_SCENE_HEIGHT);
@@ -324,6 +385,19 @@ function createRoomBackground(): Graphics {
   return background;
 }
 
+function createRoomSprite(asset: RoomSpriteAsset): Sprite {
+  const texture = Cache.has(asset.alias) ? Cache.get<Texture>(asset.alias) : Texture.EMPTY;
+  const sprite = new Sprite(texture);
+
+  sprite.width = ROOM_SCENE_WIDTH;
+  sprite.height = ROOM_SCENE_HEIGHT;
+  sprite.roundPixels = true;
+  sprite.texture.source.scaleMode = 'nearest';
+  (sprite as Sprite & { label?: string }).label = 'room-sprite';
+
+  return sprite;
+}
+
 function createRoomShell(descriptor: RoomSceneDescriptor): Graphics {
   const shell = new Graphics();
   const light = descriptor.windowLightColor;
@@ -550,6 +624,13 @@ function createRoomProp(prop: RoomSceneProp): Graphics {
 export function buildRoomContainer(gameState: GameState, selectedRoomId: ModuleId): Container {
   const descriptor = createRoomSceneDescriptor(gameState, selectedRoomId);
   const container = new Container();
+  const spriteAsset = getRoomSpriteAssetDefinition(descriptor.moduleId, getRoomDetailLevel(descriptor.level));
+
+  if (spriteAsset) {
+    container.addChild(createRoomSprite(spriteAsset));
+
+    return container;
+  }
 
   container.addChild(createRoomBackground());
   descriptor.ambientLights.forEach((light) => {

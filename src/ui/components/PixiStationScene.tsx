@@ -1,7 +1,7 @@
 import { Application, type Container, type Ticker } from 'pixi.js';
 import { useEffect, useRef } from 'react';
 import type { GameState, ModuleId } from '../../game/types';
-import { buildRoomContainer, calculateRoomSceneFit } from '../../station/roomScenes';
+import { buildRoomContainer, calculateRoomSceneFit, loadRoomSpriteAssetForState } from '../../station/roomScenes';
 import { stationTheme } from '../../station/stationTheme';
 
 interface PixiStationSceneProps {
@@ -19,6 +19,7 @@ export function PixiStationScene({ gameState, selectedRoomId, onRoomClick, ariaL
   const onRoomClickRef = useRef(onRoomClick);
   const sceneRef = useRef<Container | null>(null);
   const pulseTimeRef = useRef(0);
+  const sceneRequestIdRef = useRef(0);
 
   function applySceneFit(app: Application, scene: Container) {
     const fit = calculateRoomSceneFit(app.renderer.width, app.renderer.height);
@@ -27,7 +28,16 @@ export function PixiStationScene({ gameState, selectedRoomId, onRoomClick, ariaL
     scene.position.set(fit.x, fit.y);
   }
 
-  function setScene(app: Application, nextGameState: GameState, nextSelectedRoomId: ModuleId) {
+  async function setScene(app: Application, nextGameState: GameState, nextSelectedRoomId: ModuleId) {
+    const requestId = sceneRequestIdRef.current + 1;
+    sceneRequestIdRef.current = requestId;
+
+    await loadRoomSpriteAssetForState(nextGameState, nextSelectedRoomId);
+
+    if (requestId !== sceneRequestIdRef.current || appRef.current !== app || !app.stage) {
+      return;
+    }
+
     const scene = buildRoomContainer(nextGameState, nextSelectedRoomId);
 
     app.stage.removeChildren();
@@ -47,7 +57,7 @@ export function PixiStationScene({ gameState, selectedRoomId, onRoomClick, ariaL
       return;
     }
 
-    setScene(app, gameState, selectedRoomId);
+    void setScene(app, gameState, selectedRoomId);
   }, [gameState, selectedRoomId, onRoomClick]);
 
   useEffect(() => {
@@ -96,7 +106,7 @@ export function PixiStationScene({ gameState, selectedRoomId, onRoomClick, ariaL
         }
 
         host.appendChild(app.canvas);
-        setScene(app, gameStateRef.current, selectedRoomIdRef.current);
+        void setScene(app, gameStateRef.current, selectedRoomIdRef.current);
         app.ticker.add(animateAmbientLights);
 
         const canvas = app.canvas;

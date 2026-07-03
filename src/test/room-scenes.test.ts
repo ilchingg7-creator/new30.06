@@ -6,6 +6,7 @@ import {
   calculateRoomSceneFit,
   createRoomSceneDescriptor,
   createRoomSelectorItems,
+  getRoomSpriteAsset,
   getRoomDetailTier,
   resolveSelectedRoomId
 } from '../station/roomScenes';
@@ -56,12 +57,33 @@ describe('focused room scene descriptors', () => {
     expect(descriptor.ambientLights.length).toBeGreaterThan(0);
   });
 
-  it('builds a detailed pixi room container from the selected room', () => {
-    const state = buyCapsuleLevels(25);
-    const container = buildRoomContainer(state, 'tenant_capsule');
+  it('builds a detailed pixi room container from a non-sprite room', () => {
+    const state = {
+      ...createInitialState(1_000),
+      moduleLevels: {
+        ...createInitialState(1_000).moduleLevels,
+        cosmo_kitchen: 25
+      }
+    };
+    const container = buildRoomContainer(state, 'cosmo_kitchen');
 
     expect(container.children.length).toBeGreaterThan(6);
     expect(container.children.some((child) => (child as { label?: string }).label === 'ambient-light')).toBe(true);
+  });
+
+  it('uses tenant capsule sprite assets every ten levels', () => {
+    expect(getRoomSpriteAsset('tenant_capsule', 1)).toBe('/assets/rooms/tenant_capsule/tenant_capsule_01.png');
+    expect(getRoomSpriteAsset('tenant_capsule', 3)).toBe('/assets/rooms/tenant_capsule/tenant_capsule_03.png');
+    expect(getRoomSpriteAsset('tenant_capsule', 10)).toBe('/assets/rooms/tenant_capsule/tenant_capsule_10.png');
+    expect(getRoomSpriteAsset('cosmo_kitchen', 3)).toBeNull();
+  });
+
+  it('replaces the tenant capsule vector room with a sprite scene', () => {
+    const state = buyCapsuleLevels(25);
+    const container = buildRoomContainer(state, 'tenant_capsule');
+
+    expect(container.children).toHaveLength(1);
+    expect((container.children[0] as { label?: string }).label).toBe('room-sprite');
   });
 
   it('fits the fixed room composition inside the canvas bounds', () => {
