@@ -73,6 +73,9 @@ Narrative events are non-blocking station incidents. They appear in a journal
 and never interrupt bulk room upgrades with modal popups. Room level can be a
 supporting condition, but the main triggers are room openings, residents,
 renovations, condition, room combos, offline return and scene interactions.
+Only one unresolved incident is shown at a time. After the player resolves it,
+the next eligible incident waits for a 120 second cooldown before entering the
+journal.
 
 ## Prestige loop
 

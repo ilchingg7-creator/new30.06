@@ -105,6 +105,28 @@ describe('station incident state', () => {
     expect(resolved.roomConditions?.cosmo_kitchen).toBe(68);
   });
 
+  it('waits for cooldown before queuing the next incident after resolution', () => {
+    const base = createInitialState(1_000);
+    const state: GameState = {
+      ...base,
+      activeIncidents: [{ id: 'kitchen_borscht_fog', queuedAt: 10_000, isNew: true }],
+      moduleLevels: {
+        ...base.moduleLevels,
+        cosmo_kitchen: 1,
+        oxygen_garden: 1,
+        zero_g_laundry: 1
+      }
+    };
+
+    const resolved = resolveStationIncident(state, 'kitchen_borscht_fog', 'vent_fog', 20_000);
+    const immediate = queueEligibleIncidents(resolved, { now: 20_001 });
+    const afterCooldown = queueEligibleIncidents(resolved, { now: 140_000 });
+
+    expect(resolved.nextIncidentAvailableAt).toBe(140_000);
+    expect(getActiveStationIncidents(immediate)).toHaveLength(0);
+    expect(getActiveStationIncidents(afterCooldown)).toHaveLength(1);
+  });
+
   it('resolves timed incident bonuses with a real future expiry', () => {
     const base = createInitialState(1_000);
     const state: GameState = {

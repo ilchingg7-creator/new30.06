@@ -411,6 +411,7 @@ function isGameStateShape(value: unknown): value is GameState {
     hasOptionalActiveIncidents(value.activeIncidents) &&
     hasOptionalIncidentIds(value.completedIncidents) &&
     hasOptionalIncidentVisuals(value.unlockedIncidentVisuals) &&
+    hasOptionalNumber(value.nextIncidentAvailableAt) &&
     hasOptionalRoomConditions(value.roomConditions) &&
     hasOptionalCommunalDuty(value.communalDuty) &&
     hasOptionalNumber(value.lastCommunalDutyResolvedAt) &&

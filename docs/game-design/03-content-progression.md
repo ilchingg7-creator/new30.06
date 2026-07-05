@@ -187,7 +187,8 @@ every eligible resident succeeds with a useful result.
 The station incident catalog keeps 40 stable ids. The active MVP slice is now
 15 incidents. The extra active incidents promote existing backlog ids for
 condition, resident and room-open triggers while preserving the unresolved cap
-of 3 and the generation limit of 1 new incident per state update.
+of 1, the generation limit of 1 new incident per state update and a 120 second
+cooldown after each resolved incident.
 
 Active incidents should vary rewards: visual placeholder details, condition
 repair and timed boosts should appear more often than direct positive kopek

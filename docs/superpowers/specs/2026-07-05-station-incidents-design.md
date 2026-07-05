@@ -92,9 +92,10 @@ incidents, but it should queue only a small number at once.
 
 MVP pacing:
 
-- maximum active unresolved incidents: 3;
+- maximum active unresolved incidents: 1;
 - maximum newly queued incidents per state update: 1;
-- after resolving an incident, the system may queue another eligible incident;
+- after resolving an incident, the next eligible incident waits for a 120 second
+  cooldown before queueing;
 - priority order: renovation, resident unlock, room open, condition emergency,
   combo, economy mismatch, scene interaction;
 - no auto-opened incident dialogs.

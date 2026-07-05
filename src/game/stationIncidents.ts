@@ -10,6 +10,7 @@ import type {
   StationIncidentId
 } from './types';
 
+const STATION_INCIDENT_COOLDOWN_MS = 120_000;
 const MAX_ACTIVE_INCIDENTS = 1;
 const MAX_NEW_PER_UPDATE = 1;
 
@@ -90,12 +91,16 @@ function isTriggerMet(
 
 export function queueEligibleIncidents(state: GameState, context: StationIncidentQueueContext = {}): GameState {
   const active = getActiveStationIncidents(state);
+  const now = context.now ?? Date.now();
 
   if (active.length >= MAX_ACTIVE_INCIDENTS) {
     return state;
   }
 
-  const now = context.now ?? Date.now();
+  if ((state.nextIncidentAvailableAt ?? 0) > now) {
+    return state;
+  }
+
   const slots = Math.min(MAX_NEW_PER_UPDATE, MAX_ACTIVE_INCIDENTS - active.length);
   const eligible = activeStationIncidents
     .filter((definition) => !isIncidentAlreadyPresent(state, definition))
@@ -195,6 +200,7 @@ export function resolveStationIncident(
     activeIncidents: active.filter((incident) => incident.id !== incidentId),
     completedIncidents: addUnique(state.completedIncidents, [incidentId]),
     unlockedIncidentVisuals: addUnique(state.unlockedIncidentVisuals, effect.visualPlaceholderIds ?? []),
+    nextIncidentAvailableAt: now + STATION_INCIDENT_COOLDOWN_MS,
     timedBonuses
   };
 }

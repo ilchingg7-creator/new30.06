@@ -488,6 +488,8 @@ export interface GameState {
   completedIncidents?: StationIncidentId[];
   /** Stable visual placeholder rewards unlocked by incident choices. */
   unlockedIncidentVisuals?: VisualPlaceholderId[];
+  /** Epoch ms when the next station incident may be queued after resolving one. */
+  nextIncidentAvailableAt?: number;
   /**
    * Room condition values (0-100) keyed by ModuleId. Condition decays over
    * time; clicking the room repairs it. High condition gives an income

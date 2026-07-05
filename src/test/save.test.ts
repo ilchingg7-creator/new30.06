@@ -190,7 +190,8 @@ describe('save serialization', () => {
       ...createInitialState(1_000),
       activeIncidents: [{ id: 'kitchen_borscht_fog' as const, queuedAt: 123, isNew: true }],
       completedIncidents: ['cat_found_warm_pipe' as const],
-      unlockedIncidentVisuals: ['cat_saucer_01' as const]
+      unlockedIncidentVisuals: ['cat_saucer_01' as const],
+      nextIncidentAvailableAt: 456_000
     };
 
     const parsed = parseGameState(serializeGameState(state));
@@ -198,6 +199,7 @@ describe('save serialization', () => {
     expect(parsed?.activeIncidents).toEqual(state.activeIncidents);
     expect(parsed?.completedIncidents).toEqual(state.completedIncidents);
     expect(parsed?.unlockedIncidentVisuals).toEqual(state.unlockedIncidentVisuals);
+    expect(parsed?.nextIncidentAvailableAt).toBe(456_000);
   });
 
   it('keeps legacy completedStories saves valid when migrating to incident schema', () => {
