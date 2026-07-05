@@ -56,10 +56,12 @@ describe('goal completion', () => {
 
   it('shows later-cycle goals after the second renovation and beyond', () => {
     const secondCycle = getVisibleGoals({ ...createInitialState(1_000), prestigeCount: 2 }, 4).map((goal) => goal.id);
+    const thirdCycle = getVisibleGoals({ ...createInitialState(1_000), prestigeCount: 3 }, 4).map((goal) => goal.id);
     const laterCycle = getVisibleGoals({ ...createInitialState(1_000), prestigeCount: 5 }, 4).map((goal) => goal.id);
 
     expect(secondCycle).toEqual(['rebuild_capsule_25', 'unlock_teleport_entry', 'unlock_five_residents', 'reach_comfort_60']);
-    expect(laterCycle).toEqual(secondCycle);
+    expect(thirdCycle).toEqual(['reach_comfort_80', 'unlock_seven_residents', 'earn_credits_500000', 'unlock_orbital_library']);
+    expect(laterCycle).toEqual(thirdCycle);
   });
 
   it('does not complete future renovation-cycle goals before their cycle is active', () => {

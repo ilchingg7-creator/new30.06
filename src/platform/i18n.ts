@@ -64,6 +64,8 @@ export interface Translation {
   renovationRequirementStation0: string;
   renovationRequirementStation1: string;
   renovationRequirementStation2: string;
+  renovationRequirementStation3: string;
+  renovationCycleLabel: string;
   renovationRequirementGoals: string;
   renovate: string;
   renovateTooltip: string;
@@ -373,6 +375,8 @@ const ru: Translation = {
   renovationRequirementStation0: 'Капсула 10+ и открытая кухня',
   renovationRequirementStation1: 'Капсула 25+ и открытая прачечная',
   renovationRequirementStation2: 'Открыть телепорт или заселить 5 жильцов',
+  renovationRequirementStation3: 'Открыть библиотеку или достичь 70 комфорта',
+  renovationCycleLabel: 'Цикл реновации',
   renovationRequirementGoals: 'Выполнить цели цикла',
   renovate: 'Реновировать',
   renovateTooltip: 'Реновация сбрасывает копейки и модули, но сохраняет репутацию и купленные улучшения. Награда = floor(sqrt(заработано / 100000)).',
@@ -959,6 +963,30 @@ const ru: Translation = {
       repeat_renovation: {
         title: 'Провести ещё одну реновацию',
         rewardLabel: 'Новый цикл станции'
+      },
+      reach_comfort_80: {
+        title: 'Довести комфорт до 80',
+        rewardLabel: '+7 комфорт, тёплый режим станции'
+      },
+      unlock_seven_residents: {
+        title: 'Заселить 7 жильцов',
+        rewardLabel: '+8 комфорт, большая коммуналка'
+      },
+      earn_credits_500000: {
+        title: 'Заработать 500 000 копеек в цикле',
+        rewardLabel: '+8 комфорт, серьёзный запас копеек'
+      },
+      unlock_orbital_library: {
+        title: 'Открыть орбитальную библиотеку',
+        rewardLabel: '+9 комфорт, детали библиотеки'
+      },
+      reach_capsule_50: {
+        title: 'Развить капсулу до 50 уровня',
+        rewardLabel: '+10 комфорт, продвинутая капсула'
+      },
+      third_renovation: {
+        title: 'Сделать третью реновацию',
+        rewardLabel: 'Поздний цикл станции'
       }
     },
     achievements: {
@@ -1131,6 +1159,8 @@ const en: Translation = {
   renovationRequirementStation0: 'Capsule 10+ and kitchen opened',
   renovationRequirementStation1: 'Capsule 25+ and laundry opened',
   renovationRequirementStation2: 'Open teleport or settle 5 residents',
+  renovationRequirementStation3: 'Open library or reach 70 comfort',
+  renovationCycleLabel: 'Renovation cycle',
   renovationRequirementGoals: 'Complete cycle goals',
   renovate: 'Renovate',
   renovateTooltip: 'Renovation resets kopeks and modules but keeps reputation and purchased upgrades. Reward = floor(sqrt(earned / 100000)).',
@@ -1717,6 +1747,30 @@ const en: Translation = {
       repeat_renovation: {
         title: 'Perform another renovation',
         rewardLabel: 'New station cycle'
+      },
+      reach_comfort_80: {
+        title: 'Raise comfort to 80',
+        rewardLabel: '+7 comfort, warm station mode'
+      },
+      unlock_seven_residents: {
+        title: 'Settle 7 residents',
+        rewardLabel: '+8 comfort, large communalka'
+      },
+      earn_credits_500000: {
+        title: 'Earn 500,000 kopeks in a cycle',
+        rewardLabel: '+8 comfort, solid kopeks reserve'
+      },
+      unlock_orbital_library: {
+        title: 'Unlock the orbital library',
+        rewardLabel: '+9 comfort, library details'
+      },
+      reach_capsule_50: {
+        title: 'Develop the capsule to level 50',
+        rewardLabel: '+10 comfort, advanced capsule'
+      },
+      third_renovation: {
+        title: 'Perform the third renovation',
+        rewardLabel: 'Late station cycle'
       }
     },
     achievements: {

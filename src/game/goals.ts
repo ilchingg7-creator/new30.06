@@ -40,6 +40,18 @@ export function isGoalEligible(goalId: GoalId, state: GameState): boolean {
       return state.totalEarnedCredits >= 100_000;
     case 'repeat_renovation':
       return (state.prestigeCount ?? 0) >= 3;
+    case 'reach_comfort_80':
+      return state.comfort >= 80;
+    case 'unlock_seven_residents':
+      return state.unlockedResidents.length >= 7;
+    case 'earn_credits_500000':
+      return state.totalEarnedCredits >= 500_000;
+    case 'unlock_orbital_library':
+      return state.moduleLevels.orbital_library > 0;
+    case 'reach_capsule_50':
+      return state.moduleLevels.tenant_capsule >= 50;
+    case 'third_renovation':
+      return (state.prestigeCount ?? 0) >= 4;
   }
 }
 
@@ -82,7 +94,7 @@ export function completeEligibleGoals(state: GameState, now = Date.now()): GameS
 }
 
 export function getGoalRenovationCycle(state: GameState): GoalDefinition['renovationCycle'] {
-  return Math.min(state.prestigeCount ?? 0, 2) as GoalDefinition['renovationCycle'];
+  return Math.min(state.prestigeCount ?? 0, 3) as GoalDefinition['renovationCycle'];
 }
 
 export function getGoalsForCurrentCycle(state: GameState): GoalDefinition[] {

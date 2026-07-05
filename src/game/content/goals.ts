@@ -152,6 +152,54 @@ export const goals: GoalDefinition[] = [
     rewardComfort: 0,
     rewardKind: 'prestige_hint',
     rewardLabel: 'Новый цикл станции'
+  },
+  {
+    id: 'reach_comfort_80',
+    title: 'Довести комфорт до 80',
+    renovationCycle: 3,
+    rewardComfort: 7,
+    rewardKind: 'comfort',
+    rewardLabel: '+7 комфорт'
+  },
+  {
+    id: 'unlock_seven_residents',
+    title: 'Заселить 7 жильцов',
+    renovationCycle: 3,
+    rewardComfort: 8,
+    rewardKind: 'comfort',
+    rewardLabel: '+8 комфорт'
+  },
+  {
+    id: 'earn_credits_500000',
+    title: 'Заработать 500 000 копеек в цикле',
+    renovationCycle: 3,
+    rewardComfort: 8,
+    rewardKind: 'comfort',
+    rewardLabel: '+8 комфорт'
+  },
+  {
+    id: 'unlock_orbital_library',
+    title: 'Открыть орбитальную библиотеку',
+    renovationCycle: 3,
+    rewardComfort: 9,
+    rewardKind: 'comfort',
+    rewardLabel: '+9 комфорт'
+  },
+  {
+    id: 'reach_capsule_50',
+    title: 'Развить капсулу до 50 уровня',
+    renovationCycle: 3,
+    rewardComfort: 10,
+    rewardKind: 'comfort',
+    rewardLabel: '+10 комфорт'
+  },
+  {
+    id: 'third_renovation',
+    title: 'Сделать третью реновацию',
+    renovationCycle: 3,
+    rewardComfort: 0,
+    rewardKind: 'prestige_hint',
+    rewardLabel: 'Поздний цикл станции'
   }
 ];
 

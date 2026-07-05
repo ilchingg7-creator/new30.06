@@ -2292,3 +2292,77 @@ input {
     animation: none;
   }
 }
+
+/* ── Cycle Progress Indicator (PrestigePanel) ───────────────────── */
+
+.cycle-progress {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 10px;
+  padding: 6px 10px;
+  background: rgb(39 49 63 / 6%);
+  border: 1px solid rgb(39 49 63 / 10%);
+  border-radius: 8px;
+}
+
+.cycle-progress-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-utility-blue);
+  white-space: nowrap;
+}
+
+.cycle-progress-track {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.cycle-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgb(39 49 63 / 22%);
+  background: transparent;
+  transition: all 0.25s ease;
+}
+
+.cycle-dot.completed {
+  background: var(--color-signal-red);
+  border-color: var(--color-signal-red);
+  box-shadow: 0 0 4px rgb(199 62 58 / 50%);
+}
+
+.cycle-dot.current {
+  background: color-mix(in srgb, var(--color-signal-red), transparent 60%);
+  border-color: var(--color-signal-red);
+  animation: cycle-dot-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes cycle-dot-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgb(199 62 58 / 45%);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgb(199 62 58 / 0%);
+    transform: scale(1.18);
+  }
+}
+
+.cycle-progress-count {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cycle-dot.current {
+    animation: none;
+  }
+}

@@ -114,7 +114,13 @@ export type GoalId =
   | 'unlock_five_residents'
   | 'reach_comfort_60'
   | 'earn_credits_100000'
-  | 'repeat_renovation';
+  | 'repeat_renovation'
+  | 'reach_comfort_80'
+  | 'unlock_seven_residents'
+  | 'earn_credits_500000'
+  | 'unlock_orbital_library'
+  | 'reach_capsule_50'
+  | 'third_renovation';
 
 export interface ModuleDefinition {
   id: ModuleId;
@@ -393,7 +399,7 @@ export interface GoalTimedBonusReward {
 export interface GoalDefinition {
   id: GoalId;
   title: string;
-  renovationCycle: 0 | 1 | 2;
+  renovationCycle: 0 | 1 | 2 | 3;
   rewardComfort: number;
   rewardKind: GoalRewardKind;
   rewardLabel: string;

@@ -239,7 +239,19 @@ function getStationProgressRequirement(state: GameState): PrestigeRequirement {
     };
   }
 
-  const current = Number(state.moduleLevels.teleport_entry > 0) + Number(state.unlockedResidents.length >= 5);
+  if (cycle === 2) {
+    const current = Number(state.moduleLevels.teleport_entry > 0) + Number(state.unlockedResidents.length >= 5);
+
+    return {
+      id: 'station_progress',
+      completed: current >= 1,
+      current,
+      target: 1
+    };
+  }
+
+  // Cycle 3: deep station — orbital library + high comfort
+  const current = Number(state.moduleLevels.orbital_library > 0) + Number(state.comfort >= 70);
 
   return {
     id: 'station_progress',
