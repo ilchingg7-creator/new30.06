@@ -116,6 +116,23 @@ export interface Translation {
   helpRenovation: string;
   helpRenovationBody: string;
   helpStart: string;
+  // Onboarding tour
+  tourTitle: string;
+  tourStepStation: string;
+  tourStepStationBody: string;
+  tourStepModules: string;
+  tourStepModulesBody: string;
+  tourStepGoals: string;
+  tourStepGoalsBody: string;
+  tourStepBonuses: string;
+  tourStepBonusesBody: string;
+  tourStepStats: string;
+  tourStepStatsBody: string;
+  tourNext: string;
+  tourPrev: string;
+  tourSkip: string;
+  tourDone: string;
+  tourStep: string;
   // Settings
   settingsTitle: string;
   resetSave: string;
@@ -403,6 +420,22 @@ const ru: Translation = {
   helpRenovation: 'Реновация орбиты',
   helpRenovationBody: 'Сбрасывает копейки и модули, но сохраняет репутацию. Репутация покупает постоянные улучшения (жильцы выживают, тёплый старт, больше офлайн-лимит).',
   helpStart: 'Понятно, начать играть',
+  tourTitle: 'Экскурсия по станции',
+  tourStepStation: 'Ваша станция',
+  tourStepStationBody: 'Это вид станции. Кликайте по комнате, чтобы получить немного копеек. Странная кошка в капсуле тоже любит внимание.',
+  tourStepModules: 'Комнаты станции',
+  tourStepModulesBody: 'Покупайте уровни модулей за копейки. Каждый модуль даёт доход в секунду. На уровнях 10, 25, 50 и 100 модуль получает множитель дохода.',
+  tourStepGoals: 'Цели',
+  tourStepGoalsBody: 'Цели направляют развитие. За выполнение дают комфорт, визуальные детали или временные бусты. Завершённые цели исчезают из списка.',
+  tourStepBonuses: 'Бонусы',
+  tourStepBonusesBody: 'На Yandex Games бонусы включаются за рекламу (x2 аренда, VIP-жилец). Локально — сразу. Есть и ежедневные награды за заход.',
+  tourStepStats: 'Ресурсы станции',
+  tourStepStatsBody: 'Копейки, комфорт, репутация и доход в секунду — ваши главные показатели. Комфорт умножает доход, репутация усиливает его после реновации.',
+  tourNext: 'Дальше',
+  tourPrev: 'Назад',
+  tourSkip: 'Пропустить',
+  tourDone: 'Поехали!',
+  tourStep: 'Шаг',
   settingsTitle: 'Настройки',
   resetSave: 'Сбросить сохранение',
   resetSaveDesc: 'Полностью стирает прогресс: копейки, модули, жильцов, достижения и репутацию. Действие необратимо.',
@@ -1145,6 +1178,22 @@ const en: Translation = {
   helpRenovation: 'Orbit renovation',
   helpRenovationBody: 'Resets kopeks and modules but keeps reputation. Reputation buys permanent upgrades (residents survive, warm start, higher offline cap).',
   helpStart: 'Got it, start playing',
+  tourTitle: 'Station Tour',
+  tourStepStation: 'Your Station',
+  tourStepStationBody: 'This is the station view. Click a room to earn a few kopeks. The strange cat in the capsule also likes attention.',
+  tourStepModules: 'Station Rooms',
+  tourStepModulesBody: 'Buy module levels with kopeks. Each module gives income per second. At levels 10, 25, 50, and 100 modules get an income multiplier.',
+  tourStepGoals: 'Goals',
+  tourStepGoalsBody: 'Goals guide your progress. Completing them gives comfort, visual details, or temporary boosts. Finished goals disappear from the list.',
+  tourStepBonuses: 'Bonuses',
+  tourStepBonusesBody: 'On Yandex Games bonuses are activated via ads (x2 rent, VIP resident). Locally — instantly. There are also daily login rewards.',
+  tourStepStats: 'Station Resources',
+  tourStepStatsBody: 'Kopeks, comfort, reputation, and income per second are your key metrics. Comfort multiplies income, reputation boosts it after renovation.',
+  tourNext: 'Next',
+  tourPrev: 'Back',
+  tourSkip: 'Skip',
+  tourDone: 'Let\'s go!',
+  tourStep: 'Step',
   settingsTitle: 'Settings',
   resetSave: 'Reset save',
   resetSaveDesc: 'Completely erases progress: kopeks, modules, residents, achievements and reputation. This cannot be undone.',

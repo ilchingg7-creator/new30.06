@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { App } from '../App';
 import { translations } from '../platform/i18n';
@@ -12,6 +12,8 @@ beforeEach(() => {
     value: 'ru-RU'
   });
   window.localStorage.removeItem('cosmic-communalka-language');
+  // Mark onboarding tour as seen so it doesn't overlay the app shell.
+  window.localStorage.setItem('cosmic-communalka-help-seen', '1');
 });
 
 function setViewportWidth(width: number) {
@@ -30,7 +32,9 @@ describe('App shell', () => {
     expect(await screen.findAllByText('15')).not.toHaveLength(0);
     expect(screen.getAllByText(`0${t.perSecond}`)).not.toHaveLength(0);
     expect(screen.getAllByText(t.content.modules.tenant_capsule.name)).not.toHaveLength(0);
-    expect(screen.getAllByLabelText(t.stationView)).not.toHaveLength(0);
+    await waitFor(() => {
+      expect(screen.getAllByLabelText(t.stationView)).not.toHaveLength(0);
+    });
     expect(screen.getByRole('heading', { name: t.rooms })).toBeInTheDocument();
     expect(container.querySelector('.desktop-layout')).not.toBeNull();
     expect(container.querySelector('.mobile-layout')).toBeNull();

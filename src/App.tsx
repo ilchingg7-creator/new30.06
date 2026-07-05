@@ -8,6 +8,7 @@ import { DailyLoginDialog } from './ui/screens/DailyLoginDialog';
 import { HelpOverlay } from './ui/screens/HelpOverlay';
 import { LoadingScreen } from './ui/screens/LoadingScreen';
 import { OfflineRewardDialog } from './ui/screens/OfflineRewardDialog';
+import { OnboardingTour } from './ui/screens/OnboardingTour';
 import { SettingsDialog } from './ui/screens/SettingsDialog';
 import { VisitorDialog } from './ui/screens/VisitorDialog';
 
@@ -45,7 +46,8 @@ export function App() {
   const game = useGameState();
   const { language, t, changeLanguage } = useLanguage();
   const [isMobileViewport, setIsMobileViewport] = useState(getIsMobileViewport);
-  const [showHelp, setShowHelp] = useState(() => !hasSeenHelp());
+  const [showTour, setShowTour] = useState(() => !hasSeenHelp());
+  const [showHelp, setShowHelp] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
@@ -80,6 +82,11 @@ export function App() {
   const closeHelp = () => {
     markHelpSeen();
     setShowHelp(false);
+  };
+
+  const closeTour = () => {
+    markHelpSeen();
+    setShowTour(false);
   };
 
   if (!game.ready) {
@@ -158,6 +165,7 @@ export function App() {
         />
       )}
       {showHelp && <HelpOverlay onClose={closeHelp} t={t} />}
+      {showTour && <OnboardingTour onClose={closeTour} t={t} />}
       {showSettings && (
         <SettingsDialog
           onClose={() => setShowSettings(false)}

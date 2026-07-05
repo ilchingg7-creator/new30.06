@@ -1,5 +1,5 @@
 import { Gift, Home, RotateCcw, Target } from 'lucide-react';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
 import type { UseGameStateResult } from '../useGameState';
 import type { Translation } from '../../platform/i18n';
 import { getStationGuidance } from '../../game/stationDirector';
@@ -9,7 +9,6 @@ import { CommunalDutyPanel } from '../components/CommunalDutyPanel';
 import { GoalPanel } from '../components/GoalPanel';
 import { LastActionFeedbackPanel } from '../components/LastActionFeedbackPanel';
 import { ModuleList } from '../components/ModuleList';
-import { PixiStationScene } from '../components/PixiStationScene';
 import { RoomConditionBar } from '../components/RoomConditionBar';
 import { PrestigePanel } from '../components/PrestigePanel';
 import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
@@ -22,6 +21,16 @@ import { StatsPanel } from '../components/StatsPanel';
 import { TopBar } from '../components/TopBar';
 import { WeeklyRepairPanel } from '../components/WeeklyRepairPanel';
 import { LeaderboardPanel } from '../components/LeaderboardPanel';
+
+const PixiStationScene = lazy(() => import('../components/PixiStationScene').then((m) => ({ default: m.PixiStationScene })));
+
+function SceneFallback() {
+  return (
+    <div className="station-view station-view-loading" aria-hidden="true">
+      <div className="station-view-spinner" />
+    </div>
+  );
+}
 
 type MobileTab = 'modules' | 'goals' | 'bonuses' | 'prestige';
 
@@ -48,7 +57,9 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
 
   return (
     <section className="mobile-layout" aria-label="Mobile layout">
-      <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} variant="compact" t={t} />
+      <div data-tour="stats">
+        <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} variant="compact" t={t} />
+      </div>
       {stationGuidance ? (
         <StationTaskPanel
           guidance={stationGuidance}
@@ -67,21 +78,29 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
         t={t}
       />
       <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} t={t} />
-      <div className="mobile-room-area">
-        <PixiStationScene
-          gameState={game.gameState}
-          selectedRoomId={game.selectedRoomId}
-          onRoomClick={game.clickRoom}
-          onTenantCatClick={game.triggerCatIncident}
-          ariaLabel={t.stationView}
-        />
+      <div className="mobile-room-area" data-tour="station-view">
+        <Suspense fallback={<SceneFallback />}>
+          <PixiStationScene
+            gameState={game.gameState}
+            selectedRoomId={game.selectedRoomId}
+            onRoomClick={game.clickRoom}
+            onTenantCatClick={game.triggerCatIncident}
+            ariaLabel={t.stationView}
+          />
+        </Suspense>
         <RoomConditionBar gameState={game.gameState} roomId={game.selectedRoomId} t={t} />
       </div>
       <div className="mobile-tab-content">
-        {activeTab === 'modules' && <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} t={t} />}
+        {activeTab === 'modules' && (
+          <div data-tour="modules">
+            <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} t={t} />
+          </div>
+        )}
         {activeTab === 'goals' && (
           <>
-            <GoalPanel gameState={game.gameState} t={t} />
+            <div data-tour="goals">
+              <GoalPanel gameState={game.gameState} t={t} />
+            </div>
             <StationIncidentJournal
               gameState={game.gameState}
               newIncidentCount={game.newIncidentCount}
@@ -104,13 +123,15 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
           </>
         )}
         {activeTab === 'bonuses' && (
-          <BonusPanel
-            onIncomeBoost={game.activateIncomeBoost}
-            onVipResident={game.activateVipResident}
-            adsAvailable={game.adsAvailable}
-            adPending={game.adPending}
-            t={t}
-          />
+          <div data-tour="bonuses">
+            <BonusPanel
+              onIncomeBoost={game.activateIncomeBoost}
+              onVipResident={game.activateVipResident}
+              adsAvailable={game.adsAvailable}
+              adPending={game.adPending}
+              t={t}
+            />
+          </div>
         )}
         {activeTab === 'prestige' && (
           <>

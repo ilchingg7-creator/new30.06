@@ -2111,3 +2111,184 @@ input {
 .incident-choice-list small {
   color: var(--muted-text);
 }
+
+/* ── Onboarding Tour ────────────────────────────────────────────── */
+
+.tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.tour-overlay > * {
+  pointer-events: auto;
+}
+
+.tour-tooltip {
+  position: fixed;
+  background: var(--color-warm-panel);
+  border: 1px solid var(--color-signal-red);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgb(8 16 28 / 55%), 0 0 0 1px rgb(199 62 58 / 20%);
+  padding: 14px 16px 12px;
+  z-index: 9999;
+  animation: tour-tooltip-appear 0.28s ease;
+  max-width: 340px;
+}
+
+@keyframes tour-tooltip-appear {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tour-tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.tour-progress-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-utility-blue);
+}
+
+.tour-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid rgb(39 49 63 / 16%);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.tour-close:hover {
+  background: rgb(39 49 63 / 8%);
+  border-color: var(--color-signal-red);
+}
+
+.tour-tooltip-title {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-ink);
+}
+
+.tour-tooltip-body {
+  margin: 0 0 10px;
+  font-size: 0.84rem;
+  line-height: 1.42;
+  color: rgb(39 49 63 / 78%);
+}
+
+.tour-dots {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 12px;
+}
+
+.tour-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgb(39 49 63 / 18%);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.tour-dot.active {
+  background: var(--color-signal-red);
+  transform: scale(1.25);
+}
+
+.tour-tooltip-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tour-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border: 1px solid rgb(39 49 63 / 18%);
+  border-radius: 7px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.tour-btn:active {
+  transform: scale(0.97);
+}
+
+.tour-btn-secondary {
+  background: transparent;
+  color: var(--color-utility-blue);
+}
+
+.tour-btn-secondary:hover {
+  background: rgb(39 49 63 / 6%);
+  border-color: var(--color-utility-blue);
+}
+
+.tour-btn-primary {
+  background: var(--color-signal-red);
+  border-color: var(--color-signal-red);
+  color: var(--color-soft-white);
+}
+
+.tour-btn-primary:hover {
+  background: color-mix(in srgb, var(--color-signal-red), #000 12%);
+}
+
+/* ── Station scene loading fallback ─────────────────────────────── */
+
+.station-view-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  background: var(--color-space-navy);
+  border-radius: var(--radius-panel);
+}
+
+.station-view-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgb(199 62 58 / 22%);
+  border-top-color: var(--color-signal-red);
+  border-radius: 50%;
+  animation: station-spin 0.8s linear infinite;
+}
+
+@keyframes station-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-tooltip {
+    animation: none;
+  }
+  .station-view-spinner {
+    animation: none;
+  }
+}
