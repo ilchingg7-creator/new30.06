@@ -55,11 +55,17 @@ export interface DailyLoginReward {
   reward: DailyRewardInfo;
 }
 
+export interface CelebrationInfo {
+  cycle: number;
+  reputationGained: number;
+}
+
 export interface UseGameStateResult {
   gameState: GameState;
   incomePerSecond: number;
   offlineReward: OfflineReward | null;
   dailyReward: DailyLoginReward | null;
+  celebration: CelebrationInfo | null;
   ready: boolean;
   selectedRoomId: ModuleId;
   adPending: boolean;
@@ -69,6 +75,7 @@ export interface UseGameStateResult {
   renovateOrbit(): void;
   dismissOfflineReward(): void;
   dismissDailyReward(): void;
+  dismissCelebration(): void;
   activateIncomeBoost(): Promise<void>;
   activateVipResident(): Promise<void>;
   doubleOfflineReward(): Promise<void>;
@@ -105,6 +112,7 @@ export function useGameState(
   const [ready, setReady] = useState(false);
   const [offlineReward, setOfflineReward] = useState<OfflineReward | null>(null);
   const [dailyReward, setDailyReward] = useState<DailyLoginReward | null>(null);
+  const [celebration, setCelebration] = useState<CelebrationInfo | null>(null);
   const [adPending, setAdPending] = useState(false);
   const [adsAvailable, setAdsAvailable] = useState(false);
   const [soundMuted, setSoundMuted] = useState(() => isMuted());
@@ -289,14 +297,26 @@ export function useGameState(
 
   const renovateOrbit = useCallback(() => {
     let renovated = false;
+    let nextCelebration: CelebrationInfo | null = null;
 
     setGameState((current) => {
       const next = withQueuedIncidents(performPrestige(current));
       renovated = next !== current;
 
+      if (renovated) {
+        nextCelebration = {
+          cycle: next.prestigeCount ?? 0,
+          reputationGained: next.reputation - current.reputation
+        };
+      }
+
       return next;
     });
     playSound(renovated ? 'prestige' : 'error');
+
+    if (nextCelebration) {
+      setCelebration(nextCelebration);
+    }
   }, []);
 
   const dismissOfflineReward = useCallback(() => {
@@ -306,6 +326,11 @@ export function useGameState(
 
   const dismissDailyReward = useCallback(() => {
     setDailyReward(null);
+    playSound('click');
+  }, []);
+
+  const dismissCelebration = useCallback(() => {
+    setCelebration(null);
     playSound('click');
   }, []);
 
@@ -511,6 +536,7 @@ export function useGameState(
     incomePerSecond: calculateIncomePerSecond(gameState),
     offlineReward,
     dailyReward,
+    celebration,
     ready,
     selectedRoomId,
     adPending,
@@ -520,6 +546,7 @@ export function useGameState(
     renovateOrbit,
     dismissOfflineReward,
     dismissDailyReward,
+    dismissCelebration,
     activateIncomeBoost,
     activateVipResident,
     doubleOfflineReward,

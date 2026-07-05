@@ -306,4 +306,37 @@ Object.assign(stationIncidents.find((incident) => incident.id === 'cat_sleeps_on
   ]
 } satisfies Partial<StationIncidentDefinition>);
 
+Object.assign(stationIncidents.find((incident) => incident.id === 'retired_cosmonaut_mug_missing')!, {
+  category: 'resident',
+  priority: 52,
+  enabled: true,
+  trigger: { kind: 'residentUnlocked', residentId: 'retired_cosmonaut' },
+  choices: [
+    { id: 'search_capsule', effects: { comfortDelta: 2, visualPlaceholderIds: ['cosmonaut_mug_01'] } },
+    { id: 'buy_new_mug', effects: { creditsDelta: -80, comfortDelta: 1 } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'mist_cook_recipe_too_large')!, {
+  category: 'resident',
+  priority: 51,
+  enabled: true,
+  trigger: { kind: 'residentUnlocked', residentId: 'mist_cook' },
+  choices: [
+    { id: 'copy_recipe', effects: { comfortDelta: 2, visualPlaceholderIds: ['kitchen_recipe_scroll_01'] } },
+    { id: 'simplify_recipe', effects: { conditionRepair: { cosmo_kitchen: 8 } } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'vacuum_gardener_seed_escape')!, {
+  category: 'resident',
+  priority: 50,
+  enabled: true,
+  trigger: { kind: 'residentUnlocked', residentId: 'vacuum_gardener' },
+  choices: [
+    { id: 'catch_seeds', effects: { comfortDelta: 2, visualPlaceholderIds: ['garden_seed_trail_01'] } },
+    { id: 'let_them_grow', effects: { conditionRepair: { oxygen_garden: 8 } } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
 export const activeStationIncidents = stationIncidents.filter((incident) => incident.enabled);

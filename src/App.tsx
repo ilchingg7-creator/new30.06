@@ -9,6 +9,7 @@ import { HelpOverlay } from './ui/screens/HelpOverlay';
 import { LoadingScreen } from './ui/screens/LoadingScreen';
 import { OfflineRewardDialog } from './ui/screens/OfflineRewardDialog';
 import { OnboardingTour } from './ui/screens/OnboardingTour';
+import { CelebrationOverlay } from './ui/screens/CelebrationOverlay';
 import { SettingsDialog } from './ui/screens/SettingsDialog';
 import { VisitorDialog } from './ui/screens/VisitorDialog';
 
@@ -166,6 +167,13 @@ export function App() {
       )}
       {showHelp && <HelpOverlay onClose={closeHelp} t={t} />}
       {showTour && <OnboardingTour onClose={closeTour} t={t} />}
+      {game.celebration && (
+        <CelebrationOverlay
+          celebration={game.celebration}
+          onDismiss={game.dismissCelebration}
+          t={t}
+        />
+      )}
       {showSettings && (
         <SettingsDialog
           onClose={() => setShowSettings(false)}

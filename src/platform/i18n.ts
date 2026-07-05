@@ -66,6 +66,10 @@ export interface Translation {
   renovationRequirementStation2: string;
   renovationRequirementStation3: string;
   renovationCycleLabel: string;
+  celebrationTitle: string;
+  celebrationCycle: string;
+  celebrationReputation: string;
+  celebrationDismiss: string;
   renovationRequirementGoals: string;
   renovate: string;
   renovateTooltip: string;
@@ -377,6 +381,10 @@ const ru: Translation = {
   renovationRequirementStation2: 'Открыть телепорт или заселить 5 жильцов',
   renovationRequirementStation3: 'Открыть библиотеку или достичь 70 комфорта',
   renovationCycleLabel: 'Цикл реновации',
+  celebrationTitle: 'Реновация завершена!',
+  celebrationCycle: 'Цикл {cycle}',
+  celebrationReputation: '+{amount} репутации',
+  celebrationDismiss: 'Продолжить',
   renovationRequirementGoals: 'Выполнить цели цикла',
   renovate: 'Реновировать',
   renovateTooltip: 'Реновация сбрасывает копейки и модули, но сохраняет репутацию и купленные улучшения. Награда = floor(sqrt(заработано / 100000)).',
@@ -692,6 +700,30 @@ const ru: Translation = {
       choices: {
         relocate_cat: { label: 'Перенести кота на диван', description: '+комфорт, деталь' },
         label_button: { label: 'Подписать кнопку «не спать»', description: '+состояние капсулы' }
+      }
+    },
+    retired_cosmonaut_mug_missing: {
+      title: 'Эмалированная кружка космонавта пропала',
+      body: 'Сосед-отставной космонавт обыскал всю капсулу — кружки нигде нет. Говорит, что без неё «не та станция».',
+      choices: {
+        search_capsule: { label: 'Обыскать капсулу вместе', description: '+комфорт, деталь' },
+        buy_new_mug: { label: 'Купить новую кружку', description: '-копейки, +комфорт' }
+      }
+    },
+    mist_cook_recipe_too_large: {
+      title: 'Рецепт повара не помещается на кухне',
+      body: 'Суп из туманных водорослей требует 47 шагов. Повар с туманной планеты утверждает, что короче никак.',
+      choices: {
+        copy_recipe: { label: 'Переписать рецепт на пергамент', description: '+комфорт, деталь' },
+        simplify_recipe: { label: 'Упростить до 12 шагов', description: '+состояние кухни' }
+      }
+    },
+    vacuum_gardener_seed_escape: {
+      title: 'Семена садовника вырвались на свободу',
+      body: 'Коллекция семян с разных планет вылетела в коридор. Садовник вакуума в панике ловит их в невесомости.',
+      choices: {
+        catch_seeds: { label: 'Помочь поймать семена', description: '+комфорт, деталь' },
+        let_them_grow: { label: 'Дать им прорасти в коридоре', description: '+состояние сада' }
       }
     }
   },
@@ -1161,6 +1193,10 @@ const en: Translation = {
   renovationRequirementStation2: 'Open teleport or settle 5 residents',
   renovationRequirementStation3: 'Open library or reach 70 comfort',
   renovationCycleLabel: 'Renovation cycle',
+  celebrationTitle: 'Renovation complete!',
+  celebrationCycle: 'Cycle {cycle}',
+  celebrationReputation: '+{amount} reputation',
+  celebrationDismiss: 'Continue',
   renovationRequirementGoals: 'Complete cycle goals',
   renovate: 'Renovate',
   renovateTooltip: 'Renovation resets kopeks and modules but keeps reputation and purchased upgrades. Reward = floor(sqrt(earned / 100000)).',
@@ -1476,6 +1512,30 @@ const en: Translation = {
       choices: {
         relocate_cat: { label: 'Move the cat to the sofa', description: '+comfort, detail' },
         label_button: { label: 'Label the button "no sleeping"', description: '+capsule condition' }
+      }
+    },
+    retired_cosmonaut_mug_missing: {
+      title: 'The cosmonaut\'s enamel mug is missing',
+      body: 'The retired cosmonaut searched the whole capsule — the mug is nowhere. He says without it "this is not the same station".',
+      choices: {
+        search_capsule: { label: 'Search the capsule together', description: '+comfort, detail' },
+        buy_new_mug: { label: 'Buy a new mug', description: '-kopeks, +comfort' }
+      }
+    },
+    mist_cook_recipe_too_large: {
+      title: 'The cook\'s recipe does not fit in the kitchen',
+      body: 'The misty algae soup takes 47 steps. The cook from the fog planet insists there is no shorter version.',
+      choices: {
+        copy_recipe: { label: 'Copy the recipe onto parchment', description: '+comfort, detail' },
+        simplify_recipe: { label: 'Simplify to 12 steps', description: '+kitchen condition' }
+      }
+    },
+    vacuum_gardener_seed_escape: {
+      title: 'The gardener\'s seeds escaped',
+      body: 'The seed collection from different planets flew into the corridor. The vacuum gardener is frantically catching them in zero gravity.',
+      choices: {
+        catch_seeds: { label: 'Help catch the seeds', description: '+comfort, detail' },
+        let_them_grow: { label: 'Let them grow in the corridor', description: '+garden condition' }
       }
     }
   },
