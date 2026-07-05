@@ -13,7 +13,7 @@ import type { GameState } from '../game/types';
 describe('station incidents content', () => {
   it('defines a large incident catalog with a focused active MVP slice', () => {
     expect(stationIncidents).toHaveLength(40);
-    expect(activeStationIncidents).toHaveLength(10);
+    expect(activeStationIncidents).toHaveLength(15);
   });
 
   it('gives active incidents at least two choices', () => {
@@ -30,6 +30,19 @@ describe('station incidents content', () => {
     expect(visualEffects).toContain('kitchen_mist_patch_01');
     expect(visualEffects).toContain('cat_saucer_01');
     expect(new Set(visualEffects).size).toBe(visualEffects.length);
+  });
+
+  it('keeps active incident rewards varied instead of credit-heavy', () => {
+    const choices = activeStationIncidents.flatMap((incident) => incident.choices);
+    const positiveCreditChoices = choices.filter((choice) => (choice.effects.creditsDelta ?? 0) > 0);
+    const timedBonusChoices = choices.filter((choice) => choice.effects.timedBonus);
+    const visualChoices = choices.filter((choice) => (choice.effects.visualPlaceholderIds ?? []).length > 0);
+    const conditionChoices = choices.filter((choice) => Object.keys(choice.effects.conditionRepair ?? {}).length > 0);
+
+    expect(positiveCreditChoices.length).toBeLessThanOrEqual(3);
+    expect(timedBonusChoices.length).toBeGreaterThanOrEqual(1);
+    expect(visualChoices.length).toBeGreaterThanOrEqual(8);
+    expect(conditionChoices.length).toBeGreaterThanOrEqual(6);
   });
 });
 
@@ -86,6 +99,22 @@ describe('station incident state', () => {
     expect(resolved.completedIncidents).toContain('kitchen_borscht_fog');
     expect(resolved.unlockedIncidentVisuals).toContain('kitchen_mist_patch_01');
     expect(resolved.roomConditions?.cosmo_kitchen).toBe(68);
+  });
+
+  it('resolves timed incident bonuses with a real future expiry', () => {
+    const base = createInitialState(1_000);
+    const state: GameState = {
+      ...base,
+      activeIncidents: [{ id: 'kitchen_garden_soup', queuedAt: 10_000, isNew: true }]
+    };
+
+    const resolved = resolveStationIncident(state, 'kitchen_garden_soup', 'sell_recipe', 20_000);
+
+    expect(resolved.timedBonuses).toContainEqual({
+      id: 'incident_kitchen_garden_soup_recipe',
+      incomeMultiplier: 1.2,
+      expiresAt: 320_000
+    });
   });
 
   it('does not return completed non-repeatable incidents', () => {

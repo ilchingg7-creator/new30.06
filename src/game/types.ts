@@ -236,8 +236,14 @@ export interface StationIncidentEffect {
   comfortDelta?: number;
   creditsDelta?: number;
   conditionRepair?: Partial<Record<ModuleId, number>>;
-  timedBonus?: TimedBonus;
+  timedBonus?: StationIncidentTimedBonusReward;
   visualPlaceholderIds?: VisualPlaceholderId[];
+}
+
+export interface StationIncidentTimedBonusReward {
+  id: string;
+  incomeMultiplier: number;
+  durationMs: number;
 }
 
 export interface StationIncidentChoice {
@@ -300,6 +306,12 @@ export interface PrestigeUpgradeDefinition {
 
 export type GoalRewardKind = 'comfort' | 'visual_detail' | 'temporary_boost' | 'prestige_hint';
 
+export interface GoalTimedBonusReward {
+  id: string;
+  incomeMultiplier: number;
+  durationMs: number;
+}
+
 export interface GoalDefinition {
   id: GoalId;
   title: string;
@@ -307,6 +319,8 @@ export interface GoalDefinition {
   rewardComfort: number;
   rewardKind: GoalRewardKind;
   rewardLabel: string;
+  rewardVisualPlaceholderIds?: VisualPlaceholderId[];
+  rewardTimedBonus?: GoalTimedBonusReward;
 }
 
 export type ModuleLevels = Record<ModuleId, number>;

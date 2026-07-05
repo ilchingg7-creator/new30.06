@@ -58,7 +58,7 @@ export const modules: ModuleDefinition[] = [
     baseCost: 450000,
     baseIncomePerSecond: 2600,
     comfortBonus: 6,
-    unlockAtCredits: 600000,
+    unlockAtCredits: 710000,
     visualKey: 'gym-ring'
   },
   {
@@ -68,7 +68,7 @@ export const modules: ModuleDefinition[] = [
     baseCost: 1600000,
     baseIncomePerSecond: 9000,
     comfortBonus: 10,
-    unlockAtCredits: 2800000,
+    unlockAtCredits: 4200000,
     visualKey: 'amber-dome'
   },
   {
@@ -78,7 +78,7 @@ export const modules: ModuleDefinition[] = [
     baseCost: 6000000,
     baseIncomePerSecond: 23000,
     comfortBonus: 12,
-    unlockAtCredits: 12000000,
+    unlockAtCredits: 25000000,
     visualKey: 'saucer-dock'
   },
   {
@@ -88,7 +88,7 @@ export const modules: ModuleDefinition[] = [
     baseCost: 18000000,
     baseIncomePerSecond: 60000,
     comfortBonus: 15,
-    unlockAtCredits: 115000000,
+    unlockAtCredits: 200000000,
     visualKey: 'radiator-balcony'
   },
   {
@@ -98,7 +98,7 @@ export const modules: ModuleDefinition[] = [
     baseCost: 50000000,
     baseIncomePerSecond: 150000,
     comfortBonus: 8,
-    unlockAtCredits: 200000000,
+    unlockAtCredits: 350000000,
     visualKey: 'mail-tube'
   },
   {
@@ -108,7 +108,7 @@ export const modules: ModuleDefinition[] = [
     baseCost: 150000000,
     baseIncomePerSecond: 400000,
     comfortBonus: 10,
-    unlockAtCredits: 700000000,
+    unlockAtCredits: 900000000,
     visualKey: 'meteorite-pantry'
   },
   {
@@ -118,7 +118,7 @@ export const modules: ModuleDefinition[] = [
     baseCost: 400000000,
     baseIncomePerSecond: 1000000,
     comfortBonus: 12,
-    unlockAtCredits: 1200000000,
+    unlockAtCredits: 1600000000,
     visualKey: 'observatory-dome'
   },
   {

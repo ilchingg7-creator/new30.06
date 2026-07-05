@@ -154,3 +154,21 @@ export const goals: GoalDefinition[] = [
     rewardLabel: 'Новый цикл станции'
   }
 ];
+
+Object.assign(goals.find((goal) => goal.id === 'earn_credits_10000')!, {
+  rewardComfort: 0,
+  rewardKind: 'temporary_boost',
+  rewardLabel: 'x1.15 income for 5 min',
+  rewardTimedBonus: {
+    id: 'goal_earn_credits_10000',
+    incomeMultiplier: 1.15,
+    durationMs: 5 * 60 * 1_000
+  }
+} satisfies Partial<GoalDefinition>);
+
+Object.assign(goals.find((goal) => goal.id === 'unlock_three_residents')!, {
+  rewardComfort: 0,
+  rewardKind: 'visual_detail',
+  rewardLabel: 'Visual detail: resident schedule',
+  rewardVisualPlaceholderIds: ['table_schedule_01']
+} satisfies Partial<GoalDefinition>);

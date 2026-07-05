@@ -181,3 +181,46 @@ Room condition decays slowly at `-1` every 3 minutes. Room clicks no longer
 repair condition; they only grant a small active kopek reward. Condition repair
 comes primarily from Communal Duties so the resident system carries the repair
 decision.
+
+## Resident Economy Bonuses
+
+Resident bonuses are part of the actual economy:
+
+- `sleepy_engineer`: x1.05 tenant capsule income;
+- `mist_cook`: x1.10 cosmo kitchen income;
+- `sock_master`: x1.10 zero-g laundry income;
+- `teleport_courier`: x1.05 global income;
+- `retired_cosmonaut`: x1.10 global income after renovation;
+- `vacuum_gardener`: +5 comfort once when unlocked;
+- `three_eyed_housekeeper`: first purchase of each room costs 8% less.
+
+Room-specific resident multipliers apply before comfort, reputation, timed
+bonuses and condition multipliers. This keeps resident value visible while
+preserving the existing balance formula.
+
+## Goal Reward Effects
+
+Goal reward kinds must match real effects:
+
+- `comfort` adds comfort;
+- `visual_detail` unlocks saved visual placeholder ids;
+- `temporary_boost` creates a timed income bonus;
+- `prestige_hint` only marks cycle progress.
+
+Goal rewards still apply once and completed goals remain hidden from the active
+goal panel.
+
+## Resident-Aware Unlock Thresholds
+
+Resident income roles accelerate the middle and late game, so module unlock
+thresholds after `teleport_entry` are balanced with those bonuses enabled:
+
+- `antigrav_gym`: 710,000;
+- `panorama_dome`: 4,200,000;
+- `saucer_dock`: 25,000,000;
+- `radiator_balcony`: 200,000,000;
+- `mail_tube_office`: 350,000,000;
+- `meteorite_pantry`: 900,000,000;
+- `shared_observatory`: 1,600,000,000.
+
+The deterministic balance simulation remains the guardrail for these values.

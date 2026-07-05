@@ -16,6 +16,7 @@ describe('resident unlocks', () => {
     state = buyModuleLevel(state, 'oxygen_garden');
 
     expect(state.unlockedResidents).toContain('vacuum_gardener');
+    expect(state.comfort).toBe(10);
   });
 
   it('unlocks sleepy_engineer when tenant_capsule reaches level 10', () => {

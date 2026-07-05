@@ -4,7 +4,12 @@ import { modules } from './content/modules';
 import { prestigeUpgrades } from './content/prestigeUpgrades';
 import { completeEligibleGoals, getGoalRenovationCycle, getGoalsForCurrentCycle } from './goals';
 import { getOverallConditionMultiplier, initializeRoomCondition } from './roomConditions';
-import { checkResidentUnlocks } from './residents';
+import {
+  checkResidentUnlocks,
+  getResidentFirstRoomCostMultiplier,
+  getResidentGlobalIncomeMultiplier,
+  getResidentModuleIncomeMultiplier
+} from './residents';
 import type { GameState, ModuleId, ModuleLevels, PrestigeUpgradeId, TimedBonus } from './types';
 
 export const LEVEL_COST_GROWTH = 1.18;
@@ -104,12 +109,12 @@ export function calculateModuleCost(moduleId: ModuleId, state: GameState): numbe
   const module = getModule(moduleId);
   const level = state.moduleLevels[moduleId];
   const baseCost = module.baseCost * LEVEL_COST_GROWTH ** level;
+  const firstRoomMultiplier = level === 0
+    ? (state.purchasedPrestigeUpgrades?.includes('first_room_discount') ? FIRST_ROOM_DISCOUNT_MULTIPLIER : 1) *
+      getResidentFirstRoomCostMultiplier(state)
+    : 1;
 
-  return Math.ceil(
-    level === 0 && state.purchasedPrestigeUpgrades?.includes('first_room_discount')
-      ? baseCost * FIRST_ROOM_DISCOUNT_MULTIPLIER
-      : baseCost
-  );
+  return Math.ceil(baseCost * firstRoomMultiplier);
 }
 
 export function calculateIncomePerSecond(state: GameState, now = Date.now()): number {
@@ -117,15 +122,16 @@ export function calculateIncomePerSecond(state: GameState, now = Date.now()): nu
     const level = state.moduleLevels[module.id];
     const milestoneMultiplier = calculateMilestoneMultiplier(level);
 
-    return sum + module.baseIncomePerSecond * level * milestoneMultiplier;
+    return sum + module.baseIncomePerSecond * level * milestoneMultiplier * getResidentModuleIncomeMultiplier(state, module.id);
   }, 0);
   const comfortMultiplier = 1 + state.comfort * 0.01;
   const reputationIncomeRate = state.purchasedPrestigeUpgrades?.includes('reputation_income') ? 0.07 : 0.05;
   const reputationMultiplier = 1 + state.reputation * reputationIncomeRate;
+  const residentGlobalMultiplier = getResidentGlobalIncomeMultiplier(state);
   const timedBonusMultiplier = calculateTimedBonusMultiplier(state.timedBonuses, now);
   const conditionMultiplier = getOverallConditionMultiplier(state);
 
-  return moduleIncome * comfortMultiplier * reputationMultiplier * timedBonusMultiplier * conditionMultiplier;
+  return moduleIncome * residentGlobalMultiplier * comfortMultiplier * reputationMultiplier * timedBonusMultiplier * conditionMultiplier;
 }
 
 export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState {

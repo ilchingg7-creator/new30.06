@@ -130,7 +130,8 @@ function addUnique<T extends string>(current: T[] | undefined, next: T[]): T[] {
 export function resolveStationIncident(
   state: GameState,
   incidentId: StationIncidentId,
-  choiceId: string
+  choiceId: string,
+  now = Date.now()
 ): GameState {
   const active = getActiveStationIncidents(state);
 
@@ -152,6 +153,17 @@ export function resolveStationIncident(
     nextRoomConditions[roomId] = Math.min(100, (nextRoomConditions[roomId] ?? 60) + repair);
   }
 
+  const timedBonuses = effect.timedBonus
+    ? [
+        ...state.timedBonuses,
+        {
+          id: effect.timedBonus.id,
+          incomeMultiplier: effect.timedBonus.incomeMultiplier,
+          expiresAt: now + effect.timedBonus.durationMs
+        }
+      ]
+    : state.timedBonuses;
+
   return {
     ...state,
     credits: Math.max(0, state.credits + (effect.creditsDelta ?? 0)),
@@ -160,6 +172,6 @@ export function resolveStationIncident(
     activeIncidents: active.filter((incident) => incident.id !== incidentId),
     completedIncidents: addUnique(state.completedIncidents, [incidentId]),
     unlockedIncidentVisuals: addUnique(state.unlockedIncidentVisuals, effect.visualPlaceholderIds ?? []),
-    timedBonuses: effect.timedBonus ? [...state.timedBonuses, effect.timedBonus] : state.timedBonuses
+    timedBonuses
   };
 }

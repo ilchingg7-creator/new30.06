@@ -96,3 +96,19 @@ Prestige называется **"Реновация орбиты"**. Игрок 
 - дешевле первые модули;
 - шанс VIP-жильца;
 - декоративные уровни станции.
+
+## Resident Roles
+
+Residents now affect the loop mechanically, not only through collection text.
+Room specialists increase their matching room income, the courier and retired
+cosmonaut add global income multipliers, the vacuum gardener grants a one-time
+comfort unlock bonus, and the housekeeper discounts the first purchase of each
+room. These bonuses make room progression a path toward station roles instead
+of only a numeric income ladder.
+
+## Reward Variety
+
+Goals and incidents should use varied rewards. Comfort remains valid, but some
+goals now unlock visual placeholder details or short timed income boosts.
+Station incidents should stay non-blocking and avoid credit-heavy rewards:
+visual details, condition repair and timed bonuses are preferred.

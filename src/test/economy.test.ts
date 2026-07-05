@@ -103,4 +103,44 @@ describe('economy engine', () => {
     expect(renovated).not.toBe(state);
     expect(renovated.prestigeCount).toBe(1);
   });
+
+  it('applies resident income bonuses to their matching rooms and global income', () => {
+    const base = createInitialState(1_000);
+    const tenantState: GameState = {
+      ...base,
+      moduleLevels: {
+        ...base.moduleLevels,
+        tenant_capsule: 10
+      }
+    };
+    const kitchenState: GameState = {
+      ...base,
+      moduleLevels: {
+        ...base.moduleLevels,
+        cosmo_kitchen: 10
+      }
+    };
+    const laundryState: GameState = {
+      ...base,
+      moduleLevels: {
+        ...base.moduleLevels,
+        zero_g_laundry: 10
+      }
+    };
+
+    expect(calculateIncomePerSecond({ ...tenantState, unlockedResidents: ['sleepy_engineer'] })).toBeCloseTo(21);
+    expect(calculateIncomePerSecond({ ...kitchenState, unlockedResidents: ['mist_cook'] })).toBeCloseTo(110);
+    expect(calculateIncomePerSecond({ ...laundryState, unlockedResidents: ['sock_master'] })).toBeCloseTo(2640);
+    expect(calculateIncomePerSecond({ ...tenantState, unlockedResidents: ['teleport_courier'] })).toBeCloseTo(21);
+    expect(calculateIncomePerSecond({ ...tenantState, unlockedResidents: ['retired_cosmonaut'], prestigeCount: 1 })).toBeCloseTo(22);
+  });
+
+  it('applies the housekeeper first-room discount', () => {
+    const state: GameState = {
+      ...createInitialState(1_000),
+      unlockedResidents: ['three_eyed_housekeeper']
+    };
+
+    expect(calculateModuleCost('oxygen_garden', state)).toBe(1472);
+  });
 });

@@ -1,5 +1,5 @@
 import { goals } from './content/goals';
-import type { GameState, GoalDefinition, GoalId } from './types';
+import type { GameState, GoalDefinition, GoalId, TimedBonus, VisualPlaceholderId } from './types';
 
 export function isGoalEligible(goalId: GoalId, state: GameState): boolean {
   switch (goalId) {
@@ -42,17 +42,41 @@ export function isGoalEligible(goalId: GoalId, state: GameState): boolean {
   }
 }
 
-export function completeEligibleGoals(state: GameState): GameState {
+function addUnique<T extends string>(current: T[] | undefined, next: T[]): T[] {
+  return Array.from(new Set([...(current ?? []), ...next]));
+}
+
+function applyGoalReward(state: GameState, goal: GoalDefinition, now: number): GameState {
+  const visualIds = goal.rewardVisualPlaceholderIds ?? [];
+  const timedBonuses: TimedBonus[] = goal.rewardTimedBonus
+    ? [
+        ...state.timedBonuses,
+        {
+          id: goal.rewardTimedBonus.id,
+          incomeMultiplier: goal.rewardTimedBonus.incomeMultiplier,
+          expiresAt: now + goal.rewardTimedBonus.durationMs
+        }
+      ]
+    : state.timedBonuses;
+
+  return {
+    ...state,
+    comfort: state.comfort + goal.rewardComfort,
+    timedBonuses,
+    unlockedIncidentVisuals: visualIds.length > 0
+      ? addUnique<VisualPlaceholderId>(state.unlockedIncidentVisuals, visualIds)
+      : state.unlockedIncidentVisuals,
+    completedGoals: [...state.completedGoals, goal.id]
+  };
+}
+
+export function completeEligibleGoals(state: GameState, now = Date.now()): GameState {
   return getGoalsForCurrentCycle(state).reduce((current, goal) => {
     if (current.completedGoals.includes(goal.id) || !isGoalEligible(goal.id, current)) {
       return current;
     }
 
-    return {
-      ...current,
-      comfort: current.comfort + goal.rewardComfort,
-      completedGoals: [...current.completedGoals, goal.id]
-    };
+    return applyGoalReward(current, goal, now);
   }, state);
 }
 

@@ -159,7 +159,16 @@ export const stationIncidents: StationIncidentDefinition[] = [
     trigger: { kind: 'roomComboAvailable', roomIds: ['cosmo_kitchen', 'oxygen_garden'] },
     choices: [
       { id: 'communal_soup', effects: { comfortDelta: 3, visualPlaceholderIds: ['kitchen_soup_pot_01'] } },
-      { id: 'sell_recipe', effects: { creditsDelta: 300 } }
+      {
+        id: 'sell_recipe',
+        effects: {
+          timedBonus: {
+            id: 'incident_kitchen_garden_soup_recipe',
+            incomeMultiplier: 1.2,
+            durationMs: 5 * 60 * 1_000
+          }
+        }
+      }
     ]
   },
   {
@@ -187,5 +196,60 @@ export const stationIncidents: StationIncidentDefinition[] = [
     ]
   } satisfies StationIncidentDefinition))
 ];
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'capsule_window_frost')!, {
+  category: 'condition',
+  priority: 64,
+  enabled: true,
+  trigger: { kind: 'roomConditionBelow', roomId: 'tenant_capsule', threshold: 50 },
+  choices: [
+    { id: 'wipe_window', effects: { comfortDelta: 1, visualPlaceholderIds: ['capsule_frost_01'] } },
+    { id: 'seal_frame', effects: { conditionRepair: { tenant_capsule: 8 } } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'kitchen_spoon_union')!, {
+  category: 'resident',
+  priority: 63,
+  enabled: true,
+  trigger: { kind: 'residentUnlocked', residentId: 'mist_cook' },
+  choices: [
+    { id: 'approve_union', effects: { comfortDelta: 1, visualPlaceholderIds: ['kitchen_spoon_bundle_01'] } },
+    { id: 'organize_drawer', effects: { conditionRepair: { cosmo_kitchen: 6 } } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'garden_plant_listens_radio')!, {
+  category: 'room',
+  priority: 62,
+  enabled: true,
+  trigger: { kind: 'roomOpened', roomId: 'oxygen_garden' },
+  choices: [
+    { id: 'keep_radio', effects: { comfortDelta: 1, visualPlaceholderIds: ['garden_radio_plant_01'] } },
+    { id: 'tune_signal', effects: { conditionRepair: { oxygen_garden: 6 } } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'laundry_static_storm')!, {
+  category: 'condition',
+  priority: 61,
+  enabled: true,
+  trigger: { kind: 'roomConditionBelow', roomId: 'zero_g_laundry', threshold: 60 },
+  choices: [
+    { id: 'ground_socks', effects: { conditionRepair: { zero_g_laundry: 10 } } },
+    { id: 'name_constellation', effects: { comfortDelta: 1, visualPlaceholderIds: ['laundry_static_socks_01'] } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'teleport_neighbor_duplicate')!, {
+  category: 'room',
+  priority: 60,
+  enabled: true,
+  trigger: { kind: 'roomOpened', roomId: 'teleport_entry' },
+  choices: [
+    { id: 'return_mug', effects: { conditionRepair: { teleport_entry: 6 } } },
+    { id: 'display_mug', effects: { comfortDelta: 1, visualPlaceholderIds: ['teleport_duplicate_mug_01'] } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
 
 export const activeStationIncidents = stationIncidents.filter((incident) => incident.enabled);

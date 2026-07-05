@@ -79,4 +79,34 @@ describe('goal completion', () => {
     expect(completed.completedGoals).not.toContain('rebuild_capsule_10');
     expect(completed.completedGoals).not.toContain('rebuild_capsule_25');
   });
+
+  it('applies temporary boost goal rewards once', () => {
+    const eligible = {
+      ...createInitialState(1_000),
+      totalEarnedCredits: 10_000
+    };
+    const completed = completeEligibleGoals(eligible, 50_000);
+    const completedAgain = completeEligibleGoals(completed, 100_000);
+
+    expect(completed.completedGoals).toContain('earn_credits_10000');
+    expect(completed.timedBonuses).toContainEqual({
+      id: 'goal_earn_credits_10000',
+      incomeMultiplier: 1.15,
+      expiresAt: 350_000
+    });
+    expect(completedAgain.timedBonuses).toEqual(completed.timedBonuses);
+  });
+
+  it('applies visual detail goal rewards once', () => {
+    const eligible = {
+      ...createInitialState(1_000),
+      unlockedResidents: ['sleepy_engineer', 'mist_cook', 'vacuum_gardener'] as GameState['unlockedResidents']
+    };
+    const completed = completeEligibleGoals(eligible);
+    const completedAgain = completeEligibleGoals(completed);
+
+    expect(completed.completedGoals).toContain('unlock_three_residents');
+    expect(completed.unlockedIncidentVisuals).toContain('table_schedule_01');
+    expect(completedAgain.unlockedIncidentVisuals).toEqual(completed.unlockedIncidentVisuals);
+  });
 });
