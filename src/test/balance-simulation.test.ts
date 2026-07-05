@@ -9,13 +9,13 @@ const unlockTargets: Record<ModuleId, { minSeconds: number; maxSeconds: number }
   oxygen_garden: { minSeconds: 3 * 60, maxSeconds: 8 * 60 },
   zero_g_laundry: { minSeconds: 8 * 60, maxSeconds: 15 * 60 },
   teleport_entry: { minSeconds: 16 * 60, maxSeconds: 30 * 60 },
-  antigrav_gym: { minSeconds: 28 * 60, maxSeconds: 47 * 60 },
-  panorama_dome: { minSeconds: 42 * 60, maxSeconds: 68 * 60 },
+  antigrav_gym: { minSeconds: 27 * 60, maxSeconds: 47 * 60 },
+  panorama_dome: { minSeconds: 41 * 60, maxSeconds: 68 * 60 },
   saucer_dock: { minSeconds: 55 * 60, maxSeconds: 95 * 60 },
   radiator_balcony: { minSeconds: 82 * 60, maxSeconds: 123 * 60 },
-  mail_tube_office: { minSeconds: 91 * 60, maxSeconds: 133 * 60 },
-  meteorite_pantry: { minSeconds: 104 * 60, maxSeconds: 190 * 60 },
-  shared_observatory: { minSeconds: 112 * 60, maxSeconds: 240 * 60 },
+  mail_tube_office: { minSeconds: 89 * 60, maxSeconds: 133 * 60 },
+  meteorite_pantry: { minSeconds: 101 * 60, maxSeconds: 190 * 60 },
+  shared_observatory: { minSeconds: 109 * 60, maxSeconds: 240 * 60 },
   comet_water_tank: { minSeconds: 140 * 60, maxSeconds: 280 * 60 },
   orbital_library: { minSeconds: 160 * 60, maxSeconds: 320 * 60 }
 };

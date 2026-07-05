@@ -18,10 +18,16 @@ export function isAchievementUnlocked(achievementId: AchievementId, state: GameS
       return getTotalModuleLevels(state) >= 10;
     case 'fifty_module_levels':
       return getTotalModuleLevels(state) >= 50;
+    case 'hundred_module_levels':
+      return getTotalModuleLevels(state) >= 100;
     case 'first_prestige':
       return state.reputation > 0;
+    case 'renovation_master':
+      return (state.prestigeCount ?? 0) >= 3;
     case 'comfort_50':
       return state.comfort >= 50;
+    case 'comfort_100':
+      return state.comfort >= 100;
     case 'credits_million':
       return state.totalEarnedCredits >= 1_000_000;
     case 'all_rooms_unlocked':

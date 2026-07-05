@@ -159,6 +159,143 @@ input {
   font-weight: 800;
 }
 
+/* ── Income Breakdown (StatsPanel) ──────────────────────────────── */
+
+.income-breakdown {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed rgb(39 49 63 / 20%);
+}
+
+.income-breakdown-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-utility-blue);
+}
+
+.income-breakdown-header svg {
+  color: var(--color-signal-red);
+}
+
+.income-breakdown-header strong {
+  flex: 1;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.income-breakdown-header small {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  background: var(--color-soft-white);
+  border: 1px solid rgb(39 49 63 / 14%);
+  border-radius: var(--radius-control);
+  padding: 2px 6px;
+}
+
+.income-breakdown-hint {
+  margin: 4px 0 8px;
+  font-size: 0.75rem;
+  color: rgb(39 49 63 / 60%);
+  font-style: italic;
+}
+
+.income-breakdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.income-breakdown-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr) auto auto;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  background: var(--color-soft-white);
+  border: 1px solid rgb(39 49 63 / 10%);
+  border-radius: var(--radius-control);
+}
+
+.income-breakdown-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.income-breakdown-bar {
+  height: 8px;
+  background: rgb(39 49 63 / 8%);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 1px rgb(39 49 63 / 10%);
+}
+
+.income-breakdown-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--color-signal-red),
+    color-mix(in srgb, var(--color-signal-red), var(--color-utility-blue) 40%)
+  );
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.income-breakdown-share {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--color-utility-blue);
+  min-width: 32px;
+  text-align: right;
+}
+
+.income-breakdown-value {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  min-width: 56px;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .income-breakdown-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    gap: 2px 8px;
+  }
+
+  .income-breakdown-name {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
+  .income-breakdown-share {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .income-breakdown-bar {
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
+
+  .income-breakdown-value {
+    grid-row: 2;
+    grid-column: 2;
+    min-width: 0;
+  }
+}
+
 .placeholder-panel {
   width: min(100%, 560px);
   background: var(--color-warm-panel);

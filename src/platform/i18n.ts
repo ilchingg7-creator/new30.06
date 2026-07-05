@@ -91,6 +91,8 @@ export interface Translation {
   modulesBought: string;
   renovations: string;
   totalEarned: string;
+  incomeBreakdownTitle: string;
+  incomeBreakdownHint: string;
   // Dialogs
   offlineTitle: string;
   time: string;
@@ -378,6 +380,8 @@ const ru: Translation = {
   modulesBought: 'Куплено модулей',
   renovations: 'Реноваций',
   totalEarned: 'Заработано всего',
+  incomeBreakdownTitle: 'Источники дохода',
+  incomeBreakdownHint: 'Топ комнат по вкладу в доход станции',
   offlineTitle: 'Станция поработала без вас',
   time: 'Время',
   collect: 'Забрать',
@@ -814,6 +818,12 @@ const ru: Translation = {
         unlockText: 'Док для мини-тарелок достиг 10 уровня.',
         bonusText: '+3% к доходу за каждого жильца',
         bio: 'Семья из пяти маленьких летающих тарелок. Прибыли на станцию и решили остаться. Каждая тарелка — отдельная личность со своим характером. Чем больше жильцов на станции, тем активнее они помогают с доставкой.'
+      },
+      orbital_beekeeper: {
+        name: 'Орбитальный пчеловод',
+        unlockText: 'Кислородный сад достиг 15 уровня.',
+        bonusText: '+1 комфорт за каждые 5 уровней сада при разблокировке',
+        bio: 'Привёз на станцию колонию космических пчёл, которые не боятся невесомости. Пчёлы опыляют сад и гонят мёд с привкусом звёздной пыли. Чем глубже сад к моменту его прихода, тем больше пчёл он приводит — и тем больше комфорта от их гудения в куполе.'
       }
     },
     goals: {
@@ -907,13 +917,25 @@ const ru: Translation = {
         title: 'Растущая коммуналка',
         description: 'Суммарно 50 уровней модулей.'
       },
+      hundred_module_levels: {
+        title: 'Большая орбита',
+        description: 'Суммарно 100 уровней модулей.'
+      },
       first_prestige: {
         title: 'Первая реновация',
         description: 'Сделать первую реновацию орбиты.'
       },
+      renovation_master: {
+        title: 'Мастер реновации',
+        description: 'Сделать 3 реновации орбиты.'
+      },
       comfort_50: {
         title: 'Уютно как дома',
         description: 'Достичь 50 комфорта.'
+      },
+      comfort_100: {
+        title: 'Обжитой космос',
+        description: 'Достичь 100 комфорта.'
       },
       credits_million: {
         title: 'Миллионер орбиты',
@@ -1076,6 +1098,8 @@ const en: Translation = {
   modulesBought: 'Modules bought',
   renovations: 'Renovations',
   totalEarned: 'Total earned',
+  incomeBreakdownTitle: 'Income sources',
+  incomeBreakdownHint: 'Top rooms by contribution to station income',
   offlineTitle: 'The station worked without you',
   time: 'Time',
   collect: 'Collect',
@@ -1512,6 +1536,12 @@ const en: Translation = {
         unlockText: 'Mini-Saucer Dock reached level 10.',
         bonusText: '+3% income per resident on station',
         bio: 'A family of five tiny flying saucers. Arrived at the station and decided to stay. Each saucer is a separate personality with its own character. The more residents on the station, the more actively they help with deliveries.'
+      },
+      orbital_beekeeper: {
+        name: 'Orbital Beekeeper',
+        unlockText: 'Oxygen Garden reached level 15.',
+        bonusText: '+1 comfort per 5 garden levels at unlock',
+        bio: 'Brought a colony of space bees to the station — bees that do not mind zero gravity. They pollinate the garden and make honey with a stardust aftertaste. The deeper the garden when they arrive, the more bees he brings — and the more comfort from their humming in the dome.'
       }
     },
     goals: {
@@ -1605,13 +1635,25 @@ const en: Translation = {
         title: 'Growing Communalka',
         description: '50 total module levels.'
       },
+      hundred_module_levels: {
+        title: 'Big Orbit',
+        description: '100 total module levels.'
+      },
       first_prestige: {
         title: 'First Renovation',
         description: 'Perform the first orbit renovation.'
       },
+      renovation_master: {
+        title: 'Renovation Master',
+        description: 'Perform 3 orbit renovations.'
+      },
       comfort_50: {
         title: 'Cozy as Home',
         description: 'Reach 50 comfort.'
+      },
+      comfort_100: {
+        title: 'Settled Space',
+        description: 'Reach 100 comfort.'
       },
       credits_million: {
         title: 'Orbital Millionaire',

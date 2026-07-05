@@ -19,6 +19,20 @@ const RESIDENT_UNLOCK_COMFORT: Partial<Record<ResidentId, number>> = {
   vacuum_gardener: 5
 };
 
+/**
+ * Returns the comfort gained when this resident is first unlocked.
+ * Most residents use the static RESIDENT_UNLOCK_COMFORT map; the
+ * orbital_beekeeper scales with the oxygen_garden level at unlock time
+ * (+1 comfort per 5 garden levels), rewarding players who delay unlocking.
+ */
+function getResidentUnlockComfort(residentId: ResidentId, state: GameState): number {
+  if (residentId === 'orbital_beekeeper') {
+    return Math.floor(state.moduleLevels.oxygen_garden / 5);
+  }
+
+  return RESIDENT_UNLOCK_COMFORT[residentId] ?? 0;
+}
+
 const EMPTY_RESIDENT_ROLE_TOTALS: ResidentRoleTotals = {
   income: 0,
   comfort: 0,
@@ -39,7 +53,8 @@ const RESIDENT_ROLE_PROFILES: Record<ResidentId, ResidentRoleProfile> = {
   comet_plumber: { primary: 'maintenance', secondary: 'comfort' },
   signal_radio_host: { primary: 'visitor', secondary: 'comfort' },
   floating_librarian: { primary: 'comfort', secondary: 'renovation' },
-  tiny_saucer_family: { primary: 'income', secondary: 'visitor' }
+  tiny_saucer_family: { primary: 'income', secondary: 'visitor' },
+  orbital_beekeeper: { primary: 'comfort', secondary: 'maintenance' }
 };
 
 export function getResidentRoleProfile(residentId: ResidentId): ResidentRoleProfile {
@@ -147,7 +162,7 @@ export function checkResidentUnlocks(state: GameState): GameState {
 
     if (isResidentUnlocked(resident.id, state)) {
       owned.add(resident.id);
-      comfortGain += RESIDENT_UNLOCK_COMFORT[resident.id] ?? 0;
+      comfortGain += getResidentUnlockComfort(resident.id, state);
       changed = true;
     }
   }

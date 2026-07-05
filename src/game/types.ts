@@ -56,7 +56,8 @@ export type ResidentId =
   | 'comet_plumber'
   | 'signal_radio_host'
   | 'floating_librarian'
-  | 'tiny_saucer_family';
+  | 'tiny_saucer_family'
+  | 'orbital_beekeeper';
 
 export type ResidentRole = 'income' | 'comfort' | 'maintenance' | 'visitor' | 'renovation';
 
@@ -345,8 +346,11 @@ export type AchievementId =
   | 'first_purchase'
   | 'ten_module_levels'
   | 'fifty_module_levels'
+  | 'hundred_module_levels'
   | 'first_prestige'
+  | 'renovation_master'
   | 'comfort_50'
+  | 'comfort_100'
   | 'credits_million'
   | 'all_rooms_unlocked'
   | 'daily_streak_7';
