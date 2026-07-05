@@ -513,6 +513,46 @@ const ru: Translation = {
         fund_tea_break: { label: 'Профинансировать чай', description: '-копейки, +комфорт' },
         take_minutes: { label: 'Записать протокол', description: 'память журнала' }
       }
+    },
+    capsule_window_frost: {
+      title: 'На окне капсулы появился иней',
+      body: 'Узор красивый, но жильцы начинают видеть своё дыхание во сне.',
+      choices: {
+        wipe_window: { label: 'Протереть окно тряпкой', description: '+комфорт, деталь' },
+        seal_frame: { label: 'Заделать раму уплотнителем', description: '+состояние капсулы' }
+      }
+    },
+    kitchen_spoon_union: {
+      title: 'На кухне организовался союз ложек',
+      body: 'Ложки объединились с половниками и требуют отдельной полки.',
+      choices: {
+        approve_union: { label: 'Признать союз ложек', description: '+комфорт, деталь' },
+        organize_drawer: { label: 'Разложить по ящикам', description: '+состояние кухни' }
+      }
+    },
+    garden_plant_listens_radio: {
+      title: 'Растение в саду слушает радио',
+      body: 'Кто-то оставил приёмник у горшка, и росток явно качается в такт.',
+      choices: {
+        keep_radio: { label: 'Оставить радио у растения', description: '+комфорт, деталь' },
+        tune_signal: { label: 'Настроить сигнал тише', description: '+состояние сада' }
+      }
+    },
+    laundry_static_storm: {
+      title: 'В прачечной началась статическая буря',
+      body: 'Носки потрескивают и притягивают мелкие предметы.',
+      choices: {
+        ground_socks: { label: 'Заземлить носки', description: '+состояние прачечной' },
+        name_constellation: { label: 'Назвать созвездие носков', description: '+комфорт, деталь' }
+      }
+    },
+    teleport_neighbor_duplicate: {
+      title: 'Телепорт дублировал кружку соседа',
+      body: 'Теперь у вас две одинаковые кружки, и сосед об этом ещё не знает.',
+      choices: {
+        return_mug: { label: 'Вернуть лишнюю кружку', description: '+состояние телепорта' },
+        display_mug: { label: 'Поставить кружку на полку', description: '+комфорт, деталь' }
+      }
     }
   },
   storyTitle: 'Просьба жильца',
@@ -716,11 +756,11 @@ const ru: Translation = {
       },
       earn_credits_10000: {
         title: 'Заработать 10 000 копеек',
-        rewardLabel: '+2 комфорт, подсказка к реновации'
+        rewardLabel: 'x1.15 дохода на 5 мин'
       },
       unlock_three_residents: {
         title: 'Заселить 3 жильцов',
-        rewardLabel: '+5 комфорт, жильцы в комнатах'
+        rewardLabel: 'Визуальная деталь: расписание жильцов'
       },
       unlock_panorama_dome: {
         title: 'Открыть панорамный купол',
@@ -729,6 +769,54 @@ const ru: Translation = {
       first_renovation: {
         title: 'Сделать первую реновацию орбиты',
         rewardLabel: 'Реновация отмечена'
+      },
+      rebuild_capsule_10: {
+        title: 'Восстановить капсулу до 10 уровня',
+        rewardLabel: '+2 комфорт, восстановленные детали капсулы'
+      },
+      reopen_kitchen: {
+        title: 'Снова открыть космо-кухню',
+        rewardLabel: '+2 комфорт, кухонные детали'
+      },
+      unlock_laundry_after_renovation: {
+        title: 'Открыть прачечную невесомости',
+        rewardLabel: '+3 комфорт, детали прачечной'
+      },
+      reach_comfort_40: {
+        title: 'Довести комфорт до 40',
+        rewardLabel: '+4 комфорт, тёплый режим станции'
+      },
+      earn_credits_50000: {
+        title: 'Заработать 50 000 копеек в цикле',
+        rewardLabel: '+4 комфорт, запас копеек'
+      },
+      second_renovation: {
+        title: 'Сделать вторую реновацию',
+        rewardLabel: 'Новый список целей'
+      },
+      rebuild_capsule_25: {
+        title: 'Развить капсулу до 25 уровня',
+        rewardLabel: '+4 комфорт, продвинутые детали капсулы'
+      },
+      unlock_teleport_entry: {
+        title: 'Открыть телепорт-прихожую',
+        rewardLabel: '+5 комфорт, детали телепорта'
+      },
+      unlock_five_residents: {
+        title: 'Заселить 5 жильцов',
+        rewardLabel: '+6 комфорт, соседи на своих местах'
+      },
+      reach_comfort_60: {
+        title: 'Довести комфорт до 60',
+        rewardLabel: '+6 комфорт, обжитой режим станции'
+      },
+      earn_credits_100000: {
+        title: 'Заработать 100 000 копеек в цикле',
+        rewardLabel: '+6 комфорт, солидный запас копеек'
+      },
+      repeat_renovation: {
+        title: 'Провести ещё одну реновацию',
+        rewardLabel: 'Новый цикл станции'
       }
     },
     achievements: {
@@ -1086,6 +1174,46 @@ const en: Translation = {
         fund_tea_break: { label: 'Fund a tea break', description: '-kopeks, +comfort' },
         take_minutes: { label: 'Take meeting notes', description: 'journal memory' }
       }
+    },
+    capsule_window_frost: {
+      title: 'Frost crept across the capsule window',
+      body: 'The pattern is pretty, but residents are starting to see their breath in their sleep.',
+      choices: {
+        wipe_window: { label: 'Wipe the window with a cloth', description: '+comfort, detail' },
+        seal_frame: { label: 'Seal the frame with weatherstripping', description: '+capsule condition' }
+      }
+    },
+    kitchen_spoon_union: {
+      title: 'A spoon union has formed in the kitchen',
+      body: 'The spoons teamed up with the ladles and demand a separate shelf.',
+      choices: {
+        approve_union: { label: 'Recognize the spoon union', description: '+comfort, detail' },
+        organize_drawer: { label: 'Sort them into drawers', description: '+kitchen condition' }
+      }
+    },
+    garden_plant_listens_radio: {
+      title: 'The garden plant is listening to the radio',
+      body: 'Someone left the receiver by the pot, and the sprout is clearly swaying to the beat.',
+      choices: {
+        keep_radio: { label: 'Leave the radio by the plant', description: '+comfort, detail' },
+        tune_signal: { label: 'Tune the signal quieter', description: '+garden condition' }
+      }
+    },
+    laundry_static_storm: {
+      title: 'A static storm started in the laundry',
+      body: 'Socks are crackling and attracting small objects.',
+      choices: {
+        ground_socks: { label: 'Ground the socks', description: '+laundry condition' },
+        name_constellation: { label: 'Name the sock constellation', description: '+comfort, detail' }
+      }
+    },
+    teleport_neighbor_duplicate: {
+      title: 'The teleport duplicated a neighbor\'s mug',
+      body: 'Now you have two identical mugs, and the neighbor does not know yet.',
+      choices: {
+        return_mug: { label: 'Return the spare mug', description: '+teleport condition' },
+        display_mug: { label: 'Put the mug on the shelf', description: '+comfort, detail' }
+      }
     }
   },
   storyTitle: 'Resident Request',
@@ -1289,11 +1417,11 @@ const en: Translation = {
       },
       earn_credits_10000: {
         title: 'Earn 10,000 kopeks',
-        rewardLabel: '+2 comfort, renovation hint'
+        rewardLabel: 'x1.15 income for 5 min'
       },
       unlock_three_residents: {
         title: 'Settle 3 residents',
-        rewardLabel: '+5 comfort, residents in rooms'
+        rewardLabel: 'Visual detail: resident schedule'
       },
       unlock_panorama_dome: {
         title: 'Unlock the panorama dome',
@@ -1302,6 +1430,54 @@ const en: Translation = {
       first_renovation: {
         title: 'Perform the first orbit renovation',
         rewardLabel: 'Renovation acknowledged'
+      },
+      rebuild_capsule_10: {
+        title: 'Rebuild the capsule to level 10',
+        rewardLabel: '+2 comfort, restored capsule details'
+      },
+      reopen_kitchen: {
+        title: 'Reopen the cosmo-kitchen',
+        rewardLabel: '+2 comfort, kitchen details'
+      },
+      unlock_laundry_after_renovation: {
+        title: 'Unlock the zero-gravity laundry',
+        rewardLabel: '+3 comfort, laundry details'
+      },
+      reach_comfort_40: {
+        title: 'Raise comfort to 40',
+        rewardLabel: '+4 comfort, warm station mode'
+      },
+      earn_credits_50000: {
+        title: 'Earn 50,000 kopeks in a cycle',
+        rewardLabel: '+4 comfort, kopeks reserve'
+      },
+      second_renovation: {
+        title: 'Perform the second renovation',
+        rewardLabel: 'New goal list'
+      },
+      rebuild_capsule_25: {
+        title: 'Develop the capsule to level 25',
+        rewardLabel: '+4 comfort, advanced capsule details'
+      },
+      unlock_teleport_entry: {
+        title: 'Unlock the teleport entry',
+        rewardLabel: '+5 comfort, teleport details'
+      },
+      unlock_five_residents: {
+        title: 'Settle 5 residents',
+        rewardLabel: '+6 comfort, neighbors in place'
+      },
+      reach_comfort_60: {
+        title: 'Raise comfort to 60',
+        rewardLabel: '+6 comfort, settled station mode'
+      },
+      earn_credits_100000: {
+        title: 'Earn 100,000 kopeks in a cycle',
+        rewardLabel: '+6 comfort, solid kopeks reserve'
+      },
+      repeat_renovation: {
+        title: 'Perform another renovation',
+        rewardLabel: 'New station cycle'
       }
     },
     achievements: {
