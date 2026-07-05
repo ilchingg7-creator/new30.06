@@ -362,15 +362,38 @@ export function getDayIndex(now: number): number {
   return Math.floor(now / MILLISECONDS_PER_DAY);
 }
 
-export function getDailyLoginReward(streak: number): number {
-  // Reward grows with streak, capped at day 7 then cycles.
+export type DailyRewardKind = 'kopeks' | 'comfort' | 'condition_repair_all' | 'timed_bonus' | 'prestige_hint';
+
+export interface DailyRewardInfo {
+  kind: DailyRewardKind;
+  /** Kopeks for 'kopeks' kind. Comfort for 'comfort' kind. Condition repair for 'condition_repair_all'. */
+  amount: number;
+  /** For timed_bonus: income multiplier. */
+  multiplier?: number;
+  /** For timed_bonus: duration in ms. */
+  durationMs?: number;
+  /** Human-readable label key for i18n. */
+  labelKey: string;
+}
+
+const DAILY_REWARD_TABLE: DailyRewardInfo[] = [
+  { kind: 'kopeks', amount: 50, labelKey: 'daily_kopeks' },                              // Day 1
+  { kind: 'comfort', amount: 1, labelKey: 'daily_comfort' },                             // Day 2
+  { kind: 'kopeks', amount: 200, labelKey: 'daily_kopeks' },                             // Day 3
+  { kind: 'condition_repair_all', amount: 30, labelKey: 'daily_condition_repair' },      // Day 4
+  { kind: 'timed_bonus', amount: 0, multiplier: 1.5, durationMs: 10 * 60 * 1_000, labelKey: 'daily_timed_bonus' }, // Day 5
+  { kind: 'comfort', amount: 3, labelKey: 'daily_comfort' },                             // Day 6
+  { kind: 'kopeks', amount: 1000, labelKey: 'daily_kopeks' }                             // Day 7
+];
+
+export function getDailyLoginReward(streak: number): DailyRewardInfo {
   const effectiveStreak = ((streak - 1) % MAX_DAILY_STREAK) + 1;
-  return effectiveStreak * 50;
+  return DAILY_REWARD_TABLE[effectiveStreak - 1];
 }
 
 export interface DailyLoginResult {
   state: GameState;
-  reward: number;
+  reward: DailyRewardInfo;
   streak: number;
 }
 
@@ -381,28 +404,70 @@ export function checkDailyLogin(state: GameState, now = Date.now()): DailyLoginR
   if (lastDay === today) {
     return {
       state,
-      reward: 0,
+      reward: { kind: 'kopeks', amount: 0, labelKey: 'daily_kopeks' },
       streak: state.dailyStreak ?? 0
     };
   }
 
   const previousStreak = state.dailyStreak ?? 0;
-  // Consecutive if last login was yesterday. Otherwise reset to 0 (becomes 1).
   const isConsecutive = lastDay === today - 1;
   const nextStreak = isConsecutive ? previousStreak + 1 : 1;
-  const reward = getDailyLoginReward(nextStreak);
+  const rewardInfo = getDailyLoginReward(nextStreak);
+
+  // Apply reward based on kind
+  let credits = state.credits;
+  let comfort = state.comfort;
+  let timedBonuses = state.timedBonuses;
+  const roomConditions = { ...(state.roomConditions ?? {}) };
+
+  switch (rewardInfo.kind) {
+    case 'kopeks':
+      credits += rewardInfo.amount;
+      break;
+    case 'comfort':
+      comfort += rewardInfo.amount;
+      break;
+    case 'condition_repair_all': {
+      const repairAmount = rewardInfo.amount;
+      for (const module of modules) {
+        if (state.moduleLevels[module.id] > 0) {
+          const current = roomConditions[module.id] ?? 60;
+          roomConditions[module.id] = Math.min(100, current + repairAmount);
+        }
+      }
+      break;
+    }
+    case 'timed_bonus':
+      if (rewardInfo.multiplier && rewardInfo.durationMs) {
+        timedBonuses = [
+          ...timedBonuses,
+          {
+            id: `daily_bonus_${now}`,
+            incomeMultiplier: rewardInfo.multiplier,
+            expiresAt: now + rewardInfo.durationMs
+          }
+        ];
+      }
+      break;
+    case 'prestige_hint':
+      // No economy effect, just informational
+      break;
+  }
 
   const nextState: GameState = {
     ...state,
-    credits: state.credits + reward,
-    totalEarnedCredits: state.totalEarnedCredits + reward,
+    credits,
+    comfort,
+    timedBonuses,
+    roomConditions: Object.keys(roomConditions).length > 0 ? roomConditions : state.roomConditions,
+    totalEarnedCredits: state.totalEarnedCredits + (rewardInfo.kind === 'kopeks' ? rewardInfo.amount : 0),
     lastLoginDay: today,
     dailyStreak: nextStreak
   };
 
   return {
     state: checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))),
-    reward,
+    reward: rewardInfo,
     streak: nextStreak
   };
 }

@@ -748,6 +748,26 @@ input {
   color: var(--color-lamp-amber);
 }
 
+.daily-reward-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 12px;
+  background: var(--color-soft-white);
+  border-radius: var(--radius-control);
+}
+
+.daily-reward-display strong {
+  font-size: 1.15rem;
+  color: var(--color-ink);
+}
+
+.daily-reward-display svg {
+  color: var(--color-lamp-amber);
+}
+
 .daily-streak-dots {
   display: flex;
   justify-content: center;

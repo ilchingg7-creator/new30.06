@@ -7,7 +7,8 @@ import {
   calculateOfflineReward,
   checkDailyLogin,
   performPrestige,
-  createInitialState
+  createInitialState,
+  type DailyRewardInfo
 } from '../game/economy';
 import {
   assignCommunalDuty as assignCommunalDutyState,
@@ -46,7 +47,7 @@ export interface OfflineReward {
 
 export interface DailyLoginReward {
   streak: number;
-  credits: number;
+  reward: DailyRewardInfo;
 }
 
 export interface UseGameStateResult {
@@ -149,13 +150,13 @@ export function useGameState(
 
         setGameState(withQueuedIncidents(daily.state));
         setOfflineReward(reward.credits > 0 ? reward : null);
-        setDailyReward(daily.reward > 0 ? { streak: daily.streak, credits: daily.reward } : null);
+        setDailyReward(daily.reward.amount > 0 || daily.reward.kind !== 'kopeks' ? { streak: daily.streak, reward: daily.reward } : null);
       } else {
         const fresh = createInitialState();
         const daily = checkDailyLogin(fresh);
 
         setGameState(withQueuedIncidents(daily.state));
-        setDailyReward(daily.reward > 0 ? { streak: daily.streak, credits: daily.reward } : null);
+        setDailyReward(daily.reward.amount > 0 || daily.reward.kind !== 'kopeks' ? { streak: daily.streak, reward: daily.reward } : null);
       }
 
       setReady(true);

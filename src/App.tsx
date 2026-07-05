@@ -143,7 +143,7 @@ export function App() {
       {game.dailyReward && (
         <DailyLoginDialog
           streak={game.dailyReward.streak}
-          credits={game.dailyReward.credits}
+          reward={game.dailyReward.reward}
           onCollect={game.dismissDailyReward}
           t={t}
         />

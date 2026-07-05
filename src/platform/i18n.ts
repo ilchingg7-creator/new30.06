@@ -208,6 +208,9 @@ export interface Translation {
   weeklyRepairCondition: string;
   weeklyRepairClaimBonus: string;
   weeklyRepairBonusClaimed: string;
+  // Daily reward labels
+  dailyConditionRepair: string;
+  dailyTimedBonus: string;
   // Communal duties
   communalDutyTitle: string;
   communalDutyAssign: string;
@@ -535,6 +538,8 @@ const ru: Translation = {
   weeklyRepairCondition: 'Довести {room} до {target} состояния',
   weeklyRepairClaimBonus: 'Забрать бонус',
   weeklyRepairBonusClaimed: 'Бонус получен!',
+  dailyConditionRepair: 'состояние всем комнатам',
+  dailyTimedBonus: 'доход на 10 минут',
   communalDutyTitle: 'Дежурство',
   communalDutyAssign: 'Назначить',
   communalDutyInProgress: 'Жилец на дежурстве',
@@ -1089,6 +1094,8 @@ const en: Translation = {
   weeklyRepairCondition: 'Reach {target} condition on {room}',
   weeklyRepairClaimBonus: 'Claim bonus',
   weeklyRepairBonusClaimed: 'Bonus claimed!',
+  dailyConditionRepair: 'condition to all rooms',
+  dailyTimedBonus: 'income for 10 min',
   communalDutyTitle: 'Communal duty',
   communalDutyAssign: 'Assign',
   communalDutyInProgress: 'Resident on duty',
