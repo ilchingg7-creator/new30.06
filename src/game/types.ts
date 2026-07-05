@@ -67,6 +67,33 @@ export interface ResidentRoleProfile {
 
 export type ResidentRoleTotals = Record<ResidentRole, number>;
 
+export type ActionPreviewTag =
+  | 'income'
+  | 'comfort'
+  | 'condition'
+  | 'resident'
+  | 'role'
+  | 'visual'
+  | 'renovation'
+  | 'timed_bonus'
+  | 'cost';
+
+export type ActionPreviewTone = 'neutral' | 'positive' | 'warning';
+
+export interface ActionPreview {
+  title: string;
+  reason?: string;
+  result: string;
+  tags: ActionPreviewTag[];
+  tone?: ActionPreviewTone;
+}
+
+export interface LastActionFeedback {
+  title: string;
+  detail: string;
+  tags: ActionPreviewTag[];
+}
+
 export type GoalId =
   | 'buy_capsule_10'
   | 'unlock_kitchen'

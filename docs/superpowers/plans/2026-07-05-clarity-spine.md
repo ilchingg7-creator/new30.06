@@ -67,7 +67,7 @@
 - Produces: `getRenovationPreview(state: GameState): ActionPreview`
 - Produces: `getLastActionFeedback(state: GameState): LastActionFeedback | null`
 
-- [ ] **Step 1: Write failing action preview tests**
+- [x] **Step 1: Write failing action preview tests**
 
 Create `src/test/action-previews.test.ts`:
 
@@ -91,7 +91,7 @@ describe('action previews', () => {
     const preview = getModulePurchasePreview(state, 'tenant_capsule');
 
     expect(preview.tags).toEqual(expect.arrayContaining(['cost', 'income']));
-    expect(preview.result).toContain('+0.10/sec');
+    expect(preview.result).toContain('+1.00/sec');
     expect(preview.reason).toContain('first working room');
   });
 
@@ -198,13 +198,13 @@ describe('action previews', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npm.cmd test -- src/test/action-previews.test.ts`
 
 Expected: FAIL because `src/game/actionPreviews.ts` does not exist.
 
-- [ ] **Step 3: Add preview types**
+- [x] **Step 3: Add preview types**
 
 In `src/game/types.ts`, add these exports near other shared UI/domain types:
 
@@ -237,7 +237,7 @@ export interface LastActionFeedback {
 }
 ```
 
-- [ ] **Step 4: Implement preview helpers**
+- [x] **Step 4: Implement preview helpers**
 
 Create `src/game/actionPreviews.ts`:
 
@@ -491,7 +491,7 @@ export function getLastActionFeedback(state: GameState): LastActionFeedback | nu
 }
 ```
 
-- [ ] **Step 5: Run action preview tests**
+- [x] **Step 5: Run action preview tests**
 
 Run: `npm.cmd test -- src/test/action-previews.test.ts`
 
