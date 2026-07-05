@@ -7,6 +7,7 @@ import { translations } from '../platform/i18n';
 import { BonusPanel } from '../ui/components/BonusPanel';
 import { CommunalDutyPanel } from '../ui/components/CommunalDutyPanel';
 import { GoalPanel } from '../ui/components/GoalPanel';
+import { LastActionFeedbackPanel } from '../ui/components/LastActionFeedbackPanel';
 import { ModuleList } from '../ui/components/ModuleList';
 import { PixiStationScene } from '../ui/components/PixiStationScene';
 import { PrestigePanel } from '../ui/components/PrestigePanel';
@@ -136,6 +137,46 @@ describe('core UI components', () => {
     expect(screen.getByText(t.renovationRequirements)).toBeInTheDocument();
     expect(screen.getByText('Накопить награду реновации +1 репутация')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: t.renovate })).toBeDisabled();
+  });
+
+  it('shows renovation preview with reset impact and reputation gain', () => {
+    const base = createInitialState(1_000);
+    const gameState: GameState = {
+      ...base,
+      totalEarnedCredits: 100_000,
+      comfort: 25,
+      moduleLevels: {
+        ...base.moduleLevels,
+        tenant_capsule: 10,
+        cosmo_kitchen: 1
+      },
+      completedGoals: ['buy_capsule_10', 'unlock_kitchen', 'reach_comfort_25', 'earn_credits_10000']
+    };
+
+    render(<PrestigePanel gameState={gameState} onRenovate={vi.fn()} t={t} />);
+
+    expect(screen.getByText(/resets rooms and kopeks/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+1 reputation/i)).toBeInTheDocument();
+  });
+
+  it('shows non-modal feedback for the latest duty result', () => {
+    const gameState: GameState = {
+      ...createInitialState(1_000),
+      lastCommunalDutyResult: {
+        dutyId: 'capsule_quiet_hours',
+        residentId: 'sleepy_engineer',
+        roomId: 'tenant_capsule',
+        comfortGain: 2,
+        conditionRepair: { tenant_capsule: 35 },
+        resultKey: 'best',
+        claimedAt: 2_000
+      }
+    };
+
+    render(<LastActionFeedbackPanel gameState={gameState} t={t} />);
+
+    expect(screen.getByText(/Duty result/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+35 condition/i)).toBeInTheDocument();
   });
 
   it('shows the strange cat only in the tenant capsule scene', () => {

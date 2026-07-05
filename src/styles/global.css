@@ -1648,6 +1648,14 @@ input {
   line-height: 1.2;
 }
 
+.last-action-feedback {
+  display: block;
+}
+
+.last-action-feedback .action-preview {
+  border-color: color-mix(in srgb, var(--color-enamel-green), transparent 40%);
+}
+
 .cosmetics-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -1,10 +1,12 @@
 'use client';
 
 import { RotateCcw } from 'lucide-react';
+import { getRenovationPreview } from '../../game/actionPreviews';
 import { canPerformPrestige, getPrestigeRequirements, type PrestigeRequirement } from '../../game/economy';
 import { getGoalRenovationCycle } from '../../game/goals';
 import type { GameState } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
+import { ActionPreviewLine } from './ActionPreviewLine';
 
 interface PrestigePanelProps {
   gameState: GameState;
@@ -36,6 +38,7 @@ export function PrestigePanel({ gameState, onRenovate, t }: PrestigePanelProps) 
   const requirements = getPrestigeRequirements(gameState);
   const canRenovate = canPerformPrestige(gameState);
   const cycle = getGoalRenovationCycle(gameState);
+  const preview = getRenovationPreview(gameState);
 
   return (
     <section className="panel" aria-labelledby="prestige-panel-title">
@@ -52,6 +55,7 @@ export function PrestigePanel({ gameState, onRenovate, t }: PrestigePanelProps) 
           ))}
         </ul>
       </div>
+      <ActionPreviewLine preview={preview} t={t} />
       <button
         type="button"
         disabled={!canRenovate}

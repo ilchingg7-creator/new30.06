@@ -7,6 +7,7 @@ import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
 import { CommunalDutyPanel } from '../components/CommunalDutyPanel';
 import { GoalPanel } from '../components/GoalPanel';
+import { LastActionFeedbackPanel } from '../components/LastActionFeedbackPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
 import { RoomConditionBar } from '../components/RoomConditionBar';
@@ -56,6 +57,7 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
           t={t}
         />
       ) : null}
+      <LastActionFeedbackPanel gameState={game.gameState} t={t} variant="compact" />
       <CommunalDutyPanel
         gameState={game.gameState}
         onAssign={game.assignCommunalDuty}

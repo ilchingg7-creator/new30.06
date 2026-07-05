@@ -1050,7 +1050,7 @@ git commit -m "feat: preview duty and incident outcomes"
 - Consumes: `<ActionPreviewLine preview={preview} t={t} />`
 - Produces: `<LastActionFeedbackPanel gameState={gameState} t={t} />`
 
-- [ ] **Step 1: Write failing renovation preview test**
+- [x] **Step 1: Write failing renovation preview test**
 
 Add to `src/test/components.test.tsx`:
 
@@ -1080,7 +1080,7 @@ Run: `npm.cmd test -- src/test/components.test.tsx`
 
 Expected: FAIL because `PrestigePanel` does not render renovation preview.
 
-- [ ] **Step 2: Write failing last-action feedback test**
+- [x] **Step 2: Write failing last-action feedback test**
 
 Add to `src/test/components.test.tsx`:
 
@@ -1116,7 +1116,7 @@ Run: `npm.cmd test -- src/test/components.test.tsx`
 
 Expected: FAIL because `LastActionFeedbackPanel` does not exist.
 
-- [ ] **Step 3: Render renovation preview**
+- [x] **Step 3: Render renovation preview**
 
 In `src/ui/components/PrestigePanel.tsx`, import:
 
@@ -1137,7 +1137,7 @@ Render before the renovate button:
 <ActionPreviewLine preview={preview} t={t} />
 ```
 
-- [ ] **Step 4: Create LastActionFeedbackPanel**
+- [x] **Step 4: Create LastActionFeedbackPanel**
 
 Create `src/ui/components/LastActionFeedbackPanel.tsx`:
 
@@ -1168,7 +1168,7 @@ export function LastActionFeedbackPanel({ gameState, t, variant = 'default' }: L
 }
 ```
 
-- [ ] **Step 5: Place feedback in desktop and mobile layouts**
+- [x] **Step 5: Place feedback in desktop and mobile layouts**
 
 In `src/ui/layouts/DesktopLayout.tsx`, import:
 
@@ -1188,7 +1188,7 @@ In `src/ui/layouts/MobileLayout.tsx`, import the same component and place after 
 <LastActionFeedbackPanel gameState={game.gameState} t={t} variant="compact" />
 ```
 
-- [ ] **Step 6: Add feedback styling**
+- [x] **Step 6: Add feedback styling**
 
 In `src/styles/global.css`, add:
 
@@ -1202,13 +1202,13 @@ In `src/styles/global.css`, add:
 }
 ```
 
-- [ ] **Step 7: Run component and responsive tests**
+- [x] **Step 7: Run component and responsive tests**
 
 Run: `npm.cmd test -- src/test/components.test.tsx src/test/responsive.test.tsx`
 
 Expected: PASS.
 
-- [ ] **Step 8: Commit Task 5**
+- [x] **Step 8: Commit Task 5**
 
 ```powershell
 git add -- src/ui/components/PrestigePanel.tsx src/ui/components/LastActionFeedbackPanel.tsx src/ui/layouts/DesktopLayout.tsx src/ui/layouts/MobileLayout.tsx src/styles/global.css src/test/components.test.tsx src/test/responsive.test.tsx

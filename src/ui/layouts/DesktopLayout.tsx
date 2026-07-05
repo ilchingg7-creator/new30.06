@@ -5,6 +5,7 @@ import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
 import { CommunalDutyPanel } from '../components/CommunalDutyPanel';
 import { GoalPanel } from '../components/GoalPanel';
+import { LastActionFeedbackPanel } from '../components/LastActionFeedbackPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
 import { PrestigePanel } from '../components/PrestigePanel';
@@ -45,6 +46,7 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
             t={t}
           />
         ) : null}
+        <LastActionFeedbackPanel gameState={game.gameState} t={t} />
         <CommunalDutyPanel
           gameState={game.gameState}
           onAssign={game.assignCommunalDuty}
