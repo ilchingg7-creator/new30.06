@@ -38,7 +38,9 @@ function formatCreditDelta(value: number): string {
 
 function formatRewardParts(reward: CommunalDutyReward | StationIncidentEffect): string[] {
   const parts: string[] = [];
-  const comfort = 'comfortGain' in reward ? reward.comfortGain : reward.comfortDelta;
+  const dutyReward = reward as CommunalDutyReward;
+  const incidentReward = reward as StationIncidentEffect;
+  const comfort = dutyReward.comfortGain ?? incidentReward.comfortDelta;
   const condition = formatConditionRepair(reward.conditionRepair);
 
   if (comfort && comfort > 0) {
