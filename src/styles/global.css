@@ -1983,11 +1983,27 @@ input {
   gap: 5px;
 }
 
-.incident-choice-list button {
-  justify-content: space-between;
+.incident-choice-button {
+  display: grid;
+  grid-template-columns: minmax(96px, 0.9fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
   text-align: left;
-  min-height: 34px;
-  padding: 5px 7px;
+  min-height: 30px;
+  padding: 4px 7px;
+}
+
+.incident-choice-copy {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.incident-choice-copy > span,
+.incident-choice-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .incident-choice-list .action-preview {
@@ -1995,6 +2011,34 @@ input {
   text-align: left;
 }
 
+.incident-choice-list .action-preview.inline {
+  margin-top: 0;
+}
+
 .incident-choice-list small {
   color: var(--muted-text);
+}
+
+.incident-journal.compact .incident-choice-list {
+  gap: 4px;
+}
+
+.incident-journal.compact .incident-choice-button {
+  grid-template-columns: minmax(86px, 0.8fr) minmax(0, 1fr);
+  gap: 5px;
+  min-height: 27px;
+  padding: 3px 6px;
+}
+
+.incident-journal.compact .incident-choice-copy > span {
+  font-size: 0.66rem;
+}
+
+.incident-journal.compact .incident-choice-copy small {
+  font-size: 0.58rem;
+}
+
+.incident-journal.compact .incident-choice-button .action-preview-tag {
+  padding: 0 3px;
+  font-size: 0.5rem;
 }

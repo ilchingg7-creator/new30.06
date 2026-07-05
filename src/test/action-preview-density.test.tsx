@@ -32,6 +32,7 @@ describe('action preview density', () => {
       />
     );
 
+    expect(container.querySelector('.incident-choice-list .incident-choice-button')).not.toBeNull();
     expect(container.querySelector('.incident-choice-list .action-preview.inline')).not.toBeNull();
   });
 });

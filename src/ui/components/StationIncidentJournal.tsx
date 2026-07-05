@@ -64,12 +64,14 @@ export function StationIncidentJournal({
                     <button
                       type="button"
                       key={choice.id}
-                      className="dialog-double"
+                      className="incident-choice-button"
                       aria-label={choiceCopy?.label ?? choice.id}
                       onClick={() => onResolve(incident.id, choice.id)}
                     >
-                      <span>{choiceCopy?.label ?? choice.id}</span>
-                      <small>{choiceCopy?.description ?? t.reward}</small>
+                      <span className="incident-choice-copy">
+                        <span>{choiceCopy?.label ?? choice.id}</span>
+                        <small>{choiceCopy?.description ?? t.reward}</small>
+                      </span>
                       {preview ? <ActionPreviewLine preview={preview} t={t} variant="compact" surface="inline" /> : null}
                     </button>
                   );
