@@ -39,7 +39,14 @@ export function getOfflineCapSeconds(state: GameState): number {
     return EXTENDED_OFFLINE_CAP_SECONDS;
   }
 
-  return upgrades.includes('higher_offline_cap') ? UPGRADED_OFFLINE_CAP_SECONDS : OFFLINE_CAP_SECONDS;
+  let cap = upgrades.includes('higher_offline_cap') ? UPGRADED_OFFLINE_CAP_SECONDS : OFFLINE_CAP_SECONDS;
+
+  // Comet Plumber: +2 hours to offline cap
+  if (state.unlockedResidents.includes('comet_plumber')) {
+    cap += 2 * 60 * 60;
+  }
+
+  return cap;
 }
 
 const MILESTONE_MULTIPLIERS = [

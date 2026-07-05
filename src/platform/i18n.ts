@@ -615,6 +615,30 @@ const ru: Translation = {
         unlockText: 'Комфорт станции достиг 40.',
         bonusText: '-8% к цене первых модулей',
         bio: 'Третий глаз видит все неполадки на станции одновременно. Строгая, но справедливая. Ведёт журнал проверок и знает, кто не убрал за собой на кухне. Договаривается с поставщиками о скидках на модули. Любит кактусы и порядок.'
+      },
+      comet_plumber: {
+        name: 'Кометный водопроводчик',
+        unlockText: 'Открыт кометный водяной бак.',
+        bonusText: '+2 часа к лимиту офлайн-дохода',
+        bio: 'Прилетел на хвосте кометы и остался. Чинит трубы из ледяной кометной воды. Носит шарф даже в вакууме. Утверждает, что кометная вода вкуснее земной. Всегда готов помочь с сантехникой.'
+      },
+      signal_radio_host: {
+        name: 'Радиоведущий сигналов',
+        unlockText: 'Открыта общая обсерватория.',
+        bonusText: '+20% к длительности timed-бонусов',
+        bio: 'Ведёт ночное радио из обсерватории. Ловит сигналы из дальнего космоса и превращает их в музыку. Спит днём, работает ночью. Его передачи продлевают любые бонусы — говорит, что это «резонанс волн».'
+      },
+      floating_librarian: {
+        name: 'Парящий библиотекарь',
+        unlockText: 'Открыта орбитальная библиотека.',
+        bonusText: '+10% к доходу при комфорте ≥ 50',
+        bio: 'Единственный человек, который читает в невесомости. Книги парят вокруг него живым коконом. Знает историю каждой планеты и каждого жильца. Тишина библиотеки — его главный ресурс. Когда на станции уютно, работает вдвое быстрее.'
+      },
+      tiny_saucer_family: {
+        name: 'Семейство мини-тарелок',
+        unlockText: 'Док для мини-тарелок достиг 10 уровня.',
+        bonusText: '+3% к доходу за каждого жильца',
+        bio: 'Семья из пяти маленьких летающих тарелок. Прибыли на станцию и решили остаться. Каждая тарелка — отдельная личность со своим характером. Чем больше жильцов на станции, тем активнее они помогают с доставкой.'
       }
     },
     goals: {
@@ -1136,6 +1160,30 @@ const en: Translation = {
         unlockText: 'Station comfort reached 40.',
         bonusText: '-8% to first-module cost',
         bio: 'Her third eye sees every malfunction on the station at once. Strict but fair. Keeps an inspection log and knows who did not clean up in the kitchen. Negotiates discounts on modules with suppliers. Loves cacti and order.'
+      },
+      comet_plumber: {
+        name: 'Comet Plumber',
+        unlockText: 'Comet Water Tank unlocked.',
+        bonusText: '+2 hours to offline income cap',
+        bio: 'Arrived on the tail of a comet and stayed. Fixes pipes with icy comet water. Wears a scarf even in vacuum. Claims comet water tastes better than Earth water. Always ready to help with plumbing.'
+      },
+      signal_radio_host: {
+        name: 'Signal Radio Host',
+        unlockText: 'Shared Observatory unlocked.',
+        bonusText: '+20% to timed bonus duration',
+        bio: 'Hosts a night radio show from the observatory. Catches signals from deep space and turns them into music. Sleeps by day, works by night. His broadcasts extend all bonuses — he calls it wave resonance.'
+      },
+      floating_librarian: {
+        name: 'Floating Librarian',
+        unlockText: 'Orbital Library unlocked.',
+        bonusText: '+10% to income when comfort >= 50',
+        bio: 'The only person who reads in zero gravity. Books float around him in a living cocoon. Knows the history of every planet and every resident. The silence of the library is his main resource. When the station is cozy, he works twice as fast.'
+      },
+      tiny_saucer_family: {
+        name: 'Tiny Saucer Family',
+        unlockText: 'Mini-Saucer Dock reached level 10.',
+        bonusText: '+3% income per resident on station',
+        bio: 'A family of five tiny flying saucers. Arrived at the station and decided to stay. Each saucer is a separate personality with its own character. The more residents on the station, the more actively they help with deliveries.'
       }
     },
     goals: {

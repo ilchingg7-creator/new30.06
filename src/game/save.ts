@@ -100,7 +100,11 @@ const VALID_RESIDENT_IDS = new Set([
   'teleport_courier',
   'vip_astroteenant',
   'retired_cosmonaut',
-  'three_eyed_housekeeper'
+  'three_eyed_housekeeper',
+  'comet_plumber',
+  'signal_radio_host',
+  'floating_librarian',
+  'tiny_saucer_family'
 ]);
 
 const VALID_COMMUNAL_DUTY_IDS = new Set([

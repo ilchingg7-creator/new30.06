@@ -1,4 +1,5 @@
 import { goals } from './content/goals';
+import { getTimedBonusDurationMultiplier } from './residents';
 import type { GameState, GoalDefinition, GoalId, TimedBonus, VisualPlaceholderId } from './types';
 
 export function isGoalEligible(goalId: GoalId, state: GameState): boolean {
@@ -54,7 +55,7 @@ function applyGoalReward(state: GameState, goal: GoalDefinition, now: number): G
         {
           id: goal.rewardTimedBonus.id,
           incomeMultiplier: goal.rewardTimedBonus.incomeMultiplier,
-          expiresAt: now + goal.rewardTimedBonus.durationMs
+          expiresAt: now + Math.floor(goal.rewardTimedBonus.durationMs * getTimedBonusDurationMultiplier(state))
         }
       ]
     : state.timedBonuses;

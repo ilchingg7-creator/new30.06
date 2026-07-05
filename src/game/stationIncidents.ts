@@ -1,6 +1,6 @@
 import { activeStationIncidents } from './content/stationIncidents';
 import { calculateIncomePerSecond } from './economy';
-import { hasResidentRole } from './residents';
+import { getTimedBonusDurationMultiplier, hasResidentRole } from './residents';
 import type {
   ActiveStationIncident,
   GameState,
@@ -182,7 +182,7 @@ export function resolveStationIncident(
         {
           id: effect.timedBonus.id,
           incomeMultiplier: effect.timedBonus.incomeMultiplier,
-          expiresAt: now + effect.timedBonus.durationMs
+          expiresAt: now + Math.floor(effect.timedBonus.durationMs * getTimedBonusDurationMultiplier(state))
         }
       ]
     : state.timedBonuses;

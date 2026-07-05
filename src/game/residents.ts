@@ -35,7 +35,11 @@ const RESIDENT_ROLE_PROFILES: Record<ResidentId, ResidentRoleProfile> = {
   teleport_courier: { primary: 'visitor', secondary: 'income' },
   vip_astroteenant: { primary: 'income', secondary: 'visitor' },
   retired_cosmonaut: { primary: 'renovation', secondary: 'comfort' },
-  three_eyed_housekeeper: { primary: 'maintenance', secondary: 'visitor' }
+  three_eyed_housekeeper: { primary: 'maintenance', secondary: 'visitor' },
+  comet_plumber: { primary: 'maintenance', secondary: 'comfort' },
+  signal_radio_host: { primary: 'visitor', secondary: 'comfort' },
+  floating_librarian: { primary: 'comfort', secondary: 'renovation' },
+  tiny_saucer_family: { primary: 'income', secondary: 'visitor' }
 };
 
 export function getResidentRoleProfile(residentId: ResidentId): ResidentRoleProfile {
@@ -77,11 +81,29 @@ export function getResidentGlobalIncomeMultiplier(state: GameState): number {
     multiplier *= 1.1;
   }
 
+  // Floating Librarian: +10% global income when comfort >= 50
+  if (state.unlockedResidents.includes('floating_librarian') && state.comfort >= 50) {
+    multiplier *= 1.1;
+  }
+
+  // Tiny Saucer Family: +3% per unlocked resident
+  if (state.unlockedResidents.includes('tiny_saucer_family')) {
+    multiplier *= 1 + 0.03 * state.unlockedResidents.length;
+  }
+
   return multiplier;
 }
 
 export function getResidentFirstRoomCostMultiplier(state: GameState): number {
   return state.unlockedResidents.includes('three_eyed_housekeeper') ? 0.92 : 1;
+}
+
+/**
+ * Signal Radio Host: +20% to timed bonus duration.
+ * Applied when creating timed bonuses from goals, incidents, and ad buttons.
+ */
+export function getTimedBonusDurationMultiplier(state: GameState): number {
+  return state.unlockedResidents.includes('signal_radio_host') ? 1.2 : 1;
 }
 
 export function isResidentUnlocked(residentId: ResidentId, state: GameState): boolean {

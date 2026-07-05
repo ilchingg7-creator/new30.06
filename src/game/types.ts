@@ -22,7 +22,11 @@ export type ResidentId =
   | 'teleport_courier'
   | 'vip_astroteenant'
   | 'retired_cosmonaut'
-  | 'three_eyed_housekeeper';
+  | 'three_eyed_housekeeper'
+  | 'comet_plumber'
+  | 'signal_radio_host'
+  | 'floating_librarian'
+  | 'tiny_saucer_family';
 
 export type ResidentRole = 'income' | 'comfort' | 'maintenance' | 'visitor' | 'renovation';
 

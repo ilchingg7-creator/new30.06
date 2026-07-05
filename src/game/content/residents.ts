@@ -61,5 +61,37 @@ export const residents: ResidentDefinition[] = [
     unlockText: 'Комфорт станции достиг 40.',
     bonusText: '-8% к цене первых модулей',
     requiredComfort: 40
+  },
+  {
+    id: 'comet_plumber',
+    name: 'Кометный водопроводчик',
+    unlockText: 'Открыт кометный водяной бак.',
+    bonusText: '+2 часа к лимиту офлайн-дохода',
+    requiredModule: 'comet_water_tank',
+    requiredModuleLevel: 1
+  },
+  {
+    id: 'signal_radio_host',
+    name: 'Радиоведущий сигналов',
+    unlockText: 'Открыта общая обсерватория.',
+    bonusText: '+20% к длительности timed-бонусов',
+    requiredModule: 'shared_observatory',
+    requiredModuleLevel: 1
+  },
+  {
+    id: 'floating_librarian',
+    name: 'Парящий библиотекарь',
+    unlockText: 'Открыта орбитальная библиотека.',
+    bonusText: '+10% к доходу всех модулей при комфорте ≥ 50',
+    requiredModule: 'orbital_library',
+    requiredModuleLevel: 1
+  },
+  {
+    id: 'tiny_saucer_family',
+    name: 'Семейство мини-тарелок',
+    unlockText: 'Док для мини-тарелок достиг 10 уровня.',
+    bonusText: '+3% к доходу за каждого заселённого жильца',
+    requiredModule: 'saucer_dock',
+    requiredModuleLevel: 10
   }
 ];
