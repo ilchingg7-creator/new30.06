@@ -202,7 +202,9 @@ export function calculateOfflineReward(
 }
 
 export function calculatePrestigeReward(state: GameState): number {
-  return Math.floor(Math.sqrt(state.totalEarnedCredits / 100_000));
+  // Linear scaling: hoarding kopeks before renovation is rewarded proportionally.
+  // 200K earned → 1 rep, 1M → 5 rep, 5M → 25 rep. (Was sqrt with diminishing returns.)
+  return Math.floor(state.totalEarnedCredits / 200_000);
 }
 
 function getCompletedRenovationCycleGoalCount(state: GameState): number {

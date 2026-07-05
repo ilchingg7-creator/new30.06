@@ -159,7 +159,7 @@ describe('station director guidance', () => {
     const base = createInitialState(1_000);
     const state = {
       ...base,
-      totalEarnedCredits: 100_000,
+      totalEarnedCredits: 200_000,
       comfort: 25,
       moduleLevels: {
         ...base.moduleLevels,

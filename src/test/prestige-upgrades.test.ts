@@ -62,7 +62,7 @@ function createRenovationReadyState(overrides: Partial<GameState> = {}): GameSta
 describe('prestige upgrade tree', () => {
   it('buys residents_survive from the second renovation choice set and keeps it after renovation', () => {
     const state = createRenovationReadyState({
-      reputation: 2,
+      reputation: 4,
       prestigeCount: 2,
       purchasedPrestigeUpgrades: ['warm_start_credits' as const],
       unlockedResidents: ['sleepy_engineer' as const, 'mist_cook' as const]

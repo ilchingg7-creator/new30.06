@@ -26,42 +26,42 @@ export const prestigeUpgrades: PrestigeUpgradeDefinition[] = [
     id: 'residents_survive',
     name: 'Соседи остаются',
     description: 'Жильцы не сбрасываются при реновации орбиты.',
-    reputationCost: 2,
+    reputationCost: 4,
     renovationTier: 2
   },
   {
     id: 'capsule_head_start',
     name: 'Готовая капсула',
     description: 'После реновации капсула арендатора сразу получает 5 уровней.',
-    reputationCost: 3,
+    reputationCost: 5,
     renovationTier: 2
   },
   {
     id: 'visitor_comfort_bonus',
     name: 'Книга отзывов',
     description: 'Принятые гости дают на 1 комфорт больше.',
-    reputationCost: 3,
+    reputationCost: 5,
     renovationTier: 2
   },
   {
     id: 'reputation_income',
     name: 'Добрая слава',
     description: 'Каждая единица репутации сильнее повышает доход станции.',
-    reputationCost: 5,
+    reputationCost: 8,
     renovationTier: 3
   },
   {
     id: 'offline_cap_16h',
     name: 'Дежурная автоматика',
     description: 'Лимит офлайн-дохода увеличен до 16 часов.',
-    reputationCost: 6,
+    reputationCost: 10,
     renovationTier: 3
   },
   {
     id: 'maintenance_drones',
     name: 'Дворницкие дроны',
     description: 'Новые комнаты начинают цикл в лучшем состоянии.',
-    reputationCost: 4,
+    reputationCost: 7,
     renovationTier: 3
   }
 ];
