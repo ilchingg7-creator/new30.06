@@ -3,7 +3,6 @@ import { lazy, Suspense, useState } from 'react';
 import type { UseGameStateResult } from '../useGameState';
 import type { Translation } from '../../platform/i18n';
 import { getStationGuidance } from '../../game/stationDirector';
-import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
 import { CommunalDutyPanel } from '../components/CommunalDutyPanel';
 import { GoalPanel } from '../components/GoalPanel';
@@ -12,7 +11,6 @@ import { ModuleList } from '../components/ModuleList';
 import { RoomConditionBar } from '../components/RoomConditionBar';
 import { PrestigePanel } from '../components/PrestigePanel';
 import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
-import { ResidentCollectionBook } from '../components/ResidentCollectionBook';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
 import { StationTaskPanel } from '../components/StationTaskPanel';
@@ -23,11 +21,23 @@ import { WeeklyRepairPanel } from '../components/WeeklyRepairPanel';
 import { LeaderboardPanel } from '../components/LeaderboardPanel';
 
 const PixiStationScene = lazy(() => import('../components/PixiStationScene').then((m) => ({ default: m.PixiStationScene })));
+const ResidentCollectionBook = lazy(() => import('../components/ResidentCollectionBook').then((m) => ({ default: m.ResidentCollectionBook })));
+const AchievementsPanel = lazy(() => import('../components/AchievementsPanel').then((m) => ({ default: m.AchievementsPanel })));
 
 function SceneFallback() {
   return (
     <div className="station-view station-view-loading" aria-hidden="true">
       <div className="station-view-spinner" />
+    </div>
+  );
+}
+
+function PanelFallback() {
+  return (
+    <div className="panel-skeleton" aria-hidden="true">
+      <div className="panel-skeleton-bar" />
+      <div className="panel-skeleton-bar" />
+      <div className="panel-skeleton-bar" />
     </div>
   );
 }
@@ -109,8 +119,12 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
               variant="compact"
               t={t}
             />
-            <ResidentCollectionBook gameState={game.gameState} t={t} />
-            <AchievementsPanel gameState={game.gameState} t={t} />
+            <Suspense fallback={<PanelFallback />}>
+              <ResidentCollectionBook gameState={game.gameState} t={t} />
+            </Suspense>
+            <Suspense fallback={<PanelFallback />}>
+              <AchievementsPanel gameState={game.gameState} t={t} />
+            </Suspense>
             <StatsPanel gameState={game.gameState} t={t} />
             <WeeklyRepairPanel gameState={game.gameState} onClaimBonus={game.claimWeeklyBonus} t={t} variant="compact" />
             <LeaderboardPanel

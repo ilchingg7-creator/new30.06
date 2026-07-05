@@ -10,6 +10,7 @@ import { LoadingScreen } from './ui/screens/LoadingScreen';
 import { OfflineRewardDialog } from './ui/screens/OfflineRewardDialog';
 import { OnboardingTour } from './ui/screens/OnboardingTour';
 import { CelebrationOverlay } from './ui/screens/CelebrationOverlay';
+import { ErrorBoundary } from './ui/screens/ErrorBoundary';
 import { SettingsDialog } from './ui/screens/SettingsDialog';
 import { VisitorDialog } from './ui/screens/VisitorDialog';
 
@@ -95,8 +96,9 @@ export function App() {
   }
 
   return (
-    <main className="app-shell">
-      <header className="app-title">
+    <ErrorBoundary language={language}>
+      <main className="app-shell">
+        <header className="app-title">
         <div className="title-row">
           {!isMobileViewport && <h1>{t.appTitle}</h1>}
           {!isMobileViewport && (
@@ -189,6 +191,7 @@ export function App() {
           onLanguageChange={changeLanguage}
         />
       )}
-    </main>
+      </main>
+    </ErrorBoundary>
   );
 }

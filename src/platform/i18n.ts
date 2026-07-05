@@ -72,6 +72,9 @@ export interface Translation {
   celebrationDismiss: string;
   saveSaving: string;
   saveSaved: string;
+  errorBoundaryTitle: string;
+  errorBoundaryBody: string;
+  errorBoundaryReload: string;
   renovationRequirementGoals: string;
   renovate: string;
   renovateTooltip: string;
@@ -389,6 +392,9 @@ const ru: Translation = {
   celebrationDismiss: 'Продолжить',
   saveSaving: 'Сохранение…',
   saveSaved: 'Сохранено',
+  errorBoundaryTitle: 'Станция дала сбой',
+  errorBoundaryBody: 'Что-то пошло не так. Сохранение не пострадало — перезагрузите страницу, чтобы продолжить.',
+  errorBoundaryReload: 'Перезагрузить',
   renovationRequirementGoals: 'Выполнить цели цикла',
   renovate: 'Реновировать',
   renovateTooltip: 'Реновация сбрасывает копейки и модули, но сохраняет репутацию и купленные улучшения. Награда = floor(sqrt(заработано / 100000)).',
@@ -1203,6 +1209,9 @@ const en: Translation = {
   celebrationDismiss: 'Continue',
   saveSaving: 'Saving…',
   saveSaved: 'Saved',
+  errorBoundaryTitle: 'The station crashed',
+  errorBoundaryBody: 'Something went wrong. Your save is intact — reload the page to continue.',
+  errorBoundaryReload: 'Reload',
   renovationRequirementGoals: 'Complete cycle goals',
   renovate: 'Renovate',
   renovateTooltip: 'Renovation resets kopeks and modules but keeps reputation and purchased upgrades. Reward = floor(sqrt(earned / 100000)).',

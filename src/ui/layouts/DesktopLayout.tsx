@@ -2,7 +2,6 @@ import type { UseGameStateResult } from '../useGameState';
 import type { Translation } from '../../platform/i18n';
 import { lazy, Suspense } from 'react';
 import { getStationGuidance } from '../../game/stationDirector';
-import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
 import { CommunalDutyPanel } from '../components/CommunalDutyPanel';
 import { GoalPanel } from '../components/GoalPanel';
@@ -11,7 +10,6 @@ import { ModuleList } from '../components/ModuleList';
 import { PrestigePanel } from '../components/PrestigePanel';
 import { RoomConditionBar } from '../components/RoomConditionBar';
 import { PrestigeUpgradesPanel } from '../components/PrestigeUpgradesPanel';
-import { ResidentCollectionBook } from '../components/ResidentCollectionBook';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
 import { StationTaskPanel } from '../components/StationTaskPanel';
@@ -22,11 +20,23 @@ import { WeeklyRepairPanel } from '../components/WeeklyRepairPanel';
 import { LeaderboardPanel } from '../components/LeaderboardPanel';
 
 const PixiStationScene = lazy(() => import('../components/PixiStationScene').then((m) => ({ default: m.PixiStationScene })));
+const ResidentCollectionBook = lazy(() => import('../components/ResidentCollectionBook').then((m) => ({ default: m.ResidentCollectionBook })));
+const AchievementsPanel = lazy(() => import('../components/AchievementsPanel').then((m) => ({ default: m.AchievementsPanel })));
 
 function SceneFallback() {
   return (
     <div className="station-view station-view-loading" aria-hidden="true">
       <div className="station-view-spinner" />
+    </div>
+  );
+}
+
+function PanelFallback() {
+  return (
+    <div className="panel-skeleton" aria-hidden="true">
+      <div className="panel-skeleton-bar" />
+      <div className="panel-skeleton-bar" />
+      <div className="panel-skeleton-bar" />
     </div>
   );
 }
@@ -98,7 +108,9 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
           onMarkSeen={game.markIncidentsSeen}
           t={t}
         />
-        <ResidentCollectionBook gameState={game.gameState} t={t} />
+        <Suspense fallback={<PanelFallback />}>
+          <ResidentCollectionBook gameState={game.gameState} t={t} />
+        </Suspense>
         <div data-tour="bonuses">
           <BonusPanel
             onIncomeBoost={game.activateIncomeBoost}
@@ -110,7 +122,9 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
         </div>
         <PrestigePanel gameState={game.gameState} onRenovate={game.renovateOrbit} t={t} />
         <PrestigeUpgradesPanel gameState={game.gameState} onBuyUpgrade={game.buyPrestigeUpgrade} t={t} />
-        <AchievementsPanel gameState={game.gameState} t={t} />
+        <Suspense fallback={<PanelFallback />}>
+          <AchievementsPanel gameState={game.gameState} t={t} />
+        </Suspense>
         <StatsPanel gameState={game.gameState} t={t} />
         <WeeklyRepairPanel gameState={game.gameState} onClaimBonus={game.claimWeeklyBonus} t={t} />
         <LeaderboardPanel
