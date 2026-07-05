@@ -17,8 +17,12 @@ import {
 } from '../game/communalDuties';
 import { applyRoomClickReward } from '../game/roomClicks';
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
-import type { GameState, ModuleId, PrestigeUpgradeId, ResidentId, StationIncidentId, WindowLightColor } from '../game/types';
+import type { GameState, ModuleId, PrestigeUpgradeId, ResidentId, StationIncidentId } from '../game/types';
 import { decayRoomConditions, DECAY_INTERVAL_SECONDS } from '../game/roomConditions';
+import {
+  claimWeeklyBonus as claimWeeklyBonusState,
+  updateWeeklyRepairProgress as updateWeeklyRepairProgressState
+} from '../game/weeklyRepair';
 import {
   getNewStationIncidentCount,
   markStationIncidentsSeen,
@@ -68,7 +72,6 @@ export interface UseGameStateResult {
   activateIncomeBoost(): Promise<void>;
   activateVipResident(): Promise<void>;
   doubleOfflineReward(): Promise<void>;
-  setWindowLightColor(color: WindowLightColor): void;
   buyPrestigeUpgrade(upgradeId: PrestigeUpgradeId): void;
   toggleSound(): void;
   soundMuted: boolean;
@@ -409,13 +412,6 @@ export function useGameState(
     }
   }, [adPending, offlineReward, resolveAdGrant]);
 
-  const setWindowLightColor = useCallback((color: WindowLightColor) => {
-    setGameState((current) => ({
-      ...current,
-      windowLightColor: color
-    }));
-  }, []);
-
   const buyUpgrade = useCallback((upgradeId: PrestigeUpgradeId) => {
     let purchased = false;
 
@@ -525,7 +521,6 @@ export function useGameState(
     activateIncomeBoost,
     activateVipResident,
     doubleOfflineReward,
-    setWindowLightColor,
     buyPrestigeUpgrade: buyUpgrade,
     toggleSound,
     soundMuted,
@@ -541,11 +536,8 @@ export function useGameState(
     newIncidentCount: getNewStationIncidentCount(gameState),
     claimWeeklyBonus: useCallback(() => {
       setGameState((current) => {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const wr = require('../game/weeklyRepair');
-        const withEvent = wr.updateWeeklyRepairProgress(current);
-
-        return wr.claimWeeklyBonus(withEvent);
+        const withEvent = updateWeeklyRepairProgressState(current);
+        return claimWeeklyBonusState(withEvent);
       });
     }, []),
     refreshLeaderboard: useCallback(() => {

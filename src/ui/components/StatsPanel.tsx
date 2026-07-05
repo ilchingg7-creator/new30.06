@@ -15,7 +15,11 @@ export function StatsPanel({ gameState, t }: StatsPanelProps) {
     {
       icon: Clock,
       label: t.playTime,
-      value: formatDuration(gameState.totalPlaySeconds ?? 0)
+      value: formatDuration(gameState.totalPlaySeconds ?? 0, {
+        hours: t.hoursShort,
+        minutes: t.minutesShort,
+        seconds: t.secondsShort
+      })
     },
     {
       icon: Home,

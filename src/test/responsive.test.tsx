@@ -83,7 +83,6 @@ function buildDutyGame(): UseGameStateResult {
     activateIncomeBoost: vi.fn(),
     activateVipResident: vi.fn(),
     doubleOfflineReward: vi.fn(),
-    setWindowLightColor: vi.fn(),
     buyPrestigeUpgrade: vi.fn(),
     toggleSound: vi.fn(),
     soundMuted: false,

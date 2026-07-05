@@ -88,7 +88,7 @@ describe('room condition system', () => {
   });
 
   it('decays room condition on the slower communal-duty rhythm', () => {
-    expect(DECAY_INTERVAL_SECONDS).toBe(180);
+    expect(DECAY_INTERVAL_SECONDS).toBe(600);
   });
 });
 

@@ -253,6 +253,74 @@ function hasOptionalCommunalDutyResult(value: unknown): boolean {
   );
 }
 
+const VALID_WEEKLY_REPAIR_TASK_KINDS = new Set(['repair_room', 'buy_levels', 'reach_condition']);
+
+/**
+ * Validate the optional `activeVisitor` field. Accepts `null` (no active
+ * visitor) or a record with the numeric `cost`, `rewardComfort` and
+ * `expiresAt` fields a VisitorRequest needs to function in the UI.
+ */
+function hasOptionalActiveVisitor(value: unknown): boolean {
+  if (value === undefined || value === null) {
+    return true;
+  }
+
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.id === 'string' &&
+    typeof value.name === 'string' &&
+    typeof value.flavor === 'string' &&
+    isNumber(value.cost) &&
+    isNumber(value.rewardComfort) &&
+    isNumber(value.expiresAt) &&
+    (value.template === undefined || typeof value.template === 'string')
+  );
+}
+
+/**
+ * Validate the optional `weeklyRepair` event state. Requires the numeric
+ * `startedAt`/`expiresAt` timestamps, a boolean `bonusClaimed` flag, and a
+ * `tasks` array whose entries each match the WeeklyRepairTask shape.
+ */
+function hasOptionalWeeklyRepair(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  if (
+    !isNumber(value.startedAt) ||
+    !isNumber(value.expiresAt) ||
+    typeof value.bonusClaimed !== 'boolean' ||
+    !Array.isArray(value.tasks)
+  ) {
+    return false;
+  }
+
+  return value.tasks.every((task) => {
+    if (!isRecord(task)) {
+      return false;
+    }
+
+    return (
+      typeof task.id === 'string' &&
+      typeof task.kind === 'string' &&
+      VALID_WEEKLY_REPAIR_TASK_KINDS.has(task.kind) &&
+      isValidModuleId(task.roomId) &&
+      isNumber(task.target) &&
+      isNumber(task.progress) &&
+      typeof task.completed === 'boolean' &&
+      isNumber(task.rewardComfort)
+    );
+  });
+}
+
 function createDefaultModuleLevels(): Record<string, number> {
   return Object.fromEntries(modules.map((module) => [module.id, 0]));
 }
@@ -346,7 +414,12 @@ function isGameStateShape(value: unknown): value is GameState {
     hasOptionalRoomConditions(value.roomConditions) &&
     hasOptionalCommunalDuty(value.communalDuty) &&
     hasOptionalNumber(value.lastCommunalDutyResolvedAt) &&
-    hasOptionalCommunalDutyResult(value.lastCommunalDutyResult)
+    hasOptionalCommunalDutyResult(value.lastCommunalDutyResult) &&
+    hasOptionalNumber(value.totalPlaySeconds) &&
+    hasOptionalNumber(value.totalModulesBought) &&
+    hasOptionalNumber(value.prestigeCount) &&
+    hasOptionalActiveVisitor(value.activeVisitor) &&
+    hasOptionalWeeklyRepair(value.weeklyRepair)
   );
 }
 

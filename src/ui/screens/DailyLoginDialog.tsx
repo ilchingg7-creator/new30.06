@@ -35,8 +35,10 @@ function getRewardText(reward: DailyRewardInfo, t: Translation): string {
       return `+${reward.amount} ${t.comfortWord}`;
     case 'condition_repair_all':
       return `+${reward.amount} ${t.dailyConditionRepair}`;
-    case 'timed_bonus':
-      return `x${reward.multiplier} ${t.dailyTimedBonus} (10 ${t.weeklyRepairDays === 'д' ? 'мин' : 'min'})`;
+    case 'timed_bonus': {
+      const minutes = reward.durationMs ? Math.round(reward.durationMs / (60 * 1_000)) : 10;
+      return `x${reward.multiplier} ${t.dailyTimedBonus} (${minutes} ${t.minutesShort})`;
+    }
     default:
       return t.dailyRewardText;
   }

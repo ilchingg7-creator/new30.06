@@ -30,7 +30,11 @@ export function OfflineRewardDialog({
         <dl className="dialog-stats">
           <div>
             <dt>{t.time}</dt>
-            <dd>{formatDuration(seconds)}</dd>
+            <dd>{formatDuration(seconds, {
+              hours: t.hoursShort,
+              minutes: t.minutesShort,
+              seconds: t.secondsShort
+            })}</dd>
           </div>
           <div>
             <dt>{t.kopeks}</dt>

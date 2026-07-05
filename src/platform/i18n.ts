@@ -232,6 +232,10 @@ export interface Translation {
   }>;
   // Format helpers
   perSecond: string;
+  // Short unit suffixes for duration/rate formatting (i18n-driven).
+  hoursShort: string;
+  minutesShort: string;
+  secondsShort: string;
   // Game content (modules, residents, goals, achievements, prestige
   // upgrades, visitors). Keys are the id fields from src/game/content/*;
   // visitor keys are the `template` field set in src/game/visitors.ts.
@@ -548,7 +552,7 @@ const ru: Translation = {
   leaderboardAnonymous: 'Аноним',
   leaderboardEmpty: 'Пока нет записей. Играйте, чтобы попасть в таблицу!',
   dailyConditionRepair: 'состояние всем комнатам',
-  dailyTimedBonus: 'доход на 10 минут',
+  dailyTimedBonus: 'доход',
   communalDutyTitle: 'Дежурство',
   communalDutyAssign: 'Назначить',
   communalDutyInProgress: 'Жилец на дежурстве',
@@ -583,6 +587,9 @@ const ru: Translation = {
     }
   },
   perSecond: '/сек',
+  hoursShort: 'ч',
+  minutesShort: 'м',
+  secondsShort: 'с',
   content: {
     modules: {
       tenant_capsule: { name: 'Капсула арендатора', role: 'Первый генератор' },
@@ -1108,7 +1115,7 @@ const en: Translation = {
   leaderboardAnonymous: 'Anonymous',
   leaderboardEmpty: 'No entries yet. Play to get on the board!',
   dailyConditionRepair: 'condition to all rooms',
-  dailyTimedBonus: 'income for 10 min',
+  dailyTimedBonus: 'income',
   communalDutyTitle: 'Communal duty',
   communalDutyAssign: 'Assign',
   communalDutyInProgress: 'Resident on duty',
@@ -1143,6 +1150,9 @@ const en: Translation = {
     }
   },
   perSecond: '/sec',
+  hoursShort: 'h',
+  minutesShort: 'm',
+  secondsShort: 's',
   content: {
     modules: {
       tenant_capsule: { name: 'Tenant Capsule', role: 'First generator' },
