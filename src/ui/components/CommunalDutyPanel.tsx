@@ -72,9 +72,9 @@ export function CommunalDutyPanel({ gameState, onAssign, onClaim, variant = 'def
         </p>
       )}
       {active.status === 'ready_to_claim' && (
-        <div className="communal-duty-actions">
+        <div className="communal-duty-claim-row">
           <p className="panel-copy">{t.communalDutyReady}</p>
-          {claimPreview ? <ActionPreviewLine preview={claimPreview} t={t} variant={variant} /> : null}
+          {claimPreview ? <ActionPreviewLine preview={claimPreview} t={t} variant={variant} surface="inline" /> : null}
           <button type="button" onClick={onClaim}>
             <ClipboardCheck aria-hidden="true" size={15} />
             {t.communalDutyClaim}

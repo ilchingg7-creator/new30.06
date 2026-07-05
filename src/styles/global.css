@@ -1412,6 +1412,24 @@ input {
   font-size: 0.78rem;
 }
 
+.communal-duty-claim-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.communal-duty-claim-row .panel-copy {
+  margin: 0;
+}
+
+.communal-duty-claim-row button {
+  min-height: 34px;
+  padding: 0 10px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
 .communal-duty-panel.compact {
   padding: 7px 9px;
   gap: 5px;
@@ -1452,6 +1470,16 @@ input {
 .communal-duty-panel.compact .communal-duty-choice-row {
   grid-template-columns: minmax(92px, 0.7fr) minmax(0, 1fr);
   gap: 6px;
+}
+
+.communal-duty-panel.compact .communal-duty-claim-row {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 6px;
+}
+
+.communal-duty-panel.compact .communal-duty-claim-row button {
+  min-height: 28px;
+  padding: 0 7px;
 }
 
 .communal-duty-panel.compact .action-preview.inline {

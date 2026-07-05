@@ -71,6 +71,27 @@ describe('CommunalDutyPanel', () => {
     expect(container.querySelector('.communal-duty-choice-row .action-preview.inline')).not.toBeNull();
   });
 
+  it('renders compact ready-to-claim duty as a dense claim row', () => {
+    const activeDuty = availableDutyState().communalDuty!;
+    const state = {
+      ...availableDutyState(),
+      communalDuty: {
+        ...activeDuty,
+        status: 'ready_to_claim' as const,
+        assignedResidentId: 'sleepy_engineer' as const,
+        startedAt: 1_000,
+        completesAt: 181_000
+      }
+    };
+
+    const { container } = render(
+      <CommunalDutyPanel gameState={state} onAssign={vi.fn()} onClaim={vi.fn()} t={t} variant="compact" />
+    );
+
+    expect(container.querySelector('.communal-duty-panel.compact .communal-duty-claim-row')).not.toBeNull();
+    expect(container.querySelector('.communal-duty-claim-row .action-preview.inline')).not.toBeNull();
+  });
+
   it('renders ready-to-claim duty with claim action', async () => {
     const user = userEvent.setup();
     const onClaim = vi.fn();
