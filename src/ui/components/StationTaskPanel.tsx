@@ -5,6 +5,7 @@ import { formatCredits } from '../../game/format';
 import type { StationGuidance, StationGuidanceCopyKey } from '../../game/stationDirector';
 import type { ModuleId } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
+import { ActionPreviewLine } from './ActionPreviewLine';
 
 interface StationTaskPanelProps {
   guidance: StationGuidance;
@@ -92,6 +93,7 @@ export function StationTaskPanel({ guidance, onSelectRoom, onRenovate, variant =
           <strong>{title}</strong>
           <p>{body}</p>
           <GuidanceMeta guidance={guidance} t={t} />
+          {guidance.preview ? <ActionPreviewLine preview={guidance.preview} t={t} variant={variant} /> : null}
         </div>
         <div className="station-task-actions">
           {canSelectRoom && (

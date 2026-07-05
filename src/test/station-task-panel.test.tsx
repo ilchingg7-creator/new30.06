@@ -61,4 +61,27 @@ describe('StationTaskPanel', () => {
     expect(screen.getByText(t.taskCommunalDutyClaimBody)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: t.taskSelectRoom })).toBeInTheDocument();
   });
+
+  it('renders guidance preview reason and result', () => {
+    const guidance: StationGuidance = {
+      kind: 'communal_duty',
+      priority: 95,
+      copyKey: 'communal_duty_claim',
+      canActNow: true,
+      dutyId: 'capsule_quiet_hours',
+      targetRoomId: 'tenant_capsule',
+      preview: {
+        title: 'Expected duty result',
+        reason: 'Resident role matches this duty.',
+        result: '+35 condition',
+        tags: ['condition', 'role'],
+        tone: 'positive'
+      }
+    };
+
+    render(<StationTaskPanel guidance={guidance} onSelectRoom={vi.fn()} t={t} />);
+
+    expect(screen.getByText('Resident role matches this duty.')).toBeInTheDocument();
+    expect(screen.getByText('+35 condition')).toBeInTheDocument();
+  });
 });

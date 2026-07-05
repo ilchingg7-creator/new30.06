@@ -1,5 +1,11 @@
+import {
+  getCommunalDutyAssignmentPreview,
+  getCommunalDutyClaimPreview,
+  getRenovationPreview
+} from './actionPreviews';
+import { communalDuties } from './content/communalDuties';
 import { calculatePrestigeReward, canPerformPrestige } from './economy';
-import type { CommunalDutyId, GameState, ModuleId } from './types';
+import type { ActionPreview, CommunalDutyId, GameState, ModuleId } from './types';
 
 export type StationGuidanceCopyKey =
   | 'visitor'
@@ -14,6 +20,7 @@ interface StationGuidanceBase {
   copyKey: StationGuidanceCopyKey;
   targetRoomId?: ModuleId;
   canActNow: boolean;
+  preview?: ActionPreview;
 }
 
 export interface VisitorGuidance extends StationGuidanceBase {
@@ -81,18 +88,24 @@ export function getStationGuidance({
       copyKey: 'communal_duty_claim',
       canActNow: true,
       dutyId: state.communalDuty.dutyId,
-      targetRoomId: state.communalDuty.roomId
+      targetRoomId: state.communalDuty.roomId,
+      preview: getCommunalDutyClaimPreview(state) ?? undefined
     };
   }
 
   if (state.communalDuty?.status === 'available') {
+    const activeDuty = state.communalDuty;
+    const definition = communalDuties.find((duty) => duty.id === activeDuty.dutyId);
+    const residentId = definition?.eligibleResidentIds.find((id) => state.unlockedResidents.includes(id));
+
     return {
       kind: 'communal_duty',
       priority: 85,
       copyKey: 'communal_duty_assign',
       canActNow: true,
-      dutyId: state.communalDuty.dutyId,
-      targetRoomId: state.communalDuty.roomId
+      dutyId: activeDuty.dutyId,
+      targetRoomId: activeDuty.roomId,
+      preview: residentId ? getCommunalDutyAssignmentPreview(state, activeDuty.dutyId, residentId) : undefined
     };
   }
 
@@ -105,7 +118,8 @@ export function getStationGuidance({
       copyKey: 'prestige',
       canActNow: true,
       canRenovate: true,
-      expectedReputation: prestigeReward
+      expectedReputation: prestigeReward,
+      preview: getRenovationPreview(state)
     };
   }
 

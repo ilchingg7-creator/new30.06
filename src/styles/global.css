@@ -1596,6 +1596,53 @@ input {
   gap: 10px;
 }
 
+.action-preview {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid rgb(39 49 63 / 12%);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-warm-panel), white 22%);
+}
+
+.action-preview.compact {
+  padding: 6px;
+  gap: 5px;
+}
+
+.action-preview-text {
+  display: grid;
+  gap: 2px;
+}
+
+.action-preview-text strong {
+  font-size: 0.78rem;
+}
+
+.action-preview-text span,
+.action-preview-text small {
+  color: var(--color-utility-blue);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.action-preview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.action-preview-tag {
+  border-radius: 999px;
+  padding: 2px 6px;
+  background: rgb(39 49 63 / 10%);
+  color: var(--color-ink);
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 .cosmetics-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

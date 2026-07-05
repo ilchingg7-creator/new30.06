@@ -497,7 +497,7 @@ Run: `npm.cmd test -- src/test/action-previews.test.ts`
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit Task 1**
+- [x] **Step 6: Commit Task 1**
 
 ```powershell
 git add -- src/game/types.ts src/game/actionPreviews.ts src/test/action-previews.test.ts
@@ -520,7 +520,7 @@ git commit -m "feat: add action preview helpers"
 - Produces: `preview?: ActionPreview` on `StationGuidanceBase`
 - Produces: `<ActionPreviewLine preview={preview} t={t} />`
 
-- [ ] **Step 1: Write failing Station Director domain test**
+- [x] **Step 1: Write failing Station Director domain test**
 
 Add to `src/test/station-director.test.ts`:
 
@@ -552,7 +552,7 @@ Run: `npm.cmd test -- src/test/station-director.test.ts`
 
 Expected: FAIL because guidance has no `preview`.
 
-- [ ] **Step 2: Write failing StationTaskPanel component test**
+- [x] **Step 2: Write failing StationTaskPanel component test**
 
 Add to `src/test/station-task-panel.test.tsx`:
 
@@ -585,7 +585,7 @@ Run: `npm.cmd test -- src/test/station-task-panel.test.tsx`
 
 Expected: FAIL because the component ignores preview.
 
-- [ ] **Step 3: Add shared preview renderer**
+- [x] **Step 3: Add shared preview renderer**
 
 Create `src/ui/components/ActionPreviewLine.tsx`:
 
@@ -647,7 +647,7 @@ export function ActionPreviewLine({ preview, t, variant = 'default' }: ActionPre
 }
 ```
 
-- [ ] **Step 4: Add preview translation keys**
+- [x] **Step 4: Add preview translation keys**
 
 In `src/platform/i18n.ts`, add to `Translation`:
 
@@ -694,7 +694,7 @@ Add to `en`:
   previewTagCost: 'cost',
 ```
 
-- [ ] **Step 5: Attach previews to Station Director**
+- [x] **Step 5: Attach previews to Station Director**
 
 In `src/game/stationDirector.ts`:
 
@@ -735,7 +735,7 @@ preview: getRenovationPreview(state)
 
 Also import `communalDuties` from `./content/communalDuties`.
 
-- [ ] **Step 6: Render preview in StationTaskPanel**
+- [x] **Step 6: Render preview in StationTaskPanel**
 
 In `src/ui/components/StationTaskPanel.tsx`, import and render:
 
@@ -749,7 +749,7 @@ Inside the body, after `<GuidanceMeta />`:
 {guidance.preview ? <ActionPreviewLine preview={guidance.preview} t={t} variant={variant} /> : null}
 ```
 
-- [ ] **Step 7: Add preview styles**
+- [x] **Step 7: Add preview styles**
 
 In `src/styles/global.css`, add:
 
@@ -802,7 +802,7 @@ In `src/styles/global.css`, add:
 }
 ```
 
-- [ ] **Step 8: Run task tests**
+- [x] **Step 8: Run task tests**
 
 Run: `npm.cmd test -- src/test/station-director.test.ts src/test/station-task-panel.test.tsx`
 

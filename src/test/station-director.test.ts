@@ -78,6 +78,28 @@ describe('station director guidance', () => {
     expect(guidance.priority).toBe(95);
   });
 
+  it('attaches preview reason and result to ready communal duty guidance', () => {
+    const state: GameState = {
+      ...createInitialState(1_000),
+      communalDuty: {
+        id: 'duty-1',
+        dutyId: 'capsule_quiet_hours',
+        roomId: 'tenant_capsule',
+        status: 'ready_to_claim',
+        createdAt: 1_000,
+        assignedResidentId: 'sleepy_engineer',
+        startedAt: 1_000,
+        completesAt: 181_000
+      },
+      unlockedResidents: ['sleepy_engineer']
+    };
+
+    const guidance = getStationGuidance({ state, incomePerSecond: 0 });
+
+    expect(guidance?.preview?.reason).toContain('role');
+    expect(guidance?.preview?.result).toContain('condition');
+  });
+
   it('surfaces an available communal duty before close goals', () => {
     const state: GameState = {
       ...withCapsuleLevel(9),

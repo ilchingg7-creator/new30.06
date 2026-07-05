@@ -147,6 +147,16 @@ export interface Translation {
   residentRoleMaintenance: string;
   residentRoleVisitor: string;
   residentRoleRenovation: string;
+  previewTags: string;
+  previewTagIncome: string;
+  previewTagComfort: string;
+  previewTagCondition: string;
+  previewTagResident: string;
+  previewTagRole: string;
+  previewTagVisual: string;
+  previewTagRenovation: string;
+  previewTagTimedBonus: string;
+  previewTagCost: string;
   // Achievements
   achievementsCount: string;
   // Common
@@ -370,6 +380,16 @@ const ru: Translation = {
   residentRoleMaintenance: 'maintenance',
   residentRoleVisitor: 'visitor',
   residentRoleRenovation: 'renovation',
+  previewTags: 'Result tags',
+  previewTagIncome: 'income',
+  previewTagComfort: 'comfort',
+  previewTagCondition: 'condition',
+  previewTagResident: 'resident',
+  previewTagRole: 'role',
+  previewTagVisual: 'detail',
+  previewTagRenovation: 'renovation',
+  previewTagTimedBonus: 'boost',
+  previewTagCost: 'cost',
   appTitle: 'Космическая коммуналка',
   loadingHint: 'Греем шлюзы',
   loadingBody: 'Станция готовит первый жилой модуль.',
@@ -933,6 +953,16 @@ const en: Translation = {
   residentRoleMaintenance: 'maintenance',
   residentRoleVisitor: 'visitor',
   residentRoleRenovation: 'renovation',
+  previewTags: 'Result tags',
+  previewTagIncome: 'income',
+  previewTagComfort: 'comfort',
+  previewTagCondition: 'condition',
+  previewTagResident: 'resident',
+  previewTagRole: 'role',
+  previewTagVisual: 'detail',
+  previewTagRenovation: 'renovation',
+  previewTagTimedBonus: 'boost',
+  previewTagCost: 'cost',
   appTitle: 'Cosmic Communalka',
   loadingHint: 'Warming up the airlocks',
   loadingBody: 'The station is preparing the first living module.',
