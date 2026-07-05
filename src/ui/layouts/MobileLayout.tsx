@@ -6,7 +6,6 @@ import { getStationGuidance } from '../../game/stationDirector';
 import { AchievementsPanel } from '../components/AchievementsPanel';
 import { BonusPanel } from '../components/BonusPanel';
 import { CommunalDutyPanel } from '../components/CommunalDutyPanel';
-import { CosmeticsPanel } from '../components/CosmeticsPanel';
 import { GoalPanel } from '../components/GoalPanel';
 import { ModuleList } from '../components/ModuleList';
 import { PixiStationScene } from '../components/PixiStationScene';
@@ -106,11 +105,6 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
           <>
             <PrestigePanel gameState={game.gameState} onRenovate={game.renovateOrbit} t={t} />
             <PrestigeUpgradesPanel gameState={game.gameState} onBuyUpgrade={game.buyPrestigeUpgrade} t={t} />
-            <CosmeticsPanel
-              windowLightColor={game.gameState.windowLightColor ?? 'amber'}
-              onWindowLightColor={game.setWindowLightColor}
-              t={t}
-            />
           </>
         )}
       </div>
