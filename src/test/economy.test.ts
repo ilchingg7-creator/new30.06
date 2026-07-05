@@ -6,9 +6,28 @@ import {
   calculateModuleCost,
   calculateOfflineReward,
   calculatePrestigeReward,
+  canPerformPrestige,
   createInitialState,
+  getPrestigeRequirements,
   performPrestige
 } from '../game/economy';
+import type { GameState } from '../game/types';
+
+function createFirstRenovationReadyState() {
+  const base = createInitialState(1_000);
+
+  return {
+    ...base,
+    totalEarnedCredits: 400_000,
+    comfort: 25,
+    moduleLevels: {
+      ...base.moduleLevels,
+      tenant_capsule: 10,
+      cosmo_kitchen: 1
+    },
+    completedGoals: ['buy_capsule_10', 'unlock_kitchen', 'reach_comfort_25', 'earn_credits_10000'] as GameState['completedGoals']
+  };
+}
 
 describe('economy engine', () => {
   it('starts with enough credits for the first capsule', () => {
@@ -49,8 +68,7 @@ describe('economy engine', () => {
 
   it('uses square root prestige rewards and keeps reputation after renovation', () => {
     const state = {
-      ...createInitialState(1_000),
-      totalEarnedCredits: 400_000,
+      ...createFirstRenovationReadyState(),
       reputation: 3
     };
     const renovated = performPrestige(state, 2_000);
@@ -59,5 +77,30 @@ describe('economy engine', () => {
     expect(renovated.reputation).toBe(5);
     expect(renovated.credits).toBe(15);
     expect(renovated.moduleLevels.tenant_capsule).toBe(0);
+  });
+
+  it('blocks renovation until the current cycle requirements are complete', () => {
+    const state = {
+      ...createInitialState(1_000),
+      totalEarnedCredits: 400_000
+    };
+    const requirements = getPrestigeRequirements(state);
+    const renovated = performPrestige(state, 2_000);
+
+    expect(calculatePrestigeReward(state)).toBe(2);
+    expect(requirements.map((requirement) => requirement.completed)).toEqual([true, false, false]);
+    expect(canPerformPrestige(state)).toBe(false);
+    expect(renovated).toBe(state);
+  });
+
+  it('allows renovation when reward, station and goal requirements are complete', () => {
+    const state = createFirstRenovationReadyState();
+    const requirements = getPrestigeRequirements(state);
+    const renovated = performPrestige(state, 2_000);
+
+    expect(requirements.every((requirement) => requirement.completed)).toBe(true);
+    expect(canPerformPrestige(state)).toBe(true);
+    expect(renovated).not.toBe(state);
+    expect(renovated.prestigeCount).toBe(1);
   });
 });

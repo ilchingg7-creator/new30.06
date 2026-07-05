@@ -33,12 +33,16 @@ describe('station director guidance', () => {
 
     const guidance = getStationGuidance({ state, incomePerSecond: 1 });
 
+    expect(guidance).not.toBeNull();
+    if (!guidance) {
+      throw new Error('Expected visitor guidance, got null');
+    }
     expect(guidance.kind).toBe('visitor');
     expect(guidance.priority).toBe(100);
     expect(guidance.canActNow).toBe(true);
   });
 
-  it('prioritizes a close goal before a generic module upgrade', () => {
+  it('does not duplicate close goals as station events', () => {
     const state = {
       ...withCapsuleLevel(9),
       credits: 1_000
@@ -46,14 +50,7 @@ describe('station director guidance', () => {
 
     const guidance = getStationGuidance({ state, incomePerSecond: 5 });
 
-    expect(guidance.kind).toBe('goal');
-    if (guidance.kind !== 'goal') {
-      throw new Error(`Expected goal guidance, got ${guidance.kind}`);
-    }
-    expect(guidance.goalId).toBe('buy_capsule_10');
-    expect(guidance.targetRoomId).toBe('tenant_capsule');
-    expect(guidance.progressCurrent).toBe(9);
-    expect(guidance.progressTarget).toBe(10);
+    expect(guidance).toBeNull();
   });
 
   it('prioritizes a ready communal duty above normal purchases', () => {
@@ -73,6 +70,10 @@ describe('station director guidance', () => {
 
     const guidance = getStationGuidance({ state, incomePerSecond: 0 });
 
+    expect(guidance).not.toBeNull();
+    if (!guidance) {
+      throw new Error('Expected communal duty guidance, got null');
+    }
     expect(guidance.kind).toBe('communal_duty');
     expect(guidance.priority).toBe(95);
   });
@@ -91,11 +92,15 @@ describe('station director guidance', () => {
 
     const guidance = getStationGuidance({ state, incomePerSecond: 5 });
 
+    expect(guidance).not.toBeNull();
+    if (!guidance) {
+      throw new Error('Expected communal duty guidance, got null');
+    }
     expect(guidance.kind).toBe('communal_duty');
     expect(guidance.priority).toBe(85);
   });
 
-  it('recommends an affordable room upgrade with a room target', () => {
+  it('does not duplicate affordable module upgrades as station events', () => {
     const state = {
       ...createInitialState(1_000),
       credits: 15
@@ -103,17 +108,10 @@ describe('station director guidance', () => {
 
     const guidance = getStationGuidance({ state, incomePerSecond: 0 });
 
-    expect(guidance.kind).toBe('module');
-    if (guidance.kind !== 'module') {
-      throw new Error(`Expected module guidance, got ${guidance.kind}`);
-    }
-    expect(guidance.moduleId).toBe('tenant_capsule');
-    expect(guidance.targetRoomId).toBe('tenant_capsule');
-    expect(guidance.canAfford).toBe(true);
-    expect(guidance.waitSeconds).toBe(0);
+    expect(guidance).toBeNull();
   });
 
-  it('includes a finite wait time for unaffordable unlocked upgrades when income is positive', () => {
+  it('does not show unaffordable module waits as station events', () => {
     const state = {
       ...createInitialState(1_000),
       credits: 10
@@ -121,16 +119,10 @@ describe('station director guidance', () => {
 
     const guidance = getStationGuidance({ state, incomePerSecond: 2 });
 
-    expect(guidance.kind).toBe('module');
-    if (guidance.kind !== 'module') {
-      throw new Error(`Expected module guidance, got ${guidance.kind}`);
-    }
-    expect(guidance.canAfford).toBe(false);
-    expect(guidance.waitSeconds).toBeGreaterThan(0);
-    expect(Number.isFinite(guidance.waitSeconds)).toBe(true);
+    expect(guidance).toBeNull();
   });
 
-  it('does not produce an invalid wait time when income is zero', () => {
+  it('does not show zero-income module waits as station events', () => {
     const state = {
       ...createInitialState(1_000),
       credits: 0
@@ -138,15 +130,38 @@ describe('station director guidance', () => {
 
     const guidance = getStationGuidance({ state, incomePerSecond: 0 });
 
-    expect(guidance.kind).toBe('module');
-    if (guidance.kind !== 'module') {
-      throw new Error(`Expected module guidance, got ${guidance.kind}`);
-    }
-    expect(guidance.canAfford).toBe(false);
-    expect(guidance.waitSeconds).toBeNull();
+    expect(guidance).toBeNull();
   });
 
   it('shows prestige guidance when renovation can produce reputation', () => {
+    const base = createInitialState(1_000);
+    const state = {
+      ...base,
+      totalEarnedCredits: 100_000,
+      comfort: 25,
+      moduleLevels: {
+        ...base.moduleLevels,
+        tenant_capsule: 10,
+        cosmo_kitchen: 1
+      },
+      completedGoals: ['buy_capsule_10', 'unlock_kitchen', 'reach_comfort_25', 'earn_credits_10000'] as GameState['completedGoals']
+    };
+
+    const guidance = getStationGuidance({ state, incomePerSecond: 10 });
+
+    expect(guidance).not.toBeNull();
+    if (!guidance) {
+      throw new Error('Expected prestige guidance, got null');
+    }
+    expect(guidance.kind).toBe('prestige');
+    if (guidance.kind !== 'prestige') {
+      throw new Error(`Expected prestige guidance, got ${guidance.kind}`);
+    }
+    expect(guidance.canRenovate).toBe(true);
+    expect(guidance.expectedReputation).toBe(1);
+  });
+
+  it('does not show prestige guidance before renovation requirements are complete', () => {
     const state = {
       ...createInitialState(1_000),
       totalEarnedCredits: 100_000
@@ -154,12 +169,7 @@ describe('station director guidance', () => {
 
     const guidance = getStationGuidance({ state, incomePerSecond: 10 });
 
-    expect(guidance.kind).toBe('prestige');
-    if (guidance.kind !== 'prestige') {
-      throw new Error(`Expected prestige guidance, got ${guidance.kind}`);
-    }
-    expect(guidance.canRenovate).toBe(true);
-    expect(guidance.expectedReputation).toBe(1);
+    expect(guidance).toBeNull();
   });
 
   it('can surface a pending daily reward above normal purchases', () => {
@@ -169,6 +179,10 @@ describe('station director guidance', () => {
       hasPendingDailyReward: true
     });
 
+    expect(guidance).not.toBeNull();
+    if (!guidance) {
+      throw new Error('Expected daily guidance, got null');
+    }
     expect(guidance.kind).toBe('daily');
     expect(guidance.priority).toBe(90);
   });

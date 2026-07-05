@@ -16,9 +16,14 @@ import {
 } from '../game/communalDuties';
 import { applyRoomClickReward } from '../game/roomClicks';
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
-import type { ActiveResidentStory, GameState, ModuleId, PrestigeUpgradeId, ResidentId, WindowLightColor } from '../game/types';
-import { getActiveResidentStory } from '../game/residentStories';
+import type { GameState, ModuleId, PrestigeUpgradeId, ResidentId, StationIncidentId, WindowLightColor } from '../game/types';
 import { decayRoomConditions, DECAY_INTERVAL_SECONDS } from '../game/roomConditions';
+import {
+  getNewStationIncidentCount,
+  markStationIncidentsSeen,
+  queueEligibleIncidents,
+  resolveStationIncident
+} from '../game/stationIncidents';
 import {
   acceptVisitor,
   declineVisitor,
@@ -71,15 +76,20 @@ export interface UseGameStateResult {
   clickRoom(): void;
   assignCommunalDuty(residentId: ResidentId): void;
   claimCommunalDuty(): void;
-  activeStory: ActiveResidentStory | null;
-  storyDismissed: boolean;
-  dismissStory(): void;
+  resolveIncident(incidentId: StationIncidentId, choiceId: string): void;
+  markIncidentsSeen(): void;
+  triggerCatIncident(): void;
+  newIncidentCount: number;
 }
 
 export function useGameState(
   storagePort?: StoragePort,
   yandexPlatform?: YandexPlatform
 ): UseGameStateResult {
+  function withQueuedIncidents(state: GameState): GameState {
+    return queueEligibleIncidents(state);
+  }
+
   const storage = useMemo(() => storagePort ?? createLocalStoragePort(), [storagePort]);
   const platformRef = useRef<YandexPlatform>(yandexPlatform ?? createNoOpYandexPlatform());
   const [gameState, setGameState] = useState(() => createInitialState());
@@ -90,7 +100,6 @@ export function useGameState(
   const [adPending, setAdPending] = useState(false);
   const [adsAvailable, setAdsAvailable] = useState(false);
   const [soundMuted, setSoundMuted] = useState(() => isMuted());
-  const [storyDismissed, setStoryDismissed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -137,14 +146,14 @@ export function useGameState(
         const advanced = advanceGame(savedState, reward.seconds);
         const daily = checkDailyLogin(advanced);
 
-        setGameState(daily.state);
+        setGameState(withQueuedIncidents(daily.state));
         setOfflineReward(reward.credits > 0 ? reward : null);
         setDailyReward(daily.reward > 0 ? { streak: daily.streak, credits: daily.reward } : null);
       } else {
         const fresh = createInitialState();
         const daily = checkDailyLogin(fresh);
 
-        setGameState(daily.state);
+        setGameState(withQueuedIncidents(daily.state));
         setDailyReward(daily.reward > 0 ? { streak: daily.streak, credits: daily.reward } : null);
       }
 
@@ -182,7 +191,7 @@ export function useGameState(
     const intervalId = window.setInterval(() => {
       // Pause game tick when the tab is hidden (requirement 1.19.4).
       if (document.hidden) return;
-      setGameState((current) => maybeCreateCommunalDuty(advanceGame(current, 1)));
+      setGameState((current) => withQueuedIncidents(maybeCreateCommunalDuty(advanceGame(current, 1))));
     }, 1_000);
 
     return () => window.clearInterval(intervalId);
@@ -198,7 +207,7 @@ export function useGameState(
     const intervalId = window.setInterval(() => {
       // Pause decay when the tab is hidden (requirement 1.19.4).
       if (document.hidden) return;
-      setGameState((current) => decayRoomConditions(current));
+      setGameState((current) => withQueuedIncidents(decayRoomConditions(current)));
     }, DECAY_INTERVAL_SECONDS * 1_000);
 
     return () => window.clearInterval(intervalId);
@@ -223,7 +232,7 @@ export function useGameState(
         }
 
         if (Math.random() < 0.5) {
-          const visitor = generateVisitorRequest(current);
+          const visitor = generateVisitorRequest(current, Date.now(), calculateIncomePerSecond(current));
 
           if (visitor) {
             return { ...current, activeVisitor: visitor };
@@ -239,21 +248,13 @@ export function useGameState(
 
   useEffect(() => {
     setSelectedRoomId((current) => resolveSelectedRoomId(gameState, current));
-
-    // Reset the story-dismissed flag when the active story changes so a
-    // new story can pop up again.
-    const story = getActiveResidentStory(gameState);
-
-    if (!story) {
-      setStoryDismissed(false);
-    }
   }, [gameState]);
 
   const buyLevel = useCallback((moduleId: ModuleId) => {
     let purchased = false;
 
     setGameState((current) => {
-      const next = buyModuleLevel(current, moduleId);
+      const next = withQueuedIncidents(buyModuleLevel(current, moduleId));
 
       if (next !== current) {
         purchased = true;
@@ -279,8 +280,15 @@ export function useGameState(
   );
 
   const renovateOrbit = useCallback(() => {
-    setGameState((current) => performPrestige(current));
-    playSound('prestige');
+    let renovated = false;
+
+    setGameState((current) => {
+      const next = withQueuedIncidents(performPrestige(current));
+      renovated = next !== current;
+
+      return next;
+    });
+    playSound(renovated ? 'prestige' : 'error');
   }, []);
 
   const dismissOfflineReward = useCallback(() => {
@@ -482,6 +490,19 @@ export function useGameState(
     playSound('reward');
   }, []);
 
+  const resolveIncident = useCallback((incidentId: StationIncidentId, choiceId: string) => {
+    setGameState((current) => withQueuedIncidents(resolveStationIncident(current, incidentId, choiceId)));
+    playSound('reward');
+  }, []);
+
+  const markIncidentsSeen = useCallback(() => {
+    setGameState((current) => markStationIncidentsSeen(current));
+  }, []);
+
+  const triggerCatIncident = useCallback(() => {
+    setGameState((current) => queueEligibleIncidents(current, { sceneInteractionId: 'strange_cat' }));
+  }, []);
+
   return {
     gameState,
     incomePerSecond: calculateIncomePerSecond(gameState),
@@ -509,8 +530,9 @@ export function useGameState(
     clickRoom,
     assignCommunalDuty: assignDuty,
     claimCommunalDuty: claimDuty,
-    activeStory: storyDismissed ? null : getActiveResidentStory(gameState),
-    storyDismissed,
-    dismissStory: useCallback(() => setStoryDismissed(true), [])
+    resolveIncident,
+    markIncidentsSeen,
+    triggerCatIncident,
+    newIncidentCount: getNewStationIncidentCount(gameState)
   };
 }

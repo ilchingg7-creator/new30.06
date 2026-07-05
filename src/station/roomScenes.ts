@@ -1,6 +1,6 @@
 import { Assets, Cache, Container, Graphics, Sprite, Texture } from 'pixi.js';
 import { modules } from '../game/content/modules';
-import type { GameState, ModuleId, RoomDetailLevel, WindowLightColor } from '../game/types';
+import type { GameState, ModuleId, RoomDetailLevel, VisualPlaceholderId, WindowLightColor } from '../game/types';
 import { stationTheme } from './stationTheme';
 
 const windowLightColorMap: Record<WindowLightColor, number> = {
@@ -9,6 +9,54 @@ const windowLightColorMap: Record<WindowLightColor, number> = {
   red: stationTheme.signalRed,
   blue: stationTheme.utilityBlue
 };
+
+const INCIDENT_VISUAL_ROOM_MAP: Record<VisualPlaceholderId, ModuleId> = {
+  kitchen_mist_patch_01: 'cosmo_kitchen',
+  capsule_padding_01: 'tenant_capsule',
+  laundry_sock_cluster_01: 'zero_g_laundry',
+  garden_sprout_label_01: 'oxygen_garden',
+  teleport_parcel_01: 'teleport_entry',
+  capsule_rug_01: 'tenant_capsule',
+  warning_bulb_01: 'tenant_capsule',
+  cat_saucer_01: 'tenant_capsule',
+  kitchen_soup_pot_01: 'cosmo_kitchen',
+  capsule_frost_01: 'tenant_capsule',
+  kitchen_spoon_bundle_01: 'cosmo_kitchen',
+  garden_radio_plant_01: 'oxygen_garden',
+  laundry_static_socks_01: 'zero_g_laundry',
+  teleport_duplicate_mug_01: 'teleport_entry',
+  panorama_star_labels_01: 'panorama_dome',
+  pantry_labels_01: 'meteorite_pantry',
+  drone_schedule_board_01: 'tenant_capsule',
+  cosmonaut_mug_01: 'tenant_capsule',
+  kitchen_recipe_scroll_01: 'cosmo_kitchen',
+  garden_seed_trail_01: 'oxygen_garden',
+  laundry_sock_calendar_01: 'zero_g_laundry',
+  teleport_future_notice_01: 'teleport_entry',
+  vip_towel_carpet_01: 'tenant_capsule',
+  cat_button_label_01: 'tenant_capsule',
+  cat_dust_jar_01: 'tenant_capsule',
+  old_wallpaper_patch_01: 'tenant_capsule',
+  resident_reunion_table_01: 'cosmo_kitchen',
+  soup_smell_note_01: 'cosmo_kitchen',
+  housewarming_lamp_01: 'tenant_capsule',
+  station_song_poster_01: 'tenant_capsule',
+  teleport_pollen_pot_01: 'oxygen_garden',
+  steam_towel_hook_01: 'zero_g_laundry',
+  stargazing_blanket_01: 'panorama_dome',
+  kopeks_jar_01: 'tenant_capsule',
+  upgrade_labels_01: 'tenant_capsule',
+  table_schedule_01: 'cosmo_kitchen',
+  reputation_review_frame_01: 'tenant_capsule',
+  panorama_reserved_sign_01: 'panorama_dome',
+  moss_sock_01: 'zero_g_laundry'
+};
+
+export function getIncidentVisualPlaceholdersForRoom(state: GameState, roomId: ModuleId): VisualPlaceholderId[] {
+  return (state.unlockedIncidentVisuals ?? []).filter((placeholderId) => {
+    return INCIDENT_VISUAL_ROOM_MAP[placeholderId] === roomId;
+  });
+}
 
 function resolveWindowLightColor(state: GameState): number {
   return state.windowLightColor ? windowLightColorMap[state.windowLightColor] : stationTheme.lampAmber;
@@ -129,6 +177,58 @@ export function calculateRoomSceneFit(canvasWidth: number, canvasHeight: number)
     height,
     x: (canvasWidth - width) / 2,
     y: (canvasHeight - height) / 2
+  };
+}
+
+export interface SceneOverlayRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface SceneOverlayPixelRect {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
+export const TENANT_CAT_SCENE_RECT: SceneOverlayRect = {
+  x: 540,
+  y: 208,
+  width: 228,
+  height: 228
+};
+
+export const TENANT_CAT_LOVE_SCENE_RECT: SceneOverlayRect = {
+  x: 591,
+  y: 132,
+  width: 126,
+  height: 126
+};
+
+export function calculateSceneOverlayRect(
+  canvasWidth: number,
+  canvasHeight: number,
+  rect: SceneOverlayRect
+): SceneOverlayPixelRect {
+  if (canvasWidth <= 0 || canvasHeight <= 0) {
+    return {
+      left: rect.x,
+      top: rect.y,
+      width: rect.width,
+      height: rect.height
+    };
+  }
+
+  const fit = calculateRoomSceneFit(canvasWidth, canvasHeight);
+
+  return {
+    left: fit.x + rect.x * fit.scale,
+    top: fit.y + rect.y * fit.scale,
+    width: rect.width * fit.scale,
+    height: rect.height * fit.scale
   };
 }
 
@@ -621,6 +721,25 @@ function createRoomProp(prop: RoomSceneProp): Graphics {
   }
 }
 
+function addIncidentVisualPlaceholders(
+  container: Container,
+  gameState: GameState,
+  selectedRoomId: ModuleId
+): void {
+  const placeholders = getIncidentVisualPlaceholdersForRoom(gameState, selectedRoomId);
+
+  placeholders.forEach((placeholderId, index) => {
+    const marker = new Graphics();
+
+    marker.label = `incident-placeholder-${placeholderId}`;
+    marker
+      .roundRect(132 + index * 34, 318, 24, 18, 5)
+      .fill(stationTheme.lampAmber)
+      .stroke({ color: stationTheme.softWhite, width: 2, alpha: 0.8 });
+    container.addChild(marker);
+  });
+}
+
 export function buildRoomContainer(gameState: GameState, selectedRoomId: ModuleId): Container {
   const descriptor = createRoomSceneDescriptor(gameState, selectedRoomId);
   const container = new Container();
@@ -628,6 +747,7 @@ export function buildRoomContainer(gameState: GameState, selectedRoomId: ModuleI
 
   if (spriteAsset) {
     container.addChild(createRoomSprite(spriteAsset));
+    addIncidentVisualPlaceholders(container, gameState, selectedRoomId);
 
     return container;
   }
@@ -641,6 +761,7 @@ export function buildRoomContainer(gameState: GameState, selectedRoomId: ModuleI
   descriptor.props.forEach((prop) => {
     container.addChild(createRoomProp(prop));
   });
+  addIncidentVisualPlaceholders(container, gameState, selectedRoomId);
 
   return container;
 }

@@ -1,3 +1,4 @@
+import { stationIncidents } from './content/stationIncidents';
 import { modules } from './content/modules';
 import type { GameState } from './types';
 
@@ -7,7 +8,7 @@ import type { GameState } from './types';
  * higher than CURRENT are rejected (forward-incompatible) to avoid corrupting
  * newer saves when a user rolls back to an older client.
  */
-export const CURRENT_SCHEMA_VERSION = 2;
+export const CURRENT_SCHEMA_VERSION = 3;
 export const SAVE_KEY = 'cosmic-communalka-save-v2';
 
 type UnknownRecord = Record<string, unknown>;
@@ -53,7 +54,15 @@ const VALID_WINDOW_LIGHT_COLORS = new Set(['amber', 'green', 'red', 'blue']);
 const VALID_PRESTIGE_UPGRADE_IDS = new Set([
   'residents_survive',
   'starting_comfort',
-  'higher_offline_cap'
+  'higher_offline_cap',
+  'warm_start_credits',
+  'capsule_head_start',
+  'offline_cap_16h',
+  'first_room_discount',
+  'reputation_income',
+  'visitor_comfort_bonus',
+  'starting_comfort_plus',
+  'maintenance_drones'
 ]);
 
 const VALID_ACHIEVEMENT_IDS = new Set([
@@ -75,6 +84,13 @@ const VALID_STORY_IDS = new Set([
   'courier_teleport_traffic',
   'cosmonaut_warm_start'
 ]);
+
+const VALID_STATION_INCIDENT_IDS: Set<string> = new Set(stationIncidents.map((incident) => incident.id));
+const VALID_INCIDENT_VISUAL_PLACEHOLDER_IDS: Set<string> = new Set(
+  stationIncidents.flatMap((incident) =>
+    incident.choices.flatMap((choice) => choice.effects.visualPlaceholderIds ?? [])
+  )
+);
 
 const VALID_RESIDENT_IDS = new Set([
   'sleepy_engineer',
@@ -122,6 +138,41 @@ function hasOptionalStories(value: unknown): boolean {
   }
 
   return isStringArray(value) && value.every((id) => VALID_STORY_IDS.has(id));
+}
+
+function hasOptionalActiveIncidents(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  return (
+    Array.isArray(value) &&
+    value.every((incident) => {
+      return (
+        isRecord(incident) &&
+        typeof incident.id === 'string' &&
+        VALID_STATION_INCIDENT_IDS.has(incident.id) &&
+        isNumber(incident.queuedAt) &&
+        typeof incident.isNew === 'boolean'
+      );
+    })
+  );
+}
+
+function hasOptionalIncidentIds(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  return isStringArray(value) && value.every((id) => VALID_STATION_INCIDENT_IDS.has(id));
+}
+
+function hasOptionalIncidentVisuals(value: unknown): boolean {
+  if (value === undefined) {
+    return true;
+  }
+
+  return isStringArray(value) && value.every((id) => VALID_INCIDENT_VISUAL_PLACEHOLDER_IDS.has(id));
 }
 
 function hasOptionalNumber(value: unknown): boolean {
@@ -234,6 +285,16 @@ function migrateV1ToV2(value: UnknownRecord): UnknownRecord {
   };
 }
 
+function migrateV2ToV3(value: UnknownRecord): UnknownRecord {
+  return {
+    ...value,
+    schemaVersion: 3,
+    activeIncidents: value.activeIncidents ?? [],
+    completedIncidents: value.completedIncidents ?? [],
+    unlockedIncidentVisuals: value.unlockedIncidentVisuals ?? []
+  };
+}
+
 /**
  * Apply the chain of migrations to bring a parsed save up to CURRENT_SCHEMA_VERSION.
  * Each migration takes a record and returns a record one version higher.
@@ -247,7 +308,9 @@ function migrateGameState(value: UnknownRecord): UnknownRecord {
     current = migrateV1ToV2(current);
   }
 
-  // Future migrations (2 -> 3, 3 -> 4, ...) go here.
+  if (startVersion < 3) {
+    current = migrateV2ToV3(current);
+  }
 
   return backfillModuleLevels(current);
 }
@@ -273,6 +336,9 @@ function isGameStateShape(value: unknown): value is GameState {
     hasOptionalNumber(value.dailyStreak) &&
     hasOptionalAchievements(value.unlockedAchievements) &&
     hasOptionalStories(value.completedStories) &&
+    hasOptionalActiveIncidents(value.activeIncidents) &&
+    hasOptionalIncidentIds(value.completedIncidents) &&
+    hasOptionalIncidentVisuals(value.unlockedIncidentVisuals) &&
     hasOptionalRoomConditions(value.roomConditions) &&
     hasOptionalCommunalDuty(value.communalDuty) &&
     hasOptionalNumber(value.lastCommunalDutyResolvedAt) &&

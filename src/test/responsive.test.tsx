@@ -91,11 +91,12 @@ function buildDutyGame(): UseGameStateResult {
     declineVisitor: vi.fn(),
     resetSave: vi.fn(),
     clickRoom: vi.fn(),
-    activeStory: null,
-    storyDismissed: false,
-    dismissStory: vi.fn(),
     assignCommunalDuty: vi.fn() as (residentId: ResidentId) => void,
-    claimCommunalDuty: vi.fn()
+    claimCommunalDuty: vi.fn(),
+    resolveIncident: vi.fn(),
+    markIncidentsSeen: vi.fn(),
+    triggerCatIncident: vi.fn(),
+    newIncidentCount: 0
   };
 }
 
@@ -187,20 +188,18 @@ describe('responsive layout rendering', () => {
     expect(screen.getByRole('button', { name: t.renovation })).toBeInTheDocument();
   });
 
-  it('renders station director guidance in the active responsive layout', async () => {
+  it('hides the station event panel when there is no live event', async () => {
     setViewportWidth(390);
     render(<App />);
 
     await screen.findAllByText(t.content.modules.tenant_capsule.name);
 
-    expect(screen.getAllByRole('heading', { name: t.currentTask })).toHaveLength(1);
+    expect(screen.queryByRole('heading', { name: t.currentTask })).toBeNull();
   });
 
-  it('uses compact station director density in the mobile layout', async () => {
+  it('uses compact station event density when the mobile layout has a live event', () => {
     setViewportWidth(390);
-    const { container } = render(<App />);
-
-    await screen.findAllByText(t.content.modules.tenant_capsule.name);
+    const { container } = render(<MobileLayout game={buildDutyGame()} t={t} />);
 
     expect(container.querySelector('.mobile-layout .station-task-panel.compact')).not.toBeNull();
   });

@@ -85,3 +85,20 @@ Recommended file split:
 - `src/game/goals.ts`: pure goal eligibility, completion and visible-goal helpers.
 
 The existing `PixiStationScene` lifecycle can remain, but its scene-building input changes from global station overview to focused room descriptor.
+
+## Scene DOM Overlay
+
+Small readable or browser-native animated room details may be rendered above the Pixi canvas as React DOM overlays. This is allowed only for decorative/interactable scene details that benefit from DOM behavior, such as animated GIFs.
+
+Rules:
+
+- overlay coordinates are expressed in the fixed room scene space (`840x480`) and converted through the same scene-fit math used by Pixi;
+- overlay clicks must not accidentally trigger the generic room click handler;
+- overlay interactions must stay lightweight and avoid economy side effects unless explicitly designed;
+- normal UI controls and readable labels still belong to React layout panels, not inside Pixi.
+
+## Station Incidents
+
+`src/game/stationIncidents.ts` owns pure incident queueing and resolving.
+`src/game/content/stationIncidents.ts` owns definitions. React only renders
+the journal and dispatches choices; it does not decide incident eligibility.

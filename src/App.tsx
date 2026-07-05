@@ -8,7 +8,6 @@ import { DailyLoginDialog } from './ui/screens/DailyLoginDialog';
 import { HelpOverlay } from './ui/screens/HelpOverlay';
 import { LoadingScreen } from './ui/screens/LoadingScreen';
 import { OfflineRewardDialog } from './ui/screens/OfflineRewardDialog';
-import { ResidentStoryDialog } from './ui/screens/ResidentStoryDialog';
 import { SettingsDialog } from './ui/screens/SettingsDialog';
 import { VisitorDialog } from './ui/screens/VisitorDialog';
 
@@ -159,17 +158,6 @@ export function App() {
         />
       )}
       {showHelp && <HelpOverlay onClose={closeHelp} t={t} />}
-      {game.activeStory && (
-        <ResidentStoryDialog
-          story={game.activeStory}
-          t={t}
-          onGotoRoom={() => {
-            game.selectRoom(game.activeStory!.roomId);
-            game.dismissStory();
-          }}
-          onDismiss={game.dismissStory}
-        />
-      )}
       {showSettings && (
         <SettingsDialog
           onClose={() => setShowSettings(false)}

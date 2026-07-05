@@ -44,7 +44,7 @@ export function GoalPanel({ gameState, t }: GoalPanelProps) {
         {visibleGoals.map((goal) => {
           const localized = t.content.goals[goal.id];
           const title = localized?.title ?? goal.title;
-          const rewardLabel = localized?.rewardLabel ?? goal.rewardLabel;
+          const rewardLabel = goal.rewardLabel;
 
           return (
           <li
@@ -55,7 +55,7 @@ export function GoalPanel({ gameState, t }: GoalPanelProps) {
             <Target aria-hidden="true" size={16} />
             <div>
               <strong>{title}</strong>
-              <span>{rewardLabel}</span>
+              <span>{t.reward}: {rewardLabel}</span>
             </div>
           </li>
           );

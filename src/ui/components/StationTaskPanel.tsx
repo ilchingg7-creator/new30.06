@@ -1,7 +1,7 @@
 'use client';
 
 import { ClipboardList, DoorOpen, RotateCcw } from 'lucide-react';
-import { formatCredits, formatDuration } from '../../game/format';
+import { formatCredits } from '../../game/format';
 import type { StationGuidance, StationGuidanceCopyKey } from '../../game/stationDirector';
 import type { ModuleId } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
@@ -24,14 +24,6 @@ function getTitle(copyKey: StationGuidanceCopyKey, t: Translation): string {
       return t.taskCommunalDutyClaimTitle;
     case 'communal_duty_assign':
       return t.taskCommunalDutyAssignTitle;
-    case 'goal':
-      return t.taskGoalTitle;
-    case 'module_buy':
-      return t.taskModuleBuyTitle;
-    case 'module_wait':
-      return t.taskModuleWaitTitle;
-    case 'module_unlock':
-      return t.taskModuleUnlockTitle;
     case 'prestige':
       return t.taskPrestigeTitle;
   }
@@ -47,46 +39,12 @@ function getBody(copyKey: StationGuidanceCopyKey, t: Translation): string {
       return t.taskCommunalDutyClaimBody;
     case 'communal_duty_assign':
       return t.taskCommunalDutyAssignBody;
-    case 'goal':
-      return t.taskGoalBody;
-    case 'module_buy':
-      return t.taskModuleBuyBody;
-    case 'module_wait':
-      return t.taskModuleWaitBody;
-    case 'module_unlock':
-      return t.taskModuleUnlockBody;
     case 'prestige':
       return t.taskPrestigeBody;
   }
 }
 
 function GuidanceMeta({ guidance, t }: { guidance: StationGuidance; t: Translation }) {
-  if (guidance.kind === 'module') {
-    return (
-      <dl className="station-task-meta">
-        <div>
-          <dt>{t.taskCost}</dt>
-          <dd>{formatCredits(guidance.cost)}</dd>
-        </div>
-        <div>
-          <dt>{t.taskWait}</dt>
-          <dd>{guidance.waitSeconds === null ? '-' : formatDuration(guidance.waitSeconds)}</dd>
-        </div>
-      </dl>
-    );
-  }
-
-  if (guidance.kind === 'goal') {
-    return (
-      <dl className="station-task-meta">
-        <div>
-          <dt>{t.taskProgress}</dt>
-          <dd>{guidance.progressCurrent}/{guidance.progressTarget}</dd>
-        </div>
-      </dl>
-    );
-  }
-
   if (guidance.kind === 'prestige') {
     return (
       <dl className="station-task-meta">

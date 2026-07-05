@@ -5,6 +5,7 @@ import {
   createInitialState,
   performPrestige
 } from '../game/economy';
+import type { GameState } from '../game/types';
 
 describe('lifetime stats tracking', () => {
   it('starts with zero stats', () => {
@@ -44,12 +45,20 @@ describe('lifetime stats tracking', () => {
   });
 
   it('increments prestigeCount and preserves lifetime stats on renovation', () => {
-    let state = {
-      ...createInitialState(1_000),
+    const base = createInitialState(1_000);
+    let state: GameState = {
+      ...base,
       credits: 100_000_000,
-      totalEarnedCredits: 400_000
+      totalEarnedCredits: 400_000,
+      comfort: 25,
+      moduleLevels: {
+        ...base.moduleLevels,
+        tenant_capsule: 10,
+        cosmo_kitchen: 1
+      },
+      completedGoals: ['buy_capsule_10', 'unlock_kitchen', 'reach_comfort_25', 'earn_credits_10000'] as GameState['completedGoals'],
+      totalModulesBought: 11
     };
-    state = buyModuleLevel(state, 'tenant_capsule');
     state = advanceGame(state, 120, 2_000);
 
     const beforeModules = state.totalModulesBought;

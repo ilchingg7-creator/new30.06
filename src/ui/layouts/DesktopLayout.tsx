@@ -15,6 +15,7 @@ import { ResidentCollectionBook } from '../components/ResidentCollectionBook';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
 import { StationTaskPanel } from '../components/StationTaskPanel';
+import { StationIncidentJournal } from '../components/StationIncidentJournal';
 import { StatsPanel } from '../components/StatsPanel';
 import { TopBar } from '../components/TopBar';
 
@@ -35,12 +36,14 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
       <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} t={t} />
       <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} t={t} />
       <div className="station-stack">
-        <StationTaskPanel
-          guidance={stationGuidance}
-          onSelectRoom={game.selectRoom}
-          onRenovate={game.renovateOrbit}
-          t={t}
-        />
+        {stationGuidance ? (
+          <StationTaskPanel
+            guidance={stationGuidance}
+            onSelectRoom={game.selectRoom}
+            onRenovate={game.renovateOrbit}
+            t={t}
+          />
+        ) : null}
         <CommunalDutyPanel
           gameState={game.gameState}
           onAssign={game.assignCommunalDuty}
@@ -53,11 +56,24 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
           onSelectRoom={game.selectRoom}
           t={t}
         />
-        <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} ariaLabel={t.stationView} />
+        <PixiStationScene
+          gameState={game.gameState}
+          selectedRoomId={game.selectedRoomId}
+          onRoomClick={game.clickRoom}
+          onTenantCatClick={game.triggerCatIncident}
+          ariaLabel={t.stationView}
+        />
         <RoomConditionBar gameState={game.gameState} roomId={game.selectedRoomId} t={t} />
       </div>
       <aside className="side-panel">
         <GoalPanel gameState={game.gameState} t={t} />
+        <StationIncidentJournal
+          gameState={game.gameState}
+          newIncidentCount={game.newIncidentCount}
+          onResolve={game.resolveIncident}
+          onMarkSeen={game.markIncidentsSeen}
+          t={t}
+        />
         <ResidentCollectionBook gameState={game.gameState} t={t} />
         <BonusPanel
           onIncomeBoost={game.activateIncomeBoost}
@@ -66,7 +82,7 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
           adPending={game.adPending}
           t={t}
         />
-        <PrestigePanel reputation={game.gameState.reputation} onRenovate={game.renovateOrbit} t={t} />
+        <PrestigePanel gameState={game.gameState} onRenovate={game.renovateOrbit} t={t} />
         <PrestigeUpgradesPanel gameState={game.gameState} onBuyUpgrade={game.buyPrestigeUpgrade} t={t} />
         <CosmeticsPanel
           windowLightColor={game.gameState.windowLightColor ?? 'amber'}

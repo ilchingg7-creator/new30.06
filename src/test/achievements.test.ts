@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buyModuleLevel, createInitialState, performPrestige } from '../game/economy';
 import { checkAchievements, isAchievementUnlocked } from '../game/achievements';
+import type { GameState } from '../game/types';
 
 describe('soft achievements', () => {
   it('unlocks first_purchase after buying the first module level', () => {
@@ -31,9 +32,17 @@ describe('soft achievements', () => {
   });
 
   it('unlocks first_prestige after a renovation', () => {
+    const base = createInitialState(1_000);
     const state = {
-      ...createInitialState(1_000),
-      totalEarnedCredits: 400_000
+      ...base,
+      totalEarnedCredits: 400_000,
+      comfort: 25,
+      moduleLevels: {
+        ...base.moduleLevels,
+        tenant_capsule: 10,
+        cosmo_kitchen: 1
+      },
+      completedGoals: ['buy_capsule_10', 'unlock_kitchen', 'reach_comfort_25', 'earn_credits_10000'] as GameState['completedGoals']
     };
     const renovated = performPrestige(state, 2_000);
 

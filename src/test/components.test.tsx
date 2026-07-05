@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { buyModuleLevel, calculateIncomePerSecond, createInitialState } from '../game/economy';
-import { getStationGuidance } from '../game/stationDirector';
+import type { StationGuidance } from '../game/stationDirector';
 import type { GameState } from '../game/types';
 import { translations } from '../platform/i18n';
 import { BonusPanel } from '../ui/components/BonusPanel';
@@ -13,6 +13,7 @@ import { PrestigePanel } from '../ui/components/PrestigePanel';
 import { ResidentsPanel } from '../ui/components/ResidentsPanel';
 import { RoomSelector } from '../ui/components/RoomSelector';
 import { StationTaskPanel } from '../ui/components/StationTaskPanel';
+import { StationIncidentJournal } from '../ui/components/StationIncidentJournal';
 import { TopBar } from '../ui/components/TopBar';
 
 const t = translations.ru;
@@ -20,10 +21,12 @@ const t = translations.ru;
 describe('core UI components', () => {
   it('renders station, resources, modules, room selector, goals, bonuses and prestige panels', () => {
     const gameState = buyModuleLevel(createInitialState(1_000), 'tenant_capsule');
-    const guidance = getStationGuidance({
-      state: gameState,
-      incomePerSecond: calculateIncomePerSecond(gameState)
-    });
+    const guidance: StationGuidance = {
+      kind: 'daily',
+      priority: 90,
+      copyKey: 'daily',
+      canActNow: true
+    };
     const dutyState: GameState = {
       ...gameState,
       unlockedResidents: ['sleepy_engineer'],
@@ -52,7 +55,7 @@ describe('core UI components', () => {
           adPending={false}
           t={t}
         />
-        <PrestigePanel reputation={gameState.reputation} onRenovate={vi.fn()} t={t} />
+        <PrestigePanel gameState={gameState} onRenovate={vi.fn()} t={t} />
       </>
     );
 
@@ -97,5 +100,102 @@ describe('core UI components', () => {
     expect(screen.getByText(`1/8 ${t.residentsSettled}`)).toBeInTheDocument();
     expect(screen.getByText(t.settled)).toBeInTheDocument();
     expect(screen.getAllByText(t.notSettled)).toHaveLength(7);
+  });
+
+  it('shows renovation requirements and disables renovation before they are complete', () => {
+    render(<PrestigePanel gameState={{ ...createInitialState(1_000), totalEarnedCredits: 400_000 }} onRenovate={vi.fn()} t={t} />);
+
+    expect(screen.getByText(t.renovationRequirements)).toBeInTheDocument();
+    expect(screen.getByText('Накопить награду реновации +1 репутация')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: t.renovate })).toBeDisabled();
+  });
+
+  it('shows the strange cat only in the tenant capsule scene', () => {
+    const gameState = {
+      ...buyModuleLevel(createInitialState(1_000), 'tenant_capsule'),
+      moduleLevels: {
+        ...createInitialState(1_000).moduleLevels,
+        tenant_capsule: 1,
+        cosmo_kitchen: 1
+      }
+    };
+    const { rerender } = render(
+      <PixiStationScene gameState={gameState} selectedRoomId="tenant_capsule" ariaLabel={t.stationView} />
+    );
+
+    expect(screen.getByRole('button', { name: 'strange-cat' })).toBeInTheDocument();
+
+    rerender(<PixiStationScene gameState={gameState} selectedRoomId="cosmo_kitchen" ariaLabel={t.stationView} />);
+
+    expect(screen.queryByRole('button', { name: 'strange-cat' })).toBeNull();
+  });
+
+  it('plays cat love and disables the strange cat interaction during cooldown', () => {
+    vi.useFakeTimers();
+    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0.5);
+    const gameState = buyModuleLevel(createInitialState(1_000), 'tenant_capsule');
+    const onTenantCatClick = vi.fn();
+
+    try {
+      render(
+        <PixiStationScene
+          gameState={gameState}
+          selectedRoomId="tenant_capsule"
+          ariaLabel={t.stationView}
+          onTenantCatClick={onTenantCatClick}
+        />
+      );
+
+      const catButton = screen.getByRole('button', { name: 'strange-cat' });
+
+      fireEvent.click(catButton);
+
+      expect(screen.getByTestId('tenant-cat-love')).toHaveAttribute('src', '/assets/rooms/tenant_capsule/cat-love.gif');
+      expect(onTenantCatClick).toHaveBeenCalledTimes(1);
+      expect(catButton).toBeDisabled();
+
+      act(() => {
+        vi.advanceTimersByTime(900);
+      });
+
+      expect(screen.queryByTestId('tenant-cat-love')).toBeNull();
+      expect(catButton).toBeDisabled();
+
+      act(() => {
+        vi.advanceTimersByTime(2_100);
+      });
+
+      expect(catButton).not.toBeDisabled();
+    } finally {
+      randomSpy.mockRestore();
+      vi.useRealTimers();
+    }
+  });
+
+  it('renders station incidents as a non-blocking journal with choices', () => {
+    const onResolve = vi.fn();
+    const onSeen = vi.fn();
+    const gameState: GameState = {
+      ...createInitialState(1_000),
+      activeIncidents: [{ id: 'kitchen_borscht_fog', queuedAt: 10_000, isNew: true }]
+    };
+
+    render(
+      <StationIncidentJournal
+        gameState={gameState}
+        newIncidentCount={1}
+        onResolve={onResolve}
+        onMarkSeen={onSeen}
+        t={t}
+      />
+    );
+
+    expect(screen.getByText(t.incidentJournalTitle)).toBeInTheDocument();
+    expect(screen.getByText(t.incidents.kitchen_borscht_fog.title)).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: t.incidents.kitchen_borscht_fog.choices.vent_fog.label }));
+
+    expect(onResolve).toHaveBeenCalledWith('kitchen_borscht_fog', 'vent_fog');
   });
 });

@@ -47,8 +47,9 @@ const visitorTemplates: VisitorTemplate[] = [
 ];
 
 let visitorCounter = 0;
+const MAX_UNAFFORDABLE_VISITOR_WAIT_SECONDS = 7;
 
-export function generateVisitorRequest(state: GameState, now = Date.now()): VisitorRequest | null {
+export function generateVisitorRequest(state: GameState, now = Date.now(), incomePerSecond = 0): VisitorRequest | null {
   const hasModules = Object.values(state.moduleLevels).some((level) => (level as number) > 0);
 
   if (!hasModules || state.activeVisitor) {
@@ -58,6 +59,13 @@ export function generateVisitorRequest(state: GameState, now = Date.now()): Visi
   const template = visitorTemplates[Math.floor(Math.random() * visitorTemplates.length)];
   const baseCost = Math.max(50, state.credits * template.costMultiplier);
   const cost = Math.ceil(baseCost);
+  const missingCredits = Math.max(0, cost - state.credits);
+
+  if (missingCredits > 0) {
+    if (incomePerSecond <= 0 || missingCredits / incomePerSecond > MAX_UNAFFORDABLE_VISITOR_WAIT_SECONDS) {
+      return null;
+    }
+  }
 
   visitorCounter += 1;
 
@@ -87,10 +95,12 @@ export function acceptVisitor(state: GameState, now = Date.now()): GameState {
     return { ...state, activeVisitor: null };
   }
 
+  const prestigeComfortBonus = state.purchasedPrestigeUpgrades?.includes('visitor_comfort_bonus') ? 1 : 0;
+
   return {
     ...state,
     credits: state.credits - visitor.cost,
-    comfort: state.comfort + visitor.rewardComfort,
+    comfort: state.comfort + visitor.rewardComfort + prestigeComfortBonus,
     activeVisitor: null
   };
 }

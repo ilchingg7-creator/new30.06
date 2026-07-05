@@ -10,10 +10,14 @@
 
 Игрок должен всегда видеть ближайшую полезную покупку. Если денег не хватает, интерфейс показывает, сколько времени осталось при текущем доходе.
 
-Station Director guidance is the first-pass answer to "what should I do next?".
-It derives one current task from game state, income, goals, visitors and
-prestige readiness. It does not force the player into a quest chain; it simply
-keeps the next useful action visible on both desktop and mobile.
+Station Director guidance is the first-pass answer to "is something live
+happening right now?". It is event-only: visitors, daily rewards, communal duty
+claim/assignment prompts, and prestige readiness. Goals and module purchases
+stay in their own panels so the player is not pushed through a fake task list.
+
+If no live event is relevant, the current-task panel is hidden. This prevents
+low-value reminders from competing with the room scene and renovation goals,
+especially on mobile.
 
 ## Communal Duties
 
@@ -63,7 +67,27 @@ Rewarded ads:
 
 Interstitial ads не должны срабатывать в первые 3 минуты игры и не должны появляться во время покупки, чтения награды или prestige-экрана.
 
+## Station Incidents
+
+Narrative events are non-blocking station incidents. They appear in a journal
+and never interrupt bulk room upgrades with modal popups. Room level can be a
+supporting condition, but the main triggers are room openings, residents,
+renovations, condition, room combos, offline return and scene interactions.
+
 ## Prestige loop
+
+Current renovation rule: each completed renovation grants one permanent-upgrade
+purchase slot and presents exactly 3 upgrades for that slot's tier. If the
+player has made one renovation, they choose 1 of 3 tier-1 upgrades; after two
+renovations, they choose 1 of 3 tier-2 upgrades; later tiers follow the same
+rule. Similar linear upgrades should not appear as separate active choices
+across different tiers.
+
+Renovation is locked until the current cycle checklist is complete:
+
+- expected renovation reputation reward is at least +1;
+- the cycle's station-progress requirement is complete;
+- at least 4 non-renovation goals from the current cycle are complete.
 
 Prestige называется **"Реновация орбиты"**. Игрок временно сбрасывает модули и кредиты, но получает репутацию станции. Репутация покупает постоянные бонусы:
 

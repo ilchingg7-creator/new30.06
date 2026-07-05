@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { buyModuleLevel, createInitialState } from '../game/economy';
 import {
   acceptVisitor,
@@ -8,6 +8,10 @@ import {
 } from '../game/visitors';
 
 describe('visitor requests', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('does not spawn a visitor without any modules', () => {
     const state = createInitialState(1_000);
 
@@ -15,6 +19,7 @@ describe('visitor requests', () => {
   });
 
   it('spawns a visitor with a cost, reward, and expiry when modules exist', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0);
     const state = buyModuleLevel({ ...createInitialState(1_000), credits: 1_000 }, 'tenant_capsule');
     const visitor = generateVisitorRequest(state, 5_000);
 
@@ -41,6 +46,38 @@ describe('visitor requests', () => {
     expect(generateVisitorRequest(state, 5_000)).toBeNull();
   });
 
+  it('does not spawn unaffordable comfort offers that require more than seven seconds of saving', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.99);
+    const state = {
+      ...buyModuleLevel({ ...createInitialState(1_000), credits: 1_000 }, 'tenant_capsule'),
+      credits: 50
+    };
+
+    expect(generateVisitorRequest(state, 5_000, 2)).toBeNull();
+  });
+
+  it('spawns unaffordable comfort offers when the missing credits are within seven seconds', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.99);
+    const state = {
+      ...buyModuleLevel({ ...createInitialState(1_000), credits: 1_000 }, 'tenant_capsule'),
+      credits: 90
+    };
+    const visitor = generateVisitorRequest(state, 5_000, 10);
+
+    expect(visitor).not.toBeNull();
+    expect(visitor?.cost).toBe(135);
+  });
+
+  it('does not spawn unaffordable comfort offers when income is zero', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.99);
+    const state = {
+      ...buyModuleLevel({ ...createInitialState(1_000), credits: 1_000 }, 'tenant_capsule'),
+      credits: 90
+    };
+
+    expect(generateVisitorRequest(state, 5_000, 0)).toBeNull();
+  });
+
   it('acceptVisitor deducts credits, adds comfort, and clears the visitor', () => {
     const state = {
       ...buyModuleLevel({ ...createInitialState(1_000), credits: 1_000 }, 'tenant_capsule'),
@@ -60,6 +97,29 @@ describe('visitor requests', () => {
 
     expect(next.credits).toBe(300);
     expect(next.comfort).toBe(8);
+    expect(next.activeVisitor).toBeNull();
+  });
+
+  it('visitor_comfort_bonus adds extra comfort when accepting visitors', () => {
+    const state = {
+      ...buyModuleLevel({ ...createInitialState(1_000), credits: 1_000 }, 'tenant_capsule'),
+      credits: 500,
+      comfort: 5,
+      purchasedPrestigeUpgrades: ['visitor_comfort_bonus' as const],
+      activeVisitor: {
+        id: 'v1',
+        name: 'Test',
+        flavor: '',
+        cost: 200,
+        rewardComfort: 3,
+        expiresAt: 10_000
+      }
+    };
+
+    const next = acceptVisitor(state, 5_000);
+
+    expect(next.credits).toBe(300);
+    expect(next.comfort).toBe(9);
     expect(next.activeVisitor).toBeNull();
   });
 

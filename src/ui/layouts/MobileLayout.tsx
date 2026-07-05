@@ -17,6 +17,7 @@ import { ResidentCollectionBook } from '../components/ResidentCollectionBook';
 import { ResidentsPanel } from '../components/ResidentsPanel';
 import { RoomSelector } from '../components/RoomSelector';
 import { StationTaskPanel } from '../components/StationTaskPanel';
+import { StationIncidentJournal } from '../components/StationIncidentJournal';
 import { StatsPanel } from '../components/StatsPanel';
 import { TopBar } from '../components/TopBar';
 
@@ -45,13 +46,15 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
   return (
     <section className="mobile-layout" aria-label="Mobile layout">
       <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} variant="compact" t={t} />
-      <StationTaskPanel
-        guidance={stationGuidance}
-        onSelectRoom={game.selectRoom}
-        onRenovate={game.renovateOrbit}
-        variant="compact"
-        t={t}
-      />
+      {stationGuidance ? (
+        <StationTaskPanel
+          guidance={stationGuidance}
+          onSelectRoom={game.selectRoom}
+          onRenovate={game.renovateOrbit}
+          variant="compact"
+          t={t}
+        />
+      ) : null}
       <CommunalDutyPanel
         gameState={game.gameState}
         onAssign={game.assignCommunalDuty}
@@ -61,7 +64,13 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
       />
       <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} t={t} />
       <div className="mobile-room-area">
-        <PixiStationScene gameState={game.gameState} selectedRoomId={game.selectedRoomId} onRoomClick={game.clickRoom} ariaLabel={t.stationView} />
+        <PixiStationScene
+          gameState={game.gameState}
+          selectedRoomId={game.selectedRoomId}
+          onRoomClick={game.clickRoom}
+          onTenantCatClick={game.triggerCatIncident}
+          ariaLabel={t.stationView}
+        />
         <RoomConditionBar gameState={game.gameState} roomId={game.selectedRoomId} t={t} />
       </div>
       <div className="mobile-tab-content">
@@ -69,6 +78,14 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
         {activeTab === 'goals' && (
           <>
             <GoalPanel gameState={game.gameState} t={t} />
+            <StationIncidentJournal
+              gameState={game.gameState}
+              newIncidentCount={game.newIncidentCount}
+              onResolve={game.resolveIncident}
+              onMarkSeen={game.markIncidentsSeen}
+              variant="compact"
+              t={t}
+            />
             <ResidentCollectionBook gameState={game.gameState} t={t} />
             <AchievementsPanel gameState={game.gameState} t={t} />
             <StatsPanel gameState={game.gameState} t={t} />
@@ -85,7 +102,7 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
         )}
         {activeTab === 'prestige' && (
           <>
-            <PrestigePanel reputation={game.gameState.reputation} onRenovate={game.renovateOrbit} t={t} />
+            <PrestigePanel gameState={game.gameState} onRenovate={game.renovateOrbit} t={t} />
             <PrestigeUpgradesPanel gameState={game.gameState} onBuyUpgrade={game.buyPrestigeUpgrade} t={t} />
             <CosmeticsPanel
               windowLightColor={game.gameState.windowLightColor ?? 'amber'}

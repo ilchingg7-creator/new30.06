@@ -2,21 +2,39 @@ import { checkAchievements } from './achievements';
 import { advanceCommunalDuty } from './communalDuties';
 import { modules } from './content/modules';
 import { prestigeUpgrades } from './content/prestigeUpgrades';
-import { completeEligibleGoals } from './goals';
+import { completeEligibleGoals, getGoalRenovationCycle, getGoalsForCurrentCycle } from './goals';
 import { getOverallConditionMultiplier, initializeRoomCondition } from './roomConditions';
 import { checkResidentUnlocks } from './residents';
-import { checkResidentStories } from './residentStories';
 import type { GameState, ModuleId, ModuleLevels, PrestigeUpgradeId, TimedBonus } from './types';
 
 export const LEVEL_COST_GROWTH = 1.18;
 export const OFFLINE_CAP_SECONDS = 8 * 60 * 60;
 const UPGRADED_OFFLINE_CAP_SECONDS = 12 * 60 * 60;
+const EXTENDED_OFFLINE_CAP_SECONDS = 16 * 60 * 60;
 const STARTING_COMFORT_BONUS = 5;
+const STARTING_COMFORT_PLUS_BONUS = 10;
+const WARM_START_CREDITS = 100;
+const CAPSULE_HEAD_START_LEVEL = 5;
+const FIRST_ROOM_DISCOUNT_MULTIPLIER = 0.9;
+const GOALS_REQUIRED_FOR_RENOVATION = 4;
+
+export type PrestigeRequirementId = 'reputation_reward' | 'station_progress' | 'cycle_goals';
+
+export interface PrestigeRequirement {
+  id: PrestigeRequirementId;
+  completed: boolean;
+  current: number;
+  target: number;
+}
 
 export function getOfflineCapSeconds(state: GameState): number {
-  return state.purchasedPrestigeUpgrades?.includes('higher_offline_cap')
-    ? UPGRADED_OFFLINE_CAP_SECONDS
-    : OFFLINE_CAP_SECONDS;
+  const upgrades = state.purchasedPrestigeUpgrades ?? [];
+
+  if (upgrades.includes('offline_cap_16h')) {
+    return EXTENDED_OFFLINE_CAP_SECONDS;
+  }
+
+  return upgrades.includes('higher_offline_cap') ? UPGRADED_OFFLINE_CAP_SECONDS : OFFLINE_CAP_SECONDS;
 }
 
 const MILESTONE_MULTIPLIERS = [
@@ -85,8 +103,13 @@ export function createInitialState(now = Date.now()): GameState {
 export function calculateModuleCost(moduleId: ModuleId, state: GameState): number {
   const module = getModule(moduleId);
   const level = state.moduleLevels[moduleId];
+  const baseCost = module.baseCost * LEVEL_COST_GROWTH ** level;
 
-  return Math.ceil(module.baseCost * LEVEL_COST_GROWTH ** level);
+  return Math.ceil(
+    level === 0 && state.purchasedPrestigeUpgrades?.includes('first_room_discount')
+      ? baseCost * FIRST_ROOM_DISCOUNT_MULTIPLIER
+      : baseCost
+  );
 }
 
 export function calculateIncomePerSecond(state: GameState, now = Date.now()): number {
@@ -97,7 +120,8 @@ export function calculateIncomePerSecond(state: GameState, now = Date.now()): nu
     return sum + module.baseIncomePerSecond * level * milestoneMultiplier;
   }, 0);
   const comfortMultiplier = 1 + state.comfort * 0.01;
-  const reputationMultiplier = 1 + state.reputation * 0.05;
+  const reputationIncomeRate = state.purchasedPrestigeUpgrades?.includes('reputation_income') ? 0.07 : 0.05;
+  const reputationMultiplier = 1 + state.reputation * reputationIncomeRate;
   const timedBonusMultiplier = calculateTimedBonusMultiplier(state.timedBonuses, now);
   const conditionMultiplier = getOverallConditionMultiplier(state);
 
@@ -129,7 +153,7 @@ export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState 
   // Initialize room condition on first purchase.
   const withCondition = currentLevel === 0 ? initializeRoomCondition(nextState, moduleId) : nextState;
 
-  return checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(withCondition))));
+  return checkResidentUnlocks(checkAchievements(completeEligibleGoals(withCondition)));
 }
 
 export function advanceGame(state: GameState, seconds: number, now = Date.now()): GameState {
@@ -144,7 +168,7 @@ export function advanceGame(state: GameState, seconds: number, now = Date.now())
     totalPlaySeconds: (state.totalPlaySeconds ?? 0) + elapsedSeconds
   };
 
-  return advanceCommunalDuty(checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)))), now);
+  return advanceCommunalDuty(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))), now);
 }
 
 export function calculateOfflineReward(
@@ -164,21 +188,115 @@ export function calculatePrestigeReward(state: GameState): number {
   return Math.floor(Math.sqrt(state.totalEarnedCredits / 100_000));
 }
 
+function getCompletedRenovationCycleGoalCount(state: GameState): number {
+  const cycleGoals = getGoalsForCurrentCycle(state).filter((goal) => goal.rewardKind !== 'prestige_hint');
+  const completed = new Set(state.completedGoals);
+
+  return cycleGoals.filter((goal) => completed.has(goal.id)).length;
+}
+
+function getStationProgressRequirement(state: GameState): PrestigeRequirement {
+  const cycle = getGoalRenovationCycle(state);
+
+  if (cycle === 0) {
+    const current = Number(state.moduleLevels.tenant_capsule >= 10) + Number(state.moduleLevels.cosmo_kitchen > 0);
+
+    return {
+      id: 'station_progress',
+      completed: current >= 2,
+      current,
+      target: 2
+    };
+  }
+
+  if (cycle === 1) {
+    const current = Number(state.moduleLevels.tenant_capsule >= 25) + Number(state.moduleLevels.zero_g_laundry > 0);
+
+    return {
+      id: 'station_progress',
+      completed: current >= 2,
+      current,
+      target: 2
+    };
+  }
+
+  const current = Number(state.moduleLevels.teleport_entry > 0) + Number(state.unlockedResidents.length >= 5);
+
+  return {
+    id: 'station_progress',
+    completed: current >= 1,
+    current,
+    target: 1
+  };
+}
+
+export function getPrestigeRequirements(state: GameState): PrestigeRequirement[] {
+  const expectedReputation = calculatePrestigeReward(state);
+  const completedGoals = getCompletedRenovationCycleGoalCount(state);
+
+  return [
+    {
+      id: 'reputation_reward',
+      completed: expectedReputation > 0,
+      current: expectedReputation,
+      target: 1
+    },
+    getStationProgressRequirement(state),
+    {
+      id: 'cycle_goals',
+      completed: completedGoals >= GOALS_REQUIRED_FOR_RENOVATION,
+      current: Math.min(completedGoals, GOALS_REQUIRED_FOR_RENOVATION),
+      target: GOALS_REQUIRED_FOR_RENOVATION
+    }
+  ];
+}
+
+export function canPerformPrestige(state: GameState): boolean {
+  return getPrestigeRequirements(state).every((requirement) => requirement.completed);
+}
+
+export function getAvailablePrestigeUpgrades(state: GameState) {
+  const owned = state.purchasedPrestigeUpgrades ?? [];
+  const availableSlots = state.prestigeCount ?? 0;
+
+  if (owned.length >= availableSlots) {
+    return [];
+  }
+
+  const nextTier = Math.min(owned.length + 1, 3);
+
+  return prestigeUpgrades.filter((upgrade) => upgrade.renovationTier === nextTier && !owned.includes(upgrade.id));
+}
+
 export function performPrestige(state: GameState, now = Date.now()): GameState {
+  if (!canPerformPrestige(state)) {
+    return state;
+  }
+
   const nextReputation = state.reputation + calculatePrestigeReward(state);
   const upgrades = state.purchasedPrestigeUpgrades ?? [];
 
   const base = createInitialState(now);
+  const moduleLevels = {
+    ...base.moduleLevels,
+    tenant_capsule: upgrades.includes('capsule_head_start') ? CAPSULE_HEAD_START_LEVEL : base.moduleLevels.tenant_capsule
+  };
+  const nextComfort = upgrades.includes('starting_comfort_plus')
+    ? STARTING_COMFORT_PLUS_BONUS
+    : upgrades.includes('starting_comfort')
+      ? STARTING_COMFORT_BONUS
+      : base.comfort;
   const nextState: GameState = {
     ...base,
+    credits: upgrades.includes('warm_start_credits') ? WARM_START_CREDITS : base.credits,
     reputation: nextReputation,
+    moduleLevels,
     purchasedPrestigeUpgrades: upgrades,
     // Tier 2 prestige upgrade: residents survive renovation.
     unlockedResidents: upgrades.includes('residents_survive')
       ? state.unlockedResidents
       : base.unlockedResidents,
-    // Tier 2 prestige upgrade: warm start comfort.
-    comfort: upgrades.includes('starting_comfort') ? STARTING_COMFORT_BONUS : base.comfort,
+    comfort: nextComfort,
     // Lifetime stats survive renovation.
     totalPlaySeconds: state.totalPlaySeconds,
     totalModulesBought: state.totalModulesBought,
@@ -188,7 +306,11 @@ export function performPrestige(state: GameState, now = Date.now()): GameState {
     lastCommunalDutyResolvedAt: state.lastCommunalDutyResolvedAt
   };
 
-  return checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))));
+  const withCondition = upgrades.includes('capsule_head_start')
+    ? initializeRoomCondition(nextState, 'tenant_capsule')
+    : nextState;
+
+  return checkResidentUnlocks(checkAchievements(completeEligibleGoals(withCondition)));
 }
 
 export function buyPrestigeUpgrade(state: GameState, upgradeId: PrestigeUpgradeId): GameState {
@@ -199,16 +321,21 @@ export function buyPrestigeUpgrade(state: GameState, upgradeId: PrestigeUpgradeI
   }
 
   const owned = state.purchasedPrestigeUpgrades ?? [];
+  const availableUpgradeIds = new Set(getAvailablePrestigeUpgrades(state).map((item) => item.id));
 
-  if (owned.includes(upgradeId) || state.reputation < upgrade.reputationCost) {
+  if (
+    owned.includes(upgradeId) ||
+    !availableUpgradeIds.has(upgradeId) ||
+    state.reputation < upgrade.reputationCost
+  ) {
     return state;
   }
 
-  return checkResidentStories(checkResidentUnlocks(checkAchievements({
+  return checkResidentUnlocks(checkAchievements({
     ...state,
     reputation: state.reputation - upgrade.reputationCost,
     purchasedPrestigeUpgrades: [...owned, upgradeId]
-  })));
+  }));
 }
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1_000;
@@ -257,7 +384,7 @@ export function checkDailyLogin(state: GameState, now = Date.now()): DailyLoginR
   };
 
   return {
-    state: checkResidentStories(checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)))),
+    state: checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState))),
     reward,
     streak: nextStreak
   };

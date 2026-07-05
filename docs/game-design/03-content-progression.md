@@ -140,11 +140,41 @@ Sprite progression:
 - each slot maps to one 10-level band: levels 1-10 use slot 01, 11-20 use slot 02, and so on up to 91-100+ using slot 10;
 - the first implementation keeps all ten slots as copies of the first tenant room sprite until unique progression art is ready.
 
+Micro-interaction layer:
+
+- `tenant_capsule` can carry small GIF overlays that are decorative and interactive without changing income balance;
+- `strange-cat.gif` is placed in the lower-right room area, away from the edge;
+- clicking it plays the smaller `cat-love.gif` above the cat and starts a randomized 2-4 second cooldown.
+
 Goal behavior:
 
 - completed goals are removed from the active goal list;
 - goals should guide the next action and should not remain as permanent completed entries in the main panel;
 - goal rewards should no longer be credits in MVP. Use comfort, visual detail unlocks, resident-related details or temporary boosts.
+- room-unlock goals complete only after the room is purchased, not when the player merely has enough kopeks;
+- the visible goal list is selected by renovation cycle: cycle 0 before the first renovation, cycle 1 after one renovation, and cycle 2 for the second and all later renovations.
+
+Renovation cycle goal sets:
+
+- cycle 0: build the first capsule, open kitchen, reach comfort 25, earn 10k, unlock three residents, open panorama, make the first renovation;
+- cycle 1: rebuild capsule 10, reopen kitchen, open laundry, reach comfort 40, earn 50k, make the second renovation;
+- cycle 2+: rebuild capsule 25, open teleport entry, unlock five residents, reach comfort 60, earn 100k, repeat renovation.
+
+Renovation upgrade choices:
+
+- each completed renovation opens exactly 3 upgrade options for the next unspent tier;
+- the player chooses 1 option, then waits for the next renovation to see the next tier;
+- active tiers should avoid similar numeric duplicates. `higher_offline_cap` and `starting_comfort_plus` remain legacy-compatible ids but are not active choices.
+
+Active tiers:
+
+- tier 1: `warm_start_credits`, `first_room_discount`, `starting_comfort`;
+- tier 2: `residents_survive`, `capsule_head_start`, `visitor_comfort_bonus`;
+- tier 3: `reputation_income`, `offline_cap_16h`, `maintenance_drones`.
+
+Station incident content starts with 40 ids. The first 10 are active MVP
+incidents; the remaining 30 are disabled backlog entries with stable ids and
+visual placeholder ids.
 
 ## Communal Duty Content
 

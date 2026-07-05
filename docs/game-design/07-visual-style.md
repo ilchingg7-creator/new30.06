@@ -239,3 +239,14 @@ Rules:
 - Pixi may show non-readable signs, icons, lights, windows, props and ambient motion.
 
 The preferred interaction is manual room selection with automatic focus after upgrade: buying a module level switches the scene to that room, while the player can still choose any unlocked room manually.
+
+## Room Scene Micro-Interactions
+
+Focused room scenes may include small optional interactive details that make the station feel inhabited. These details should be readable at mobile size, avoid covering core room art, and never compete with economy buttons.
+
+Current rule:
+
+- `tenant_capsule` includes a large `strange-cat.gif` in the lower-right room area, inset from the scene edge;
+- clicking the cat plays a smaller `cat-love.gif` above it;
+- the cat interaction has a randomized 2-4 second cooldown;
+- GIF micro-interactions are rendered as React DOM overlays aligned to the Pixi scene fit, not as Pixi UI.

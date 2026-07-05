@@ -146,6 +146,35 @@ Use goals for progression guidance and non-credit rewards:
 
 Completed goals must be applied once and then removed from the active visible goal list. They may remain in save data as `completedGoals` for persistence and analytics, but the main goal panel should show only incomplete next goals.
 
+Room-unlock goals complete only when the room is actually purchased. Having
+enough kopeks to unlock a room in the shop is not enough to claim the goal,
+because otherwise goals can disappear before the player makes the intended
+decision.
+
+## Visitor Offer Filter
+
+Visitor requests can trade kopeks for comfort, but they should not ask the
+player to wait through a long forced saving period. If the player cannot afford
+the visitor cost and the missing amount would take more than 7 seconds at the
+current income-per-second, the offer is not generated. If income is zero, an
+unaffordable visitor offer is also blocked.
+
+`visitor_comfort_bonus` is a renovation upgrade that adds +1 comfort to accepted
+visitor rewards; it does not change the offer cost.
+
+## Renovation Gates
+
+Renovation requires more than a positive prestige formula result. The current
+cycle must satisfy all three requirements:
+
+- `calculatePrestigeReward(state) > 0`;
+- cycle station progress is complete: cycle 0 needs capsule 10+ and kitchen,
+  cycle 1 needs capsule 25+ and laundry, cycle 2+ needs teleport or 5 residents;
+- at least 4 non-renovation goals from the current goal cycle are completed.
+
+If any requirement is missing, `performPrestige` returns the current state
+unchanged and UI buttons stay disabled.
+
 ## Condition And Clicks
 
 Room condition decays slowly at `-1` every 3 minutes. Room clicks no longer

@@ -59,6 +59,12 @@ export interface Translation {
   // Prestige
   renovationTitle: string;
   reputationStation: string;
+  renovationRequirements: string;
+  renovationRequirementReward: string;
+  renovationRequirementStation0: string;
+  renovationRequirementStation1: string;
+  renovationRequirementStation2: string;
+  renovationRequirementGoals: string;
   renovate: string;
   renovateTooltip: string;
   // Prestige upgrades
@@ -69,6 +75,7 @@ export interface Translation {
   higherOfflineCap: string;
   higherOfflineCapDesc: string;
   upgradesTitle: string;
+  renovationChoicesLeft: string;
   cost: string;
   bought: string;
   buy: string;
@@ -161,6 +168,17 @@ export interface Translation {
   aboutHint1: string;
   aboutHint2: string;
   feedbackEmail: string;
+  // Station incidents
+  incidentJournalTitle: string;
+  incidentJournalNew: string;
+  incidentJournalEmpty: string;
+  incidentJournalCompleted: string;
+  incidentVisualReward: string;
+  incidents: Record<string, {
+    title: string;
+    body: string;
+    choices: Record<string, { label: string; description: string }>;
+  }>;
   // Resident stories
   storyTitle: string;
   storyProgress: string;
@@ -256,6 +274,12 @@ const ru: Translation = {
   adPending: 'Реклама...',
   renovationTitle: 'Реновация орбиты',
   reputationStation: 'Репутация станции',
+  renovationRequirements: 'Условия реновации',
+  renovationRequirementReward: 'Накопить награду реновации +1 репутация',
+  renovationRequirementStation0: 'Капсула 10+ и открытая кухня',
+  renovationRequirementStation1: 'Капсула 25+ и открытая прачечная',
+  renovationRequirementStation2: 'Открыть телепорт или заселить 5 жильцов',
+  renovationRequirementGoals: 'Выполнить цели цикла',
   renovate: 'Реновировать',
   renovateTooltip: 'Реновация сбрасывает копейки и модули, но сохраняет репутацию и купленные улучшения. Награда = floor(sqrt(заработано / 100000)).',
   residentsSurvive: 'Соседи остаются',
@@ -265,6 +289,7 @@ const ru: Translation = {
   higherOfflineCap: 'Запас хода станции',
   higherOfflineCapDesc: 'Лимит офлайн-дохода увеличен с 8 до 12 часов.',
   upgradesTitle: 'Улучшения реновации',
+  renovationChoicesLeft: 'Выборов реновации осталось',
   cost: 'Стоимость',
   bought: 'Куплено',
   buy: 'Купить',
@@ -346,6 +371,93 @@ const ru: Translation = {
   aboutHint1: 'Кликайте по комнате — каждый клик даёт копейки. Развивайте станцию, заселяйте жильцов и делайте реновацию орбиты!',
   aboutHint2: 'Спасибо за игру! Ваша обратная связь помогает делать коммуналку уютнее.',
   feedbackEmail: 'seme4kak@yandex.ru',
+  incidentJournalTitle: 'Журнал происшествий',
+  incidentJournalNew: 'Новые',
+  incidentJournalEmpty: 'На станции тихо. Подозрительно тихо.',
+  incidentJournalCompleted: 'Решено',
+  incidentVisualReward: 'Визуальная деталь',
+  incidents: {
+    kitchen_borscht_fog: {
+      title: 'В кухне завёлся борщевой туман',
+      body: 'Туман пахнет обедом и слегка спорит с вентиляцией.',
+      choices: {
+        vent_fog: { label: 'Проветрить через шлюз', description: '+состояние кухни, деталь тумана' },
+        keep_aroma: { label: 'Оставить для аромата', description: '+комфорт' }
+      }
+    },
+    capsule_snore_echo: {
+      title: 'Капсула поймала храп эхом',
+      body: 'Сонный инженер уверяет, что это не он, а акустика.',
+      choices: {
+        install_padding: { label: 'Поставить мягкие панели', description: '-копейки, +состояние капсулы, деталь' },
+        quiet_hours: { label: 'Объявить тихий час', description: '+комфорт' }
+      }
+    },
+    laundry_sock_orbit: {
+      title: 'Носки вышли на орбиту',
+      body: 'Прачечная выглядит как маленькая планетная система.',
+      choices: {
+        catch_socks: { label: 'Поймать носки сачком', description: '+комфорт, деталь' },
+        ask_sock_master: { label: 'Позвать мастера носков', description: '+состояние прачечной' }
+      }
+    },
+    garden_first_sprout_vote: {
+      title: 'Первый росток требует имени',
+      body: 'Жильцы спорят, можно ли назвать растение Борисом.',
+      choices: {
+        name_sprout: { label: 'Устроить голосование', description: '+комфорт' },
+        build_lamp: { label: 'Поставить лампу роста', description: '+состояние сада, деталь' }
+      }
+    },
+    teleport_wrong_parcel: {
+      title: 'Телепорт принёс чужую посылку',
+      body: 'На коробке написано: "Если это не вам, значит почти вам".',
+      choices: {
+        return_parcel: { label: 'Вернуть отправителю', description: '+комфорт, деталь' },
+        open_parcel: { label: 'Открыть осторожно', description: '+копейки' }
+      }
+    },
+    renovation_cold_floor: {
+      title: 'После реновации пол снова холодный',
+      body: 'Станция новая, а тапочки опять улетели.',
+      choices: {
+        insulate_floor: { label: 'Утеплить капсулу', description: '+комфорт, деталь' },
+        save_materials: { label: 'Сохранить материалы', description: '+копейки' }
+      }
+    },
+    condition_warning_light: {
+      title: 'Лампочка тревоги моргает слишком уверенно',
+      body: 'Никто не помнит, что она означает, но все ходят тише.',
+      choices: {
+        repair_now: { label: 'Починить сейчас', description: '-копейки, +состояние, деталь' },
+        label_switch: { label: 'Подписать выключатель', description: '+комфорт' }
+      }
+    },
+    cat_found_warm_pipe: {
+      title: 'Странный кот нашёл тёплую трубу',
+      body: 'Кот делает вид, что это его инженерное решение.',
+      choices: {
+        leave_saucer: { label: 'Оставить блюдце', description: '+комфорт, деталь' },
+        mark_pipe: { label: 'Пометить трубу как важную', description: '+состояние капсулы' }
+      }
+    },
+    kitchen_garden_soup: {
+      title: 'Кухня и сад изобрели суп',
+      body: 'Никто не уверен, кто начал, но пахнет убедительно.',
+      choices: {
+        communal_soup: { label: 'Сварить общий суп', description: '+комфорт, деталь' },
+        sell_recipe: { label: 'Продать рецепт соседям', description: '+копейки' }
+      }
+    },
+    high_income_low_comfort_meeting: {
+      title: 'Доход растёт, а чайник грустит',
+      body: 'Жильцы намекают, что станция стала эффективной, но не уютной.',
+      choices: {
+        fund_tea_break: { label: 'Профинансировать чай', description: '-копейки, +комфорт' },
+        take_minutes: { label: 'Записать протокол', description: 'память журнала' }
+      }
+    }
+  },
   storyTitle: 'Просьба жильца',
   storyProgress: 'Прогресс',
   storyReward: 'Награда',
@@ -555,17 +667,49 @@ const ru: Translation = {
       }
     },
     prestigeUpgrades: {
+      warm_start_credits: {
+        name: 'Аварийная касса',
+        description: 'Каждый новый цикл начинается со 100 копеек вместо базового старта.'
+      },
       residents_survive: {
         name: 'Соседи остаются',
         description: 'Жильцы не сбрасываются при реновации орбиты.'
+      },
+      first_room_discount: {
+        name: 'Склад старых деталей',
+        description: 'Первая покупка каждой комнаты стоит на 10% меньше.'
       },
       starting_comfort: {
         name: 'Тёплый старт',
         description: 'Каждый новый цикл начинается с +5 комфорта.'
       },
+      capsule_head_start: {
+        name: 'Готовая капсула',
+        description: 'После реновации капсула арендатора сразу получает 5 уровней.'
+      },
+      visitor_comfort_bonus: {
+        name: 'Книга отзывов',
+        description: 'Принятые гости дают на 1 комфорт больше.'
+      },
       higher_offline_cap: {
         name: 'Запас хода станции',
         description: 'Лимит офлайн-дохода увеличен с 8 до 12 часов.'
+      },
+      reputation_income: {
+        name: 'Добрая слава',
+        description: 'Каждая единица репутации сильнее повышает доход станции.'
+      },
+      starting_comfort_plus: {
+        name: 'Обжитой старт',
+        description: 'Каждый новый цикл начинается с +10 комфорта.'
+      },
+      offline_cap_16h: {
+        name: 'Дежурная автоматика',
+        description: 'Лимит офлайн-дохода увеличен до 16 часов.'
+      },
+      maintenance_drones: {
+        name: 'Дворницкие дроны',
+        description: 'Новые комнаты начинают цикл в лучшем состоянии.'
       }
     },
     visitors: {
@@ -641,6 +785,12 @@ const en: Translation = {
   adPending: 'Ad...',
   renovationTitle: 'Orbit Renovation',
   reputationStation: 'Station reputation',
+  renovationRequirements: 'Renovation requirements',
+  renovationRequirementReward: 'Build up a +1 renovation reputation reward',
+  renovationRequirementStation0: 'Capsule 10+ and kitchen opened',
+  renovationRequirementStation1: 'Capsule 25+ and laundry opened',
+  renovationRequirementStation2: 'Open teleport or settle 5 residents',
+  renovationRequirementGoals: 'Complete cycle goals',
   renovate: 'Renovate',
   renovateTooltip: 'Renovation resets kopeks and modules but keeps reputation and purchased upgrades. Reward = floor(sqrt(earned / 100000)).',
   residentsSurvive: 'Neighbors stay',
@@ -650,6 +800,7 @@ const en: Translation = {
   higherOfflineCap: 'Station range',
   higherOfflineCapDesc: 'Offline income cap increased from 8 to 12 hours.',
   upgradesTitle: 'Renovation upgrades',
+  renovationChoicesLeft: 'Renovation choices left',
   cost: 'Cost',
   bought: 'Bought',
   buy: 'Buy',
@@ -731,6 +882,93 @@ const en: Translation = {
   aboutHint1: 'Click the room — every click gives kopeks. Develop the station, settle residents and renovate the orbit!',
   aboutHint2: 'Thanks for playing! Your feedback helps make the communalka cozier.',
   feedbackEmail: 'seme4kak@yandex.ru',
+  incidentJournalTitle: 'Incident Journal',
+  incidentJournalNew: 'New',
+  incidentJournalEmpty: 'The station is quiet. Suspiciously quiet.',
+  incidentJournalCompleted: 'Resolved',
+  incidentVisualReward: 'Visual detail',
+  incidents: {
+    kitchen_borscht_fog: {
+      title: 'Borscht fog moved into the kitchen',
+      body: 'The fog smells like lunch and lightly disagrees with ventilation.',
+      choices: {
+        vent_fog: { label: 'Vent it through the airlock', description: '+kitchen condition, visual detail' },
+        keep_aroma: { label: 'Keep it for aroma', description: '+comfort' }
+      }
+    },
+    capsule_snore_echo: {
+      title: 'The capsule caught a snore echo',
+      body: 'The Sleepy Engineer insists it is acoustics, not him.',
+      choices: {
+        install_padding: { label: 'Install soft panels', description: '-kopeks, +capsule condition, detail' },
+        quiet_hours: { label: 'Declare quiet hours', description: '+comfort' }
+      }
+    },
+    laundry_sock_orbit: {
+      title: 'Socks entered orbit',
+      body: 'The laundry now resembles a small planetary system.',
+      choices: {
+        catch_socks: { label: 'Catch socks with a net', description: '+comfort, detail' },
+        ask_sock_master: { label: 'Call the Sock Master', description: '+laundry condition' }
+      }
+    },
+    garden_first_sprout_vote: {
+      title: 'The first sprout needs a name',
+      body: 'Residents debate whether the plant can be called Boris.',
+      choices: {
+        name_sprout: { label: 'Hold a vote', description: '+comfort' },
+        build_lamp: { label: 'Build a grow lamp', description: '+garden condition, detail' }
+      }
+    },
+    teleport_wrong_parcel: {
+      title: 'The teleport brought a wrong parcel',
+      body: 'The box says: "If this is not yours, it is almost yours."',
+      choices: {
+        return_parcel: { label: 'Return to sender', description: '+comfort, detail' },
+        open_parcel: { label: 'Open carefully', description: '+kopeks' }
+      }
+    },
+    renovation_cold_floor: {
+      title: 'The floor is cold after renovation',
+      body: 'The station is new again, but the slippers escaped again.',
+      choices: {
+        insulate_floor: { label: 'Insulate the capsule', description: '+comfort, detail' },
+        save_materials: { label: 'Save materials', description: '+kopeks' }
+      }
+    },
+    condition_warning_light: {
+      title: 'The warning light blinks with confidence',
+      body: 'Nobody remembers what it means, but everyone walks softer.',
+      choices: {
+        repair_now: { label: 'Repair now', description: '-kopeks, +condition, detail' },
+        label_switch: { label: 'Label the switch', description: '+comfort' }
+      }
+    },
+    cat_found_warm_pipe: {
+      title: 'The strange cat found a warm pipe',
+      body: 'The cat pretends this was an engineering decision.',
+      choices: {
+        leave_saucer: { label: 'Leave a saucer', description: '+comfort, detail' },
+        mark_pipe: { label: 'Mark pipe as important', description: '+capsule condition' }
+      }
+    },
+    kitchen_garden_soup: {
+      title: 'The kitchen and garden invented soup',
+      body: 'Nobody knows who started it, but the smell is convincing.',
+      choices: {
+        communal_soup: { label: 'Cook communal soup', description: '+comfort, detail' },
+        sell_recipe: { label: 'Sell the recipe', description: '+kopeks' }
+      }
+    },
+    high_income_low_comfort_meeting: {
+      title: 'Income is rising and the kettle is sad',
+      body: 'Residents imply the station became efficient, not cozy.',
+      choices: {
+        fund_tea_break: { label: 'Fund a tea break', description: '-kopeks, +comfort' },
+        take_minutes: { label: 'Take meeting notes', description: 'journal memory' }
+      }
+    }
+  },
   storyTitle: 'Resident Request',
   storyProgress: 'Progress',
   storyReward: 'Reward',
@@ -940,17 +1178,49 @@ const en: Translation = {
       }
     },
     prestigeUpgrades: {
+      warm_start_credits: {
+        name: 'Emergency Cashbox',
+        description: 'Each new cycle starts with 100 kopeks instead of the base start.'
+      },
       residents_survive: {
         name: 'Neighbors Stay',
         description: 'Residents are not reset on orbit renovation.'
+      },
+      first_room_discount: {
+        name: 'Old Parts Storage',
+        description: 'The first purchase of each room costs 10% less.'
       },
       starting_comfort: {
         name: 'Warm Start',
         description: 'Each new cycle starts with +5 comfort.'
       },
+      capsule_head_start: {
+        name: 'Ready Capsule',
+        description: 'After renovation, the tenant capsule starts at level 5.'
+      },
+      visitor_comfort_bonus: {
+        name: 'Guestbook',
+        description: 'Accepted visitors grant 1 extra comfort.'
+      },
       higher_offline_cap: {
         name: 'Station Range',
         description: 'Offline income cap increased from 8 to 12 hours.'
+      },
+      reputation_income: {
+        name: 'Good Name',
+        description: 'Each reputation point increases station income more strongly.'
+      },
+      starting_comfort_plus: {
+        name: 'Settled Start',
+        description: 'Each new cycle starts with +10 comfort.'
+      },
+      offline_cap_16h: {
+        name: 'Duty Automation',
+        description: 'Offline income cap increased to 16 hours.'
+      },
+      maintenance_drones: {
+        name: 'Maintenance Drones',
+        description: 'New rooms start the cycle in better condition.'
       }
     },
     visitors: {

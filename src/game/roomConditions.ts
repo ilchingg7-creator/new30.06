@@ -15,6 +15,7 @@ import type { GameState, ModuleId } from './types';
  */
 
 export const INITIAL_CONDITION = 60;
+export const UPGRADED_INITIAL_CONDITION = 80;
 export const REPAIR_PER_CLICK = 8;
 export const DECAY_PER_TICK = 1;
 export const DECAY_INTERVAL_SECONDS = 180;
@@ -87,12 +88,15 @@ export function initializeRoomCondition(state: GameState, moduleId: ModuleId): G
   if (state.roomConditions?.[moduleId] !== undefined) {
     return state;
   }
+  const initialCondition = state.purchasedPrestigeUpgrades?.includes('maintenance_drones')
+    ? UPGRADED_INITIAL_CONDITION
+    : INITIAL_CONDITION;
 
   return {
     ...state,
     roomConditions: {
       ...state.roomConditions,
-      [moduleId]: INITIAL_CONDITION
+      [moduleId]: initialCondition
     }
   };
 }

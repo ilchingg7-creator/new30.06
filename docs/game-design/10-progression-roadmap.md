@@ -43,7 +43,7 @@ Goal: make prestige feel useful, not punitive.
 
 Add later:
 
-- prestige upgrades that shorten early rebuild;
+- more prestige upgrades that shorten early rebuild;
 - resident bonuses that survive prestige;
 - new goals for faster second-cycle growth;
 - cosmetic station changes after renovation;
@@ -79,9 +79,20 @@ Scope: MVP.
 Rewards:
 
 - reputation currency;
-- starting income boost;
-- cheaper early modules;
-- small station exterior change.
+- one permanent upgrade purchase slot per completed renovation, presented as 3 tier-specific choices;
+- starting kopeks, starting comfort, preserved residents, first-room discount, capsule head start, visitor comfort bonus, reputation income scaling, or higher offline cap.
+
+Current upgrade list:
+
+- `warm_start_credits`: new cycles start with 100 kopeks;
+- `residents_survive`: residents survive renovation;
+- `first_room_discount`: first purchase of each room is 10% cheaper;
+- `starting_comfort`: new cycles start with +5 comfort;
+- `capsule_head_start`: tenant capsule starts at level 5 after renovation;
+- `visitor_comfort_bonus`: accepted visitors give +1 comfort;
+- `reputation_income`: reputation gives a stronger income multiplier;
+- `offline_cap_16h`: offline cap increases to 16 hours;
+- `maintenance_drones`: new rooms start in better condition.
 
 ### Tier 2: Better Neighbors
 

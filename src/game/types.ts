@@ -31,7 +31,19 @@ export type GoalId =
   | 'earn_credits_10000'
   | 'unlock_three_residents'
   | 'unlock_panorama_dome'
-  | 'first_renovation';
+  | 'first_renovation'
+  | 'rebuild_capsule_10'
+  | 'reopen_kitchen'
+  | 'unlock_laundry_after_renovation'
+  | 'reach_comfort_40'
+  | 'earn_credits_50000'
+  | 'second_renovation'
+  | 'rebuild_capsule_25'
+  | 'unlock_teleport_entry'
+  | 'unlock_five_residents'
+  | 'reach_comfort_60'
+  | 'earn_credits_100000'
+  | 'repeat_renovation';
 
 export interface ModuleDefinition {
   id: ModuleId;
@@ -118,6 +130,137 @@ export interface ActiveResidentStory {
   rewardComfort: number;
 }
 
+export type StationIncidentId =
+  | 'kitchen_borscht_fog'
+  | 'capsule_snore_echo'
+  | 'laundry_sock_orbit'
+  | 'garden_first_sprout_vote'
+  | 'teleport_wrong_parcel'
+  | 'renovation_cold_floor'
+  | 'condition_warning_light'
+  | 'cat_found_warm_pipe'
+  | 'kitchen_garden_soup'
+  | 'high_income_low_comfort_meeting'
+  | 'capsule_window_frost'
+  | 'kitchen_spoon_union'
+  | 'garden_plant_listens_radio'
+  | 'laundry_static_storm'
+  | 'teleport_neighbor_duplicate'
+  | 'panorama_star_argument'
+  | 'meteorite_pantry_label_mystery'
+  | 'maintenance_drones_form_committee'
+  | 'retired_cosmonaut_mug_missing'
+  | 'mist_cook_recipe_too_large'
+  | 'vacuum_gardener_seed_escape'
+  | 'sock_master_invents_calendar'
+  | 'courier_delivers_future_notice'
+  | 'vip_resident_wants_red_carpet'
+  | 'cat_sleeps_on_button'
+  | 'cat_brings_space_dust'
+  | 'post_renovation_old_wallpaper'
+  | 'second_cycle_resident_reunion'
+  | 'offline_return_station_smells_like_soup'
+  | 'condition_pristine_housewarming'
+  | 'comfort_60_station_song'
+  | 'teleport_garden_cross_pollination'
+  | 'laundry_kitchen_steam_problem'
+  | 'capsule_panorama_stargazing'
+  | 'economy_kopeks_under_sofa'
+  | 'renovation_upgrade_installation_day'
+  | 'five_residents_table_argument'
+  | 'first_reputation_review'
+  | 'panorama_dome_first_date'
+  | 'garden_laundry_moss_socks';
+
+export type VisualPlaceholderId =
+  | 'kitchen_mist_patch_01'
+  | 'capsule_padding_01'
+  | 'laundry_sock_cluster_01'
+  | 'garden_sprout_label_01'
+  | 'teleport_parcel_01'
+  | 'capsule_rug_01'
+  | 'warning_bulb_01'
+  | 'cat_saucer_01'
+  | 'kitchen_soup_pot_01'
+  | 'capsule_frost_01'
+  | 'kitchen_spoon_bundle_01'
+  | 'garden_radio_plant_01'
+  | 'laundry_static_socks_01'
+  | 'teleport_duplicate_mug_01'
+  | 'panorama_star_labels_01'
+  | 'pantry_labels_01'
+  | 'drone_schedule_board_01'
+  | 'cosmonaut_mug_01'
+  | 'kitchen_recipe_scroll_01'
+  | 'garden_seed_trail_01'
+  | 'laundry_sock_calendar_01'
+  | 'teleport_future_notice_01'
+  | 'vip_towel_carpet_01'
+  | 'cat_button_label_01'
+  | 'cat_dust_jar_01'
+  | 'old_wallpaper_patch_01'
+  | 'resident_reunion_table_01'
+  | 'soup_smell_note_01'
+  | 'housewarming_lamp_01'
+  | 'station_song_poster_01'
+  | 'teleport_pollen_pot_01'
+  | 'steam_towel_hook_01'
+  | 'stargazing_blanket_01'
+  | 'kopeks_jar_01'
+  | 'upgrade_labels_01'
+  | 'table_schedule_01'
+  | 'reputation_review_frame_01'
+  | 'panorama_reserved_sign_01'
+  | 'moss_sock_01';
+
+export type StationIncidentCategory =
+  | 'resident'
+  | 'room'
+  | 'combo'
+  | 'renovation'
+  | 'condition'
+  | 'cat'
+  | 'economy';
+
+export type StationIncidentTrigger =
+  | { kind: 'roomOpened'; roomId: ModuleId }
+  | { kind: 'residentUnlocked'; residentId: ResidentId }
+  | { kind: 'renovationCompleted'; minPrestigeCount: number }
+  | { kind: 'roomConditionBelow'; roomId?: ModuleId; threshold: number }
+  | { kind: 'roomComboAvailable'; roomIds: ModuleId[] }
+  | { kind: 'comfortIncomeMismatch'; minIncomePerSecond: number; maxComfort: number }
+  | { kind: 'sceneInteraction'; interactionId: 'strange_cat' }
+  | { kind: 'idleReturn'; minSeconds: number };
+
+export interface StationIncidentEffect {
+  comfortDelta?: number;
+  creditsDelta?: number;
+  conditionRepair?: Partial<Record<ModuleId, number>>;
+  timedBonus?: TimedBonus;
+  visualPlaceholderIds?: VisualPlaceholderId[];
+}
+
+export interface StationIncidentChoice {
+  id: string;
+  effects: StationIncidentEffect;
+}
+
+export interface StationIncidentDefinition {
+  id: StationIncidentId;
+  category: StationIncidentCategory;
+  priority: number;
+  enabled: boolean;
+  repeatable: boolean;
+  trigger: StationIncidentTrigger;
+  choices: StationIncidentChoice[];
+}
+
+export interface ActiveStationIncident {
+  id: StationIncidentId;
+  queuedAt: number;
+  isNew: boolean;
+}
+
 export type AchievementId =
   | 'first_purchase'
   | 'ten_module_levels'
@@ -137,13 +280,22 @@ export interface AchievementDefinition {
 export type PrestigeUpgradeId =
   | 'residents_survive'
   | 'starting_comfort'
-  | 'higher_offline_cap';
+  | 'higher_offline_cap'
+  | 'warm_start_credits'
+  | 'capsule_head_start'
+  | 'offline_cap_16h'
+  | 'first_room_discount'
+  | 'reputation_income'
+  | 'visitor_comfort_bonus'
+  | 'starting_comfort_plus'
+  | 'maintenance_drones';
 
 export interface PrestigeUpgradeDefinition {
   id: PrestigeUpgradeId;
   name: string;
   description: string;
   reputationCost: number;
+  renovationTier: 1 | 2 | 3;
 }
 
 export type GoalRewardKind = 'comfort' | 'visual_detail' | 'temporary_boost' | 'prestige_hint';
@@ -151,6 +303,7 @@ export type GoalRewardKind = 'comfort' | 'visual_detail' | 'temporary_boost' | '
 export interface GoalDefinition {
   id: GoalId;
   title: string;
+  renovationCycle: 0 | 1 | 2;
   rewardComfort: number;
   rewardKind: GoalRewardKind;
   rewardLabel: string;
@@ -239,6 +392,12 @@ export interface GameState {
   activeVisitor?: VisitorRequest | null;
   /** Completed resident story IDs. Each story fires once per save. */
   completedStories?: ResidentStoryId[];
+  /** Active non-blocking station incidents shown in the journal. */
+  activeIncidents?: ActiveStationIncident[];
+  /** Completed non-repeatable station incident IDs. */
+  completedIncidents?: StationIncidentId[];
+  /** Stable visual placeholder rewards unlocked by incident choices. */
+  unlockedIncidentVisuals?: VisualPlaceholderId[];
   /**
    * Room condition values (0-100) keyed by ModuleId. Condition decays over
    * time; clicking the room repairs it. High condition gives an income

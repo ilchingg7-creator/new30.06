@@ -184,4 +184,34 @@ describe('save serialization', () => {
 
     expect(parseGameState(raw)).toBeNull();
   });
+
+  it('round-trips station incident state', () => {
+    const state = {
+      ...createInitialState(1_000),
+      activeIncidents: [{ id: 'kitchen_borscht_fog' as const, queuedAt: 123, isNew: true }],
+      completedIncidents: ['cat_found_warm_pipe' as const],
+      unlockedIncidentVisuals: ['cat_saucer_01' as const]
+    };
+
+    const parsed = parseGameState(serializeGameState(state));
+
+    expect(parsed?.activeIncidents).toEqual(state.activeIncidents);
+    expect(parsed?.completedIncidents).toEqual(state.completedIncidents);
+    expect(parsed?.unlockedIncidentVisuals).toEqual(state.unlockedIncidentVisuals);
+  });
+
+  it('keeps legacy completedStories saves valid when migrating to incident schema', () => {
+    const legacy = {
+      ...createInitialState(1_000),
+      schemaVersion: 2,
+      completedStories: ['engineer_quiet_capsule']
+    };
+
+    const parsed = parseGameState(JSON.stringify(legacy));
+
+    expect(parsed?.completedStories).toEqual(['engineer_quiet_capsule']);
+    expect(parsed?.activeIncidents).toEqual([]);
+    expect(parsed?.completedIncidents).toEqual([]);
+    expect(parsed?.unlockedIncidentVisuals).toEqual([]);
+  });
 });

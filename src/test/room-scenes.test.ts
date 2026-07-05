@@ -3,11 +3,15 @@ import { buyModuleLevel, createInitialState } from '../game/economy';
 import { modules } from '../game/content/modules';
 import {
   buildRoomContainer,
+  calculateSceneOverlayRect,
   calculateRoomSceneFit,
   createRoomSceneDescriptor,
   createRoomSelectorItems,
+  getIncidentVisualPlaceholdersForRoom,
   getRoomSpriteAsset,
   getRoomDetailTier,
+  TENANT_CAT_LOVE_SCENE_RECT,
+  TENANT_CAT_SCENE_RECT,
   resolveSelectedRoomId
 } from '../station/roomScenes';
 
@@ -71,6 +75,17 @@ describe('focused room scene descriptors', () => {
     expect(container.children.some((child) => (child as { label?: string }).label === 'ambient-light')).toBe(true);
   });
 
+  it('maps unlocked incident visual placeholders to the selected room', () => {
+    const state = {
+      ...createInitialState(1_000),
+      unlockedIncidentVisuals: ['cat_saucer_01' as const, 'kitchen_mist_patch_01' as const]
+    };
+
+    expect(getIncidentVisualPlaceholdersForRoom(state, 'tenant_capsule')).toContain('cat_saucer_01');
+    expect(getIncidentVisualPlaceholdersForRoom(state, 'tenant_capsule')).not.toContain('kitchen_mist_patch_01');
+    expect(getIncidentVisualPlaceholdersForRoom(state, 'cosmo_kitchen')).toContain('kitchen_mist_patch_01');
+  });
+
   it('uses tenant capsule sprite assets every ten levels', () => {
     expect(getRoomSpriteAsset('tenant_capsule', 1)).toBe('/assets/rooms/tenant_capsule/tenant_capsule_01.png');
     expect(getRoomSpriteAsset('tenant_capsule', 3)).toBe('/assets/rooms/tenant_capsule/tenant_capsule_03.png');
@@ -99,5 +114,31 @@ describe('focused room scene descriptors', () => {
     expect(desktopFit.height).toBeLessThanOrEqual(560);
     expect(desktopFit.x).toBe(0);
     expect(desktopFit.y).toBeGreaterThan(0);
+  });
+
+  it('places the tenant cat overlay inside the lower right of the room scene', () => {
+    const catRect = calculateSceneOverlayRect(420, 240, TENANT_CAT_SCENE_RECT);
+    const loveRect = calculateSceneOverlayRect(420, 240, TENANT_CAT_LOVE_SCENE_RECT);
+
+    expect(TENANT_CAT_SCENE_RECT.width).toBe(228);
+    expect(TENANT_CAT_SCENE_RECT.height).toBe(228);
+    expect(TENANT_CAT_SCENE_RECT.y).toBe(208);
+    expect(TENANT_CAT_LOVE_SCENE_RECT.width).toBe(126);
+    expect(TENANT_CAT_LOVE_SCENE_RECT.height).toBe(126);
+    expect(TENANT_CAT_LOVE_SCENE_RECT.y).toBe(132);
+    expect(TENANT_CAT_LOVE_SCENE_RECT.y + TENANT_CAT_LOVE_SCENE_RECT.height - TENANT_CAT_SCENE_RECT.y).toBe(
+      50
+    );
+
+    expect(catRect.width).toBe(114);
+    expect(catRect.height).toBe(114);
+    expect(catRect.left).toBeGreaterThan(250);
+    expect(catRect.top).toBeGreaterThan(95);
+    expect(catRect.left + catRect.width).toBeLessThan(420);
+    expect(catRect.top + catRect.height).toBeLessThan(240);
+
+    expect(loveRect.width).toBeLessThan(catRect.width);
+    expect(loveRect.height).toBeLessThan(catRect.height);
+    expect(loveRect.top).toBeLessThan(catRect.top);
   });
 });
