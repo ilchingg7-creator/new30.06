@@ -1,6 +1,6 @@
 # Station Incidents Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Replace blocking resident story popups with a non-blocking station incident journal, backed by a larger cozy-comedy event catalog and visual placeholder unlocks.
 
@@ -62,7 +62,7 @@
 - Produces: `stationIncidents: StationIncidentDefinition[]`.
 - Produces: `activeStationIncidents: StationIncidentDefinition[]`.
 
-- [ ] **Step 1: Write the failing content test**
+- [x] **Step 1: Write the failing content test**
 
 Add `src/test/station-incidents.test.ts`:
 
@@ -94,13 +94,13 @@ describe('station incidents content', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm.cmd test -- src/test/station-incidents.test.ts`
 
 Expected: FAIL because `../game/content/stationIncidents` does not exist.
 
-- [ ] **Step 3: Add incident types**
+- [x] **Step 3: Add incident types**
 
 Modify `src/game/types.ts` after `ActiveResidentStory`:
 
@@ -248,7 +248,7 @@ Extend `GameState` near `completedStories`:
   unlockedIncidentVisuals?: VisualPlaceholderId[];
 ```
 
-- [ ] **Step 4: Add content definitions**
+- [x] **Step 4: Add content definitions**
 
 Create `src/game/content/stationIncidents.ts`:
 
@@ -426,13 +426,13 @@ export const stationIncidents: StationIncidentDefinition[] = [
 export const activeStationIncidents = stationIncidents.filter((incident) => incident.enabled);
 ```
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `npm.cmd test -- src/test/station-incidents.test.ts`
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add -- src/game/types.ts src/game/content/stationIncidents.ts src/test/station-incidents.test.ts
@@ -455,7 +455,7 @@ git commit -m "feat: add station incident content catalog"
 - Produces: `getActiveStationIncidents(state: GameState): ActiveStationIncident[]`.
 - Produces: `getNewStationIncidentCount(state: GameState): number`.
 
-- [ ] **Step 1: Write failing queue tests**
+- [x] **Step 1: Write failing queue tests**
 
 Append to `src/test/station-incidents.test.ts`:
 
@@ -569,13 +569,13 @@ describe('station incident state', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npm.cmd test -- src/test/station-incidents.test.ts`
 
 Expected: FAIL because `../game/stationIncidents` does not exist.
 
-- [ ] **Step 3: Implement pure helpers**
+- [x] **Step 3: Implement pure helpers**
 
 Create `src/game/stationIncidents.ts`:
 
@@ -747,13 +747,13 @@ export function resolveStationIncident(
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npm.cmd test -- src/test/station-incidents.test.ts`
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -- src/game/stationIncidents.ts src/test/station-incidents.test.ts
@@ -773,7 +773,7 @@ git commit -m "feat: add station incident state engine"
 - Produces: parse/serialize support for `activeIncidents`, `completedIncidents`, `unlockedIncidentVisuals`.
 - Preserves: legacy `completedStories` validation.
 
-- [ ] **Step 1: Write failing save tests**
+- [x] **Step 1: Write failing save tests**
 
 Append to `src/test/save.test.ts`:
 
@@ -809,13 +809,13 @@ it('keeps legacy completedStories saves valid when migrating to incident schema'
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npm.cmd test -- src/test/save.test.ts`
 
 Expected: FAIL because v2 migration does not backfill incident fields and validation does not accept them.
 
-- [ ] **Step 3: Update save validation and migration**
+- [x] **Step 3: Update save validation and migration**
 
 Modify `src/game/save.ts`:
 
@@ -981,13 +981,13 @@ Update `isGameStateShape`:
     hasOptionalIncidentVisuals(value.unlockedIncidentVisuals) &&
 ```
 
-- [ ] **Step 4: Run save tests**
+- [x] **Step 4: Run save tests**
 
 Run: `npm.cmd test -- src/test/save.test.ts`
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -- src/game/save.ts src/test/save.test.ts
@@ -1012,7 +1012,7 @@ git commit -m "feat: persist station incidents"
   - `newIncidentCount: number`
 - Removes normal app usage of `activeStory`, `storyDismissed`, `dismissStory`.
 
-- [ ] **Step 1: Write failing UI/hook boundary test**
+- [x] **Step 1: Write failing UI/hook boundary test**
 
 In `src/test/components.test.tsx`, add a smoke assertion to the existing app/component area after rendering layouts with `PrestigePanel`:
 
@@ -1022,13 +1022,13 @@ expect(screen.queryByRole('dialog', { name: t.storyTitle })).toBeNull();
 
 Add a focused test for the journal once Task 5 creates the component. For this task, the red check is TypeScript: `UseGameStateResult` still exposes story fields and `App` still renders `ResidentStoryDialog`.
 
-- [ ] **Step 2: Run typecheck to verify current app still has story flow**
+- [x] **Step 2: Run typecheck to verify current app still has story flow**
 
 Run: `npx.cmd tsc --noEmit`
 
 Expected before edits: PASS, but `rg -n "ResidentStoryDialog|activeStory|storyDismissed|dismissStory" src` shows the old flow remains.
 
-- [ ] **Step 3: Integrate incident queueing**
+- [x] **Step 3: Integrate incident queueing**
 
 Modify `src/ui/useGameState.ts` imports:
 
@@ -1134,7 +1134,7 @@ Return:
     newIncidentCount: getNewStationIncidentCount(gameState)
 ```
 
-- [ ] **Step 4: Remove story modal rendering from app**
+- [x] **Step 4: Remove story modal rendering from app**
 
 Modify `src/App.tsx`:
 
@@ -1160,7 +1160,7 @@ Remove the render block:
       )}
 ```
 
-- [ ] **Step 5: Run verification**
+- [x] **Step 5: Run verification**
 
 Run:
 
@@ -1171,7 +1171,7 @@ npm.cmd test -- src/test/station-incidents.test.ts src/test/components.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add -- src/ui/useGameState.ts src/App.tsx src/test/components.test.tsx
@@ -1194,7 +1194,7 @@ git commit -m "feat: queue station incidents in game state"
 - Consumes: `game.gameState.activeIncidents`, `game.resolveIncident`, `game.markIncidentsSeen`, `game.newIncidentCount`.
 - Produces: journal UI with no modal role and explicit choice buttons.
 
-- [ ] **Step 1: Write failing component tests**
+- [x] **Step 1: Write failing component tests**
 
 Append to `src/test/components.test.tsx`:
 
@@ -1229,13 +1229,13 @@ it('renders station incidents as a non-blocking journal with choices', () => {
 });
 ```
 
-- [ ] **Step 2: Run component test to verify it fails**
+- [x] **Step 2: Run component test to verify it fails**
 
 Run: `npm.cmd test -- src/test/components.test.tsx`
 
 Expected: FAIL because `StationIncidentJournal` and translation fields do not exist.
 
-- [ ] **Step 3: Add translations**
+- [x] **Step 3: Add translations**
 
 Modify `Translation` in `src/platform/i18n.ts`:
 
@@ -1446,7 +1446,7 @@ Use this complete `en.incidents` value:
   },
 ```
 
-- [ ] **Step 4: Add journal component**
+- [x] **Step 4: Add journal component**
 
 Create `src/ui/components/StationIncidentJournal.tsx`:
 
@@ -1565,7 +1565,7 @@ Add CSS in `src/styles/global.css`:
 }
 ```
 
-- [ ] **Step 5: Integrate in layouts**
+- [x] **Step 5: Integrate in layouts**
 
 Modify `src/ui/layouts/DesktopLayout.tsx` imports:
 
@@ -1598,7 +1598,7 @@ Modify `src/ui/layouts/MobileLayout.tsx`: import `StationIncidentJournal`, then 
             />
 ```
 
-- [ ] **Step 6: Run tests**
+- [x] **Step 6: Run tests**
 
 Run:
 
@@ -1609,7 +1609,7 @@ npx.cmd tsc --noEmit
 
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add -- src/platform/i18n.ts src/ui/components/StationIncidentJournal.tsx src/ui/layouts/DesktopLayout.tsx src/ui/layouts/MobileLayout.tsx src/styles/global.css src/test/components.test.tsx src/test/responsive.test.tsx
@@ -1631,7 +1631,7 @@ git commit -m "feat: add station incident journal UI"
 - Produces: `onTenantCatClick?: () => void` prop on `PixiStationScene`.
 - Produces: `getIncidentVisualPlaceholdersForRoom(state: GameState, roomId: ModuleId): VisualPlaceholderId[]`.
 
-- [ ] **Step 1: Write failing cat interaction test**
+- [x] **Step 1: Write failing cat interaction test**
 
 Modify existing cat test in `src/test/components.test.tsx`:
 
@@ -1655,7 +1655,7 @@ Run: `npm.cmd test -- src/test/components.test.tsx`
 
 Expected: FAIL because prop does not exist or is not called.
 
-- [ ] **Step 2: Wire cat click into incident queue**
+- [x] **Step 2: Wire cat click into incident queue**
 
 Modify `PixiStationSceneProps`:
 
@@ -1687,7 +1687,7 @@ Pass from layouts:
 />
 ```
 
-- [ ] **Step 3: Write failing placeholder helper test**
+- [x] **Step 3: Write failing placeholder helper test**
 
 Append to `src/test/room-scenes.test.ts`:
 
@@ -1710,7 +1710,7 @@ Run: `npm.cmd test -- src/test/room-scenes.test.ts`
 
 Expected: FAIL because helper does not exist.
 
-- [ ] **Step 4: Add placeholder mapping and simple rendering**
+- [x] **Step 4: Add placeholder mapping and simple rendering**
 
 Modify `src/station/roomScenes.ts`:
 
@@ -1823,7 +1823,7 @@ export function buildRoomContainer(gameState: GameState, selectedRoomId: ModuleI
 }
 ```
 
-- [ ] **Step 5: Run scene tests**
+- [x] **Step 5: Run scene tests**
 
 Run:
 
@@ -1834,7 +1834,7 @@ npx.cmd tsc --noEmit
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add -- src/ui/components/PixiStationScene.tsx src/ui/layouts/DesktopLayout.tsx src/ui/layouts/MobileLayout.tsx src/station/roomScenes.ts src/test/components.test.tsx src/test/room-scenes.test.ts
@@ -1857,7 +1857,7 @@ git commit -m "feat: add incident visual placeholders"
 - Keeps `src/game/residentStories.ts` and `completedStories` for legacy save compatibility.
 - Documents incidents as the narrative/event system.
 
-- [ ] **Step 1: Write failing regression test for no auto-completed story reward**
+- [x] **Step 1: Write failing regression test for no auto-completed story reward**
 
 Modify `src/test/resident-stories.test.ts`:
 
@@ -1881,7 +1881,7 @@ Run: `npm.cmd test -- src/test/resident-stories.test.ts`
 
 Expected: FAIL because `buyModuleLevel` still calls `checkResidentStories`.
 
-- [ ] **Step 2: Remove economy dependency on old story completion**
+- [x] **Step 2: Remove economy dependency on old story completion**
 
 Modify `src/game/economy.ts`:
 
@@ -1961,7 +1961,7 @@ state: checkResidentUnlocks(checkAchievements(completeEligibleGoals(nextState)))
 
 Do not delete `src/game/residentStories.ts`; save parsing still knows legacy ids.
 
-- [ ] **Step 3: Update docs**
+- [x] **Step 3: Update docs**
 
 Add to `docs/game-design/01-core-loop.md`:
 
@@ -1990,7 +1990,7 @@ Add to `docs/game-design/08-technical-architecture.md`:
 the journal and dispatches choices; it does not decide incident eligibility.
 ```
 
-- [ ] **Step 4: Run focused tests**
+- [x] **Step 4: Run focused tests**
 
 Run:
 
@@ -2001,7 +2001,7 @@ npx.cmd tsc --noEmit
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -- src/game/economy.ts src/test/resident-stories.test.ts docs/game-design/01-core-loop.md docs/game-design/03-content-progression.md docs/game-design/08-technical-architecture.md
@@ -2018,37 +2018,37 @@ git commit -m "refactor: retire blocking resident story flow"
 **Interfaces:**
 - Verifies the complete incident journal implementation.
 
-- [ ] **Step 1: Run full tests**
+- [x] **Step 1: Run full tests**
 
 Run: `npm.cmd test`
 
 Expected: all tests pass.
 
-- [ ] **Step 2: Run TypeScript**
+- [x] **Step 2: Run TypeScript**
 
 Run: `npx.cmd tsc --noEmit`
 
 Expected: no output and exit code 0.
 
-- [ ] **Step 3: Run diff check**
+- [x] **Step 3: Run diff check**
 
 Run: `git diff --check`
 
 Expected: no whitespace errors. CRLF warnings are acceptable in this repository.
 
-- [ ] **Step 4: Inspect old story references**
+- [x] **Step 4: Inspect old story references**
 
 Run: `rg -n "ResidentStoryDialog|activeStory|storyDismissed|dismissStory|getActiveResidentStory|checkResidentStories" src`
 
 Expected: only legacy `src/game/residentStories.ts` and tests that explicitly cover legacy behavior remain. No `App` or `useGameState` references remain.
 
-- [ ] **Step 5: Inspect incident references**
+- [x] **Step 5: Inspect incident references**
 
 Run: `rg -n "StationIncident|stationIncidents|activeIncidents|completedIncidents|unlockedIncidentVisuals" src docs`
 
 Expected: types, content, engine, save, hook, UI, tests and docs all reference the new system.
 
-- [ ] **Step 6: Record final status**
+- [x] **Step 6: Record final status**
 
 Run: `git status --short`
 
