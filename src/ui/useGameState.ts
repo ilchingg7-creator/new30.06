@@ -345,6 +345,7 @@ export function useGameState(
           }
         ]
       }));
+      playSound('boost');
     } finally {
       setAdPending(false);
     }
@@ -380,6 +381,7 @@ export function useGameState(
           }
         ]
       }));
+      playSound('boost');
     } finally {
       setAdPending(false);
     }
@@ -493,7 +495,7 @@ export function useGameState(
 
   const resolveIncident = useCallback((incidentId: StationIncidentId, choiceId: string) => {
     setGameState((current) => withQueuedIncidents(resolveStationIncident(current, incidentId, choiceId)));
-    playSound('reward');
+    playSound('incident');
   }, []);
 
   const markIncidentsSeen = useCallback(() => {

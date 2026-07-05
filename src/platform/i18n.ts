@@ -632,6 +632,30 @@ const ru: Translation = {
         return_mug: { label: 'Вернуть лишнюю кружку', description: '+состояние телепорта' },
         display_mug: { label: 'Поставить кружку на полку', description: '+комфорт, деталь' }
       }
+    },
+    panorama_star_argument: {
+      title: 'Жильцы спорят о названиях звёзд',
+      body: 'У купола собралась толпа — каждый уверен, что знает «правильное» имя для каждой звезды.',
+      choices: {
+        vote_names: { label: 'Устроить голосование за имена', description: '+комфорт, деталь' },
+        use_catalogue: { label: 'Открыть звёздный каталог', description: '+состояние купола' }
+      }
+    },
+    maintenance_drones_form_committee: {
+      title: 'Дроны-дворники создали комитет',
+      body: 'Дроны перестали убирать и начали обсуждать график смен. Доход падает, а комфорт просит внимания.',
+      choices: {
+        ratify_committee: { label: 'Утвердить комитет дронов', description: '+комфорт, деталь' },
+        assign_shifts: { label: 'Назначить смены вручную', description: '+состояние капсулы и кухни' }
+      }
+    },
+    cat_sleeps_on_button: {
+      title: 'Кот уснул на важной кнопке',
+      body: 'Странная кошка нашла единственную тёплую кнопку на панели и отказывается уходить. Капсула страдает.',
+      choices: {
+        relocate_cat: { label: 'Перенести кота на диван', description: '+комфорт, деталь' },
+        label_button: { label: 'Подписать кнопку «не спать»', description: '+состояние капсулы' }
+      }
     }
   },
   storyTitle: 'Просьба жильца',
@@ -1349,6 +1373,30 @@ const en: Translation = {
       choices: {
         return_mug: { label: 'Return the spare mug', description: '+teleport condition' },
         display_mug: { label: 'Put the mug on the shelf', description: '+comfort, detail' }
+      }
+    },
+    panorama_star_argument: {
+      title: 'Residents argue about star names',
+      body: 'A crowd gathered at the dome — everyone is sure they know the "right" name for each star.',
+      choices: {
+        vote_names: { label: 'Hold a naming vote', description: '+comfort, detail' },
+        use_catalogue: { label: 'Open the star catalogue', description: '+dome condition' }
+      }
+    },
+    maintenance_drones_form_committee: {
+      title: 'Maintenance drones formed a committee',
+      body: 'The drones stopped cleaning and started debating shift schedules. Income is slipping and comfort needs attention.',
+      choices: {
+        ratify_committee: { label: 'Ratify the drone committee', description: '+comfort, detail' },
+        assign_shifts: { label: 'Assign shifts manually', description: '+capsule and kitchen condition' }
+      }
+    },
+    cat_sleeps_on_button: {
+      title: 'The cat fell asleep on an important button',
+      body: 'The strange cat found the only warm button on the panel and refuses to leave. The capsule is suffering.',
+      choices: {
+        relocate_cat: { label: 'Move the cat to the sofa', description: '+comfort, detail' },
+        label_button: { label: 'Label the button "no sleeping"', description: '+capsule condition' }
       }
     }
   },

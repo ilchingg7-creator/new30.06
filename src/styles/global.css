@@ -2023,6 +2023,49 @@ input {
   font-size: 0.78rem;
 }
 
+/* "New incidents" badge button in the journal header */
+.incident-journal .pill-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border: 1px solid var(--color-signal-red);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-signal-red), transparent 85%);
+  color: var(--color-soft-white);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  animation: incident-badge-pulse 1.8s ease-in-out infinite;
+}
+
+.incident-journal .pill-button:hover {
+  background: color-mix(in srgb, var(--color-signal-red), transparent 70%);
+}
+
+.incident-journal .pill-button svg {
+  color: var(--color-soft-white);
+}
+
+@keyframes incident-badge-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-signal-red), transparent 60%);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-signal-red), transparent 85%);
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .incident-journal .pill-button {
+    animation: none;
+  }
+}
+
 .incident-list {
   display: grid;
   gap: 6px;

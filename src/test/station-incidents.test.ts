@@ -14,7 +14,7 @@ import type { GameState } from '../game/types';
 describe('station incidents content', () => {
   it('defines a large incident catalog with a focused active MVP slice', () => {
     expect(stationIncidents).toHaveLength(40);
-    expect(activeStationIncidents).toHaveLength(15);
+    expect(activeStationIncidents).toHaveLength(18);
   });
 
   it('gives active incidents at least two choices', () => {

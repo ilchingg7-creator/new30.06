@@ -11,7 +11,9 @@ type SoundName =
   | 'prestige'
   | 'error'
   | 'click'
-  | 'daily';
+  | 'daily'
+  | 'incident'
+  | 'boost';
 
 const MUTE_KEY = 'cosmic-communalka-muted';
 
@@ -113,6 +115,19 @@ const soundPresets: Record<SoundName, () => void> = {
   daily: () => {
     playTone(587.33, 0.1, 'sine', 0.1); // D5
     playTone(880, 0.16, 'sine', 0.1, 0.08); // A5
+  },
+  incident: () => {
+    // Curious two-tone "something happened" chime
+    playTone(523.25, 0.08, 'triangle', 0.08); // C5
+    playTone(622.25, 0.08, 'triangle', 0.08, 0.06); // Eb5
+    playTone(739.99, 0.14, 'triangle', 0.08, 0.12); // F#5
+  },
+  boost: () => {
+    // Rising arpeggio for ad-activated income boost
+    playTone(392, 0.08, 'sawtooth', 0.07); // G4
+    playTone(523.25, 0.08, 'sawtooth', 0.07, 0.06); // C5
+    playTone(659.25, 0.08, 'sawtooth', 0.07, 0.12); // E5
+    playTone(880, 0.2, 'sawtooth', 0.07, 0.18); // A5
   }
 };
 
