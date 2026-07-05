@@ -1,9 +1,11 @@
 import { Home } from 'lucide-react';
+import { getModulePurchasePreview } from '../../game/actionPreviews';
 import { calculateModuleCost, calculateIncomePerSecond } from '../../game/economy';
 import { formatCredits, formatRate } from '../../game/format';
 import { modules } from '../../game/content/modules';
 import type { GameState, ModuleId } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
+import { ActionPreviewLine } from './ActionPreviewLine';
 
 interface ModuleListProps {
   gameState: GameState;
@@ -96,6 +98,7 @@ export function ModuleList({ gameState, onBuyLevel, t }: ModuleListProps) {
           const cost = calculateModuleCost(module.id, gameState);
           const locked = gameState.totalEarnedCredits < module.unlockAtCredits;
           const canBuy = !locked && gameState.credits >= cost;
+          const preview = getModulePurchasePreview(gameState, module.id);
 
           return (
             <li className="component-card" key={module.id} title={buildModuleTooltip(module.id, gameState, t)}>
@@ -104,6 +107,7 @@ export function ModuleList({ gameState, onBuyLevel, t }: ModuleListProps) {
                 <p>{t.content.modules[module.id]?.role ?? module.role}</p>
                 <span>{t.level} {level}</span>
                 {!locked && <MilestoneProgress level={level} t={t} />}
+                <ActionPreviewLine preview={preview} t={t} />
               </div>
               <button type="button" disabled={!canBuy} onClick={() => onBuyLevel(module.id)}>
                 <Home aria-hidden="true" size={16} />

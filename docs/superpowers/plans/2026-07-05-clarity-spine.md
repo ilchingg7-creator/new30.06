@@ -808,7 +808,7 @@ Run: `npm.cmd test -- src/test/station-director.test.ts src/test/station-task-pa
 
 Expected: PASS.
 
-- [ ] **Step 9: Commit Task 2**
+- [x] **Step 9: Commit Task 2**
 
 ```powershell
 git add -- src/game/stationDirector.ts src/ui/components/ActionPreviewLine.tsx src/ui/components/StationTaskPanel.tsx src/platform/i18n.ts src/styles/global.css src/test/station-director.test.ts src/test/station-task-panel.test.tsx
@@ -825,7 +825,7 @@ git commit -m "feat: show station guidance previews"
 - Consumes: `getModulePurchasePreview(state, moduleId): ActionPreview`
 - Consumes: `<ActionPreviewLine preview={preview} t={t} />`
 
-- [ ] **Step 1: Write failing module preview tests**
+- [x] **Step 1: Write failing module preview tests**
 
 Add to `src/test/components.test.tsx`:
 
@@ -848,7 +848,7 @@ Run: `npm.cmd test -- src/test/components.test.tsx`
 
 Expected: FAIL because `ModuleList` does not render action previews.
 
-- [ ] **Step 2: Render previews in ModuleList**
+- [x] **Step 2: Render previews in ModuleList**
 
 In `src/ui/components/ModuleList.tsx`, add imports:
 
@@ -869,13 +869,13 @@ Render after milestone progress:
 <ActionPreviewLine preview={preview} t={t} />
 ```
 
-- [ ] **Step 3: Run module/component tests**
+- [x] **Step 3: Run module/component tests**
 
 Run: `npm.cmd test -- src/test/components.test.tsx`
 
 Expected: PASS.
 
-- [ ] **Step 4: Commit Task 3**
+- [x] **Step 4: Commit Task 3**
 
 ```powershell
 git add -- src/ui/components/ModuleList.tsx src/test/components.test.tsx

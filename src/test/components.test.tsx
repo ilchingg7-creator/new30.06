@@ -78,6 +78,19 @@ describe('core UI components', () => {
     expect(container.querySelector('.room-selector button.active')).toBeNull();
   });
 
+  it('shows module purchase preview on room cards', () => {
+    render(<ModuleList gameState={createInitialState(1_000)} onBuyLevel={vi.fn()} t={t} />);
+
+    expect(screen.getByText(/first working room/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+1.00\/sec/i)).toBeInTheDocument();
+  });
+
+  it('shows locked module unlock preview instead of purchase impact', () => {
+    render(<ModuleList gameState={createInitialState(1_000)} onBuyLevel={vi.fn()} t={t} />);
+
+    expect(screen.getAllByText(/Unlocks at/i).length).toBeGreaterThan(0);
+  });
+
   it('shows whether the station has settled residents yet', () => {
     render(<ResidentsPanel gameState={createInitialState(1_000)} t={t} />);
 
