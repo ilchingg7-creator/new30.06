@@ -53,13 +53,13 @@ export function CommunalDutyPanel({ gameState, onAssign, onClaim, variant = 'def
               const preview = getCommunalDutyAssignmentPreview(gameState, definition.id, residentId, t);
 
               return (
-                <div className="communal-duty-choice" key={residentId}>
+                <div className="communal-duty-choice-row" key={residentId}>
                   <button type="button" onClick={() => onAssign(residentId)}>
                     <UserCheck aria-hidden="true" size={15} />
                     {getResidentName(residentId, t)}
                     {residentId === definition.bestResidentId ? ` · ${t.communalDutyBestMatch}` : ''}
                   </button>
-                  <ActionPreviewLine preview={preview} t={t} variant={variant} />
+                  <ActionPreviewLine preview={preview} t={t} variant={variant} surface="inline" />
                 </div>
               );
             })}

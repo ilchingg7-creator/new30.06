@@ -56,6 +56,21 @@ describe('CommunalDutyPanel', () => {
     expect(screen.getByText(/\+35 condition/i)).toBeInTheDocument();
   });
 
+  it('renders compact duty assignment choices as dense rows', () => {
+    const { container } = render(
+      <CommunalDutyPanel
+        gameState={availableDutyState()}
+        onAssign={vi.fn()}
+        onClaim={vi.fn()}
+        t={t}
+        variant="compact"
+      />
+    );
+
+    expect(container.querySelector('.communal-duty-panel.compact .communal-duty-choice-row')).not.toBeNull();
+    expect(container.querySelector('.communal-duty-choice-row .action-preview.inline')).not.toBeNull();
+  });
+
   it('renders ready-to-claim duty with claim action', async () => {
     const user = userEvent.setup();
     const onClaim = vi.fn();

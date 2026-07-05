@@ -1379,7 +1379,7 @@ input {
 
 .communal-duty-panel {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .communal-duty-heading {
@@ -1390,43 +1390,82 @@ input {
 
 .communal-duty-heading h2 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.92rem;
 }
 
 .communal-duty-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.communal-duty-choice {
   display: grid;
   gap: 6px;
 }
 
-.communal-duty-panel.compact {
-  padding: 8px 10px;
-  gap: 6px;
+.communal-duty-choice-row {
+  display: grid;
+  grid-template-columns: minmax(108px, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
 }
 
-.communal-duty-panel.compact .communal-duty-heading h2 {
+.communal-duty-choice-row button {
+  min-height: 34px;
+  justify-content: flex-start;
+  padding: 0 10px;
   font-size: 0.78rem;
 }
 
+.communal-duty-panel.compact {
+  padding: 7px 9px;
+  gap: 5px;
+}
+
+.communal-duty-panel.compact .communal-duty-heading {
+  gap: 5px;
+}
+
+.communal-duty-panel.compact .communal-duty-heading h2 {
+  font-size: 0.72rem;
+}
+
 .communal-duty-panel.compact strong {
-  font-size: 0.9rem;
+  font-size: 0.78rem;
 }
 
 .communal-duty-panel.compact .panel-copy {
   margin: 0;
-  font-size: 0.72rem;
-  line-height: 1.25;
+  overflow: hidden;
+  color: var(--color-utility-blue);
+  font-size: 0.66rem;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .communal-duty-panel.compact button {
-  min-height: 32px;
-  padding: 0 10px;
-  font-size: 0.72rem;
+  min-height: 28px;
+  padding: 0 7px;
+  font-size: 0.66rem;
+}
+
+.communal-duty-panel.compact .communal-duty-actions {
+  gap: 4px;
+}
+
+.communal-duty-panel.compact .communal-duty-choice-row {
+  grid-template-columns: minmax(92px, 0.7fr) minmax(0, 1fr);
+  gap: 6px;
+}
+
+.communal-duty-panel.compact .action-preview.inline {
+  gap: 4px;
+  margin-top: 0;
+}
+
+.communal-duty-panel.compact .action-preview-text small {
+  font-size: 0.6rem;
+}
+
+.communal-duty-panel.compact .action-preview-tag {
+  padding: 0 3px;
+  font-size: 0.5rem;
 }
 
 .panel-heading {
