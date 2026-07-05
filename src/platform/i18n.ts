@@ -70,6 +70,8 @@ export interface Translation {
   celebrationCycle: string;
   celebrationReputation: string;
   celebrationDismiss: string;
+  saveSaving: string;
+  saveSaved: string;
   renovationRequirementGoals: string;
   renovate: string;
   renovateTooltip: string;
@@ -385,6 +387,8 @@ const ru: Translation = {
   celebrationCycle: 'Цикл {cycle}',
   celebrationReputation: '+{amount} репутации',
   celebrationDismiss: 'Продолжить',
+  saveSaving: 'Сохранение…',
+  saveSaved: 'Сохранено',
   renovationRequirementGoals: 'Выполнить цели цикла',
   renovate: 'Реновировать',
   renovateTooltip: 'Реновация сбрасывает копейки и модули, но сохраняет репутацию и купленные улучшения. Награда = floor(sqrt(заработано / 100000)).',
@@ -1197,6 +1201,8 @@ const en: Translation = {
   celebrationCycle: 'Cycle {cycle}',
   celebrationReputation: '+{amount} reputation',
   celebrationDismiss: 'Continue',
+  saveSaving: 'Saving…',
+  saveSaved: 'Saved',
   renovationRequirementGoals: 'Complete cycle goals',
   renovate: 'Renovate',
   renovateTooltip: 'Renovation resets kopeks and modules but keeps reputation and purchased upgrades. Reward = floor(sqrt(earned / 100000)).',

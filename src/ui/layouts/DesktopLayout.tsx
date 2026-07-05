@@ -47,7 +47,7 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
   return (
     <section className="desktop-layout" aria-label="Desktop layout">
       <div data-tour="stats">
-        <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} t={t} />
+        <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} t={t} saveStatus={game.saveStatus} />
       </div>
       <div data-tour="modules">
         <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} t={t} />

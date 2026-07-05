@@ -72,6 +72,8 @@ function buildDutyGame(): UseGameStateResult {
     offlineReward: null,
     dailyReward: null,
     celebration: null,
+    saveStatus: 'saved' as const,
+    lastSavedAt: null,
     ready: true,
     selectedRoomId: 'tenant_capsule',
     adPending: false,

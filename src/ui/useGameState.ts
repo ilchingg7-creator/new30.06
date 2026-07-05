@@ -36,7 +36,7 @@ import {
   isVisitorExpired
 } from '../game/visitors';
 import { createLocalStoragePort, type StoragePort } from '../platform/storage';
-import { playSound, toggleMuted, isMuted } from '../platform/sound';
+import { playSound, toggleMuted, isMuted, startAmbientHum, stopAmbientHum } from '../platform/sound';
 import {
   createNoOpYandexPlatform,
   initYandexPlatform,
@@ -60,12 +60,16 @@ export interface CelebrationInfo {
   reputationGained: number;
 }
 
+export type SaveStatus = 'idle' | 'saving' | 'saved';
+
 export interface UseGameStateResult {
   gameState: GameState;
   incomePerSecond: number;
   offlineReward: OfflineReward | null;
   dailyReward: DailyLoginReward | null;
   celebration: CelebrationInfo | null;
+  saveStatus: SaveStatus;
+  lastSavedAt: number | null;
   ready: boolean;
   selectedRoomId: ModuleId;
   adPending: boolean;
@@ -113,6 +117,8 @@ export function useGameState(
   const [offlineReward, setOfflineReward] = useState<OfflineReward | null>(null);
   const [dailyReward, setDailyReward] = useState<DailyLoginReward | null>(null);
   const [celebration, setCelebration] = useState<CelebrationInfo | null>(null);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
+  const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [adPending, setAdPending] = useState(false);
   const [adsAvailable, setAdsAvailable] = useState(false);
   const [soundMuted, setSoundMuted] = useState(() => isMuted());
@@ -192,11 +198,22 @@ export function useGameState(
 
     const serialized = serializeGameState(gameState);
 
+    setSaveStatus('saving');
+
     // Always persist locally first (synchronous, reliable), then push to the
     // Yandex cloud in the background. Cloud failures are swallowed by the
     // platform so a network drop never blocks gameplay.
     void storage.save(SAVE_KEY, serialized);
     void platformRef.current.saveCloud(SAVE_KEY, serialized);
+
+    const now = Date.now();
+    setLastSavedAt(now);
+
+    const timer = window.setTimeout(() => {
+      setSaveStatus('saved');
+    }, 400);
+
+    return () => window.clearTimeout(timer);
   }, [gameState, ready, storage]);
 
   useEffect(() => {
@@ -462,10 +479,29 @@ export function useGameState(
   const toggleSound = useCallback(() => {
     const next = toggleMuted();
     setSoundMuted(next);
-    if (!next) {
+    if (next) {
+      stopAmbientHum();
+    } else {
       playSound('click');
+      startAmbientHum();
     }
   }, []);
+
+  // Start ambient hum once the game is ready and sound is not muted.
+  // The AudioContext requires a user gesture before it can produce sound,
+  // so the hum may not actually start until the first click — that's fine,
+  // startAmbientHum is a no-op if the context is suspended.
+  useEffect(() => {
+    if (!ready || soundMuted) {
+      return;
+    }
+
+    startAmbientHum();
+
+    return () => {
+      stopAmbientHum();
+    };
+  }, [ready, soundMuted]);
 
   const handleAcceptVisitor = useCallback(() => {
     let accepted = false;
@@ -537,6 +573,8 @@ export function useGameState(
     offlineReward,
     dailyReward,
     celebration,
+    saveStatus,
+    lastSavedAt,
     ready,
     selectedRoomId,
     adPending,
