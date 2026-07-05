@@ -142,6 +142,11 @@ export interface Translation {
   noResidents: string;
   settled: string;
   notSettled: string;
+  residentRoleIncome: string;
+  residentRoleComfort: string;
+  residentRoleMaintenance: string;
+  residentRoleVisitor: string;
+  residentRoleRenovation: string;
   // Achievements
   achievementsCount: string;
   // Common
@@ -338,6 +343,11 @@ const ru: Translation = {
   soundOn: 'Включить звук',
   soundOff: 'Выключить звук',
   eyebrow: 'Retro Soviet Space Cozy',
+  residentRoleIncome: 'income',
+  residentRoleComfort: 'comfort',
+  residentRoleMaintenance: 'maintenance',
+  residentRoleVisitor: 'visitor',
+  residentRoleRenovation: 'renovation',
   appTitle: 'Космическая коммуналка',
   loadingHint: 'Греем шлюзы',
   loadingBody: 'Станция готовит первый жилой модуль.',
@@ -381,6 +391,7 @@ const ru: Translation = {
       title: 'В кухне завёлся борщевой туман',
       body: 'Туман пахнет обедом и слегка спорит с вентиляцией.',
       choices: {
+        make_borscht_tradition: { label: 'Borscht tradition', description: '+comfort, visual detail' },
         vent_fog: { label: 'Проветрить через шлюз', description: '+состояние кухни, деталь тумана' },
         keep_aroma: { label: 'Оставить для аромата', description: '+комфорт' }
       }
@@ -413,6 +424,7 @@ const ru: Translation = {
       title: 'Телепорт принёс чужую посылку',
       body: 'На коробке написано: "Если это не вам, значит почти вам".',
       choices: {
+        courier_protocol: { label: 'Courier protocol', description: '+comfort, visual detail' },
         return_parcel: { label: 'Вернуть отправителю', description: '+комфорт, деталь' },
         open_parcel: { label: 'Открыть осторожно', description: '+копейки' }
       }
@@ -429,6 +441,7 @@ const ru: Translation = {
       title: 'Лампочка тревоги моргает слишком уверенно',
       body: 'Никто не помнит, что она означает, но все ходят тише.',
       choices: {
+        maintenance_shortcut: { label: 'Maintenance shortcut', description: '+condition, visual detail' },
         repair_now: { label: 'Починить сейчас', description: '-копейки, +состояние, деталь' },
         label_switch: { label: 'Подписать выключатель', description: '+комфорт' }
       }
@@ -437,6 +450,7 @@ const ru: Translation = {
       title: 'Странный кот нашёл тёплую трубу',
       body: 'Кот делает вид, что это его инженерное решение.',
       choices: {
+        cozy_cat_corner: { label: 'Cozy cat corner', description: '+comfort, visual detail' },
         leave_saucer: { label: 'Оставить блюдце', description: '+комфорт, деталь' },
         mark_pipe: { label: 'Пометить трубу как важную', description: '+состояние капсулы' }
       }
@@ -453,6 +467,7 @@ const ru: Translation = {
       title: 'Доход растёт, а чайник грустит',
       body: 'Жильцы намекают, что станция стала эффективной, но не уютной.',
       choices: {
+        tea_council: { label: 'Tea council', description: '+comfort' },
         fund_tea_break: { label: 'Профинансировать чай', description: '-копейки, +комфорт' },
         take_minutes: { label: 'Записать протокол', description: 'память журнала' }
       }
@@ -849,6 +864,11 @@ const en: Translation = {
   soundOn: 'Enable sound',
   soundOff: 'Disable sound',
   eyebrow: 'Retro Soviet Space Cozy',
+  residentRoleIncome: 'income',
+  residentRoleComfort: 'comfort',
+  residentRoleMaintenance: 'maintenance',
+  residentRoleVisitor: 'visitor',
+  residentRoleRenovation: 'renovation',
   appTitle: 'Cosmic Communalka',
   loadingHint: 'Warming up the airlocks',
   loadingBody: 'The station is preparing the first living module.',
@@ -892,6 +912,7 @@ const en: Translation = {
       title: 'Borscht fog moved into the kitchen',
       body: 'The fog smells like lunch and lightly disagrees with ventilation.',
       choices: {
+        make_borscht_tradition: { label: 'Borscht tradition', description: '+comfort, visual detail' },
         vent_fog: { label: 'Vent it through the airlock', description: '+kitchen condition, visual detail' },
         keep_aroma: { label: 'Keep it for aroma', description: '+comfort' }
       }
@@ -924,6 +945,7 @@ const en: Translation = {
       title: 'The teleport brought a wrong parcel',
       body: 'The box says: "If this is not yours, it is almost yours."',
       choices: {
+        courier_protocol: { label: 'Courier protocol', description: '+comfort, visual detail' },
         return_parcel: { label: 'Return to sender', description: '+comfort, detail' },
         open_parcel: { label: 'Open carefully', description: '+kopeks' }
       }
@@ -940,6 +962,7 @@ const en: Translation = {
       title: 'The warning light blinks with confidence',
       body: 'Nobody remembers what it means, but everyone walks softer.',
       choices: {
+        maintenance_shortcut: { label: 'Maintenance shortcut', description: '+condition, visual detail' },
         repair_now: { label: 'Repair now', description: '-kopeks, +condition, detail' },
         label_switch: { label: 'Label the switch', description: '+comfort' }
       }
@@ -948,6 +971,7 @@ const en: Translation = {
       title: 'The strange cat found a warm pipe',
       body: 'The cat pretends this was an engineering decision.',
       choices: {
+        cozy_cat_corner: { label: 'Cozy cat corner', description: '+comfort, visual detail' },
         leave_saucer: { label: 'Leave a saucer', description: '+comfort, detail' },
         mark_pipe: { label: 'Mark pipe as important', description: '+capsule condition' }
       }
@@ -964,6 +988,7 @@ const en: Translation = {
       title: 'Income is rising and the kettle is sad',
       body: 'Residents imply the station became efficient, not cozy.',
       choices: {
+        tea_council: { label: 'Tea council', description: '+comfort' },
         fund_tea_break: { label: 'Fund a tea break', description: '-kopeks, +comfort' },
         take_minutes: { label: 'Take meeting notes', description: 'journal memory' }
       }

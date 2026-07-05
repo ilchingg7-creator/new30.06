@@ -1,4 +1,5 @@
 import { communalDuties } from './content/communalDuties';
+import { hasResidentRole } from './residents';
 import type {
   CommunalDutyDefinition,
   CommunalDutyId,
@@ -34,6 +35,49 @@ function cooldownReady(state: GameState, now: number): boolean {
 
 function getOutcome(definition: CommunalDutyDefinition, residentId: ResidentId) {
   return definition.outcomes.find((outcome) => outcome.residentId === residentId) ?? null;
+}
+
+function mergeConditionRepair(
+  base: Partial<Record<ModuleId, number>>,
+  bonus: Partial<Record<ModuleId, number>>
+): Partial<Record<ModuleId, number>> {
+  const merged = { ...base };
+
+  for (const [roomId, repair] of Object.entries(bonus)) {
+    const typedRoomId = roomId as ModuleId;
+
+    merged[typedRoomId] = (merged[typedRoomId] ?? 0) + repair;
+  }
+
+  return merged;
+}
+
+function mergeRewards(base: CommunalDutyReward, bonus: CommunalDutyReward): CommunalDutyReward {
+  return {
+    comfortGain: (base.comfortGain ?? 0) + (bonus.comfortGain ?? 0),
+    conditionRepair: mergeConditionRepair(base.conditionRepair ?? {}, bonus.conditionRepair ?? {}),
+    timedBonus: bonus.timedBonus ?? base.timedBonus
+  };
+}
+
+function getRewardForResident(
+  state: GameState,
+  definition: CommunalDutyDefinition,
+  residentId: ResidentId,
+  reward: CommunalDutyReward
+): CommunalDutyReward {
+  if (!definition.preferredRole || !definition.roleBonus) {
+    return reward;
+  }
+
+  const assignedResidentState = {
+    ...state,
+    unlockedResidents: [residentId]
+  };
+
+  return hasResidentRole(assignedResidentState, definition.preferredRole, 1)
+    ? mergeRewards(reward, definition.roleBonus)
+    : reward;
 }
 
 function applyConditionRepair(
@@ -158,7 +202,8 @@ export function claimCommunalDuty(state: GameState, now = Date.now()): GameState
     };
   }
 
-  const rewarded = applyReward(state, outcome.reward, now);
+  const reward = getRewardForResident(state, definition, active.assignedResidentId, outcome.reward);
+  const rewarded = applyReward(state, reward, now);
 
   return {
     ...rewarded,
@@ -168,8 +213,8 @@ export function claimCommunalDuty(state: GameState, now = Date.now()): GameState
       dutyId: definition.id,
       residentId: active.assignedResidentId,
       roomId: definition.roomId,
-      comfortGain: outcome.reward.comfortGain ?? 0,
-      conditionRepair: outcome.reward.conditionRepair ?? {},
+      comfortGain: reward.comfortGain ?? 0,
+      conditionRepair: reward.conditionRepair ?? {},
       resultKey: outcome.resultKey,
       claimedAt: now
     }

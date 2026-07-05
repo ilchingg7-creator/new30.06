@@ -24,6 +24,15 @@ export type ResidentId =
   | 'retired_cosmonaut'
   | 'three_eyed_housekeeper';
 
+export type ResidentRole = 'income' | 'comfort' | 'maintenance' | 'visitor' | 'renovation';
+
+export interface ResidentRoleProfile {
+  primary: ResidentRole;
+  secondary?: ResidentRole;
+}
+
+export type ResidentRoleTotals = Record<ResidentRole, number>;
+
 export type GoalId =
   | 'buy_capsule_10'
   | 'unlock_kitchen'
@@ -249,6 +258,10 @@ export interface StationIncidentTimedBonusReward {
 export interface StationIncidentChoice {
   id: string;
   effects: StationIncidentEffect;
+  requiresRole?: {
+    role: ResidentRole;
+    points: number;
+  };
 }
 
 export interface StationIncidentDefinition {
@@ -357,6 +370,8 @@ export interface CommunalDutyDefinition {
   eligibleResidentIds: ResidentId[];
   bestResidentId: ResidentId;
   durationMs: number;
+  preferredRole?: ResidentRole;
+  roleBonus?: CommunalDutyReward;
   outcomes: CommunalDutyResidentOutcome[];
 }
 

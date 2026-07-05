@@ -50,7 +50,7 @@
 - Produces: `getResidentRoleTotals(state: GameState): ResidentRoleTotals`
 - Produces: `hasResidentRole(state: GameState, role: ResidentRole, points?: number): boolean`
 
-- [ ] **Step 1: Write failing resident role tests**
+- [x] **Step 1: Write failing resident role tests**
 
 Add these tests to `src/test/residents.test.ts`:
 
@@ -99,7 +99,7 @@ Run: `npm.cmd test -- src/test/residents.test.ts`
 
 Expected: FAIL because role helpers do not exist.
 
-- [ ] **Step 2: Implement resident role types and helpers**
+- [x] **Step 2: Implement resident role types and helpers**
 
 Add the role types to `src/game/types.ts`. Add a `RESIDENT_ROLE_PROFILES` map and the three helper functions to `src/game/residents.ts`.
 
@@ -120,7 +120,7 @@ Expected: PASS.
 - Extends: `CommunalDutyDefinition` with `preferredRole?: ResidentRole`
 - Extends: `CommunalDutyDefinition` with `roleBonus?: CommunalDutyReward`
 
-- [ ] **Step 1: Write failing duty role-bonus tests**
+- [x] **Step 1: Write failing duty role-bonus tests**
 
 Add these tests to `src/test/communal-duties.test.ts`:
 
@@ -176,7 +176,7 @@ Run: `npm.cmd test -- src/test/communal-duties.test.ts`
 
 Expected: FAIL because preferred role metadata and role reward merging do not exist.
 
-- [ ] **Step 2: Add duty role metadata and merge rewards**
+- [x] **Step 2: Add duty role metadata and merge rewards**
 
 Update duty definitions:
 
@@ -204,7 +204,7 @@ Expected: PASS.
 - Produces: `getAvailableStationIncidentChoices(state: GameState, incidentId: StationIncidentId): StationIncidentChoice[]`
 - Updates: `resolveStationIncident(state, incidentId, choiceId, now?)` rejects locked role choices.
 
-- [ ] **Step 1: Write failing role-gated incident tests**
+- [x] **Step 1: Write failing role-gated incident tests**
 
 Add these tests to `src/test/station-incidents.test.ts`:
 
@@ -261,7 +261,7 @@ Run: `npm.cmd test -- src/test/station-incidents.test.ts`
 
 Expected: FAIL because choice requirements and choice filtering do not exist.
 
-- [ ] **Step 2: Add role-gated choices to incident content**
+- [x] **Step 2: Add role-gated choices to incident content**
 
 Add role-gated choices:
 
@@ -275,7 +275,7 @@ Run: `npm.cmd test -- src/test/station-incidents.test.ts`
 
 Expected: still FAIL until the domain helper filters and rejects locked choices.
 
-- [ ] **Step 3: Implement available-choice filtering and direct rejection**
+- [x] **Step 3: Implement available-choice filtering and direct rejection**
 
 Implement `getAvailableStationIncidentChoices`. Update `resolveStationIncident` to use that helper instead of reading `definition.choices` directly.
 
@@ -297,7 +297,7 @@ Expected: PASS.
 - Consumes: `getAvailableStationIncidentChoices(state, incidentId)`
 - Adds translation keys: `residentRoleIncome`, `residentRoleComfort`, `residentRoleMaintenance`, `residentRoleVisitor`, `residentRoleRenovation`
 
-- [ ] **Step 1: Write failing UI tests for resident role labels and filtered choices**
+- [x] **Step 1: Write failing UI tests for resident role labels and filtered choices**
 
 Add tests to `src/test/components.test.tsx` that render `ResidentsPanel` and verify role labels for `sleepy_engineer`, then render `StationIncidentJournal` with and without `mist_cook` and verify the role-gated `make_borscht_tradition` choice appears only with the comfort role.
 
@@ -305,7 +305,7 @@ Run: `npm.cmd test -- src/test/components.test.tsx`
 
 Expected: FAIL because role labels are not rendered and journal renders all static choices.
 
-- [ ] **Step 2: Add role translations and resident role tags**
+- [x] **Step 2: Add role translations and resident role tags**
 
 Add the five role translation labels in `src/platform/i18n.ts`. In `ResidentsPanel` and `ResidentCollectionBook`, use `getResidentRoleProfile` to render compact role tags next to resident status or bonus text.
 
@@ -313,7 +313,7 @@ Run: `npm.cmd test -- src/test/components.test.tsx`
 
 Expected: resident role label test PASS, incident choice filtering test still FAIL.
 
-- [ ] **Step 3: Filter journal choices through domain helper**
+- [x] **Step 3: Filter journal choices through domain helper**
 
 Update `StationIncidentJournal` to use `getAvailableStationIncidentChoices(gameState, incident.id)` instead of `definition.choices`.
 
@@ -331,7 +331,7 @@ Expected: PASS.
 **Interfaces:**
 - No code interfaces.
 
-- [ ] **Step 1: Update game-design docs**
+- [x] **Step 1: Update game-design docs**
 
 Document:
 
@@ -340,7 +340,7 @@ Document:
 - incident role-gated choices;
 - renovation-build remains future scope.
 
-- [ ] **Step 2: Run focused tests**
+- [x] **Step 2: Run focused tests**
 
 Run:
 
@@ -350,7 +350,7 @@ npm.cmd test -- src/test/residents.test.ts src/test/communal-duties.test.ts src/
 
 Expected: PASS.
 
-- [ ] **Step 3: Run full verification**
+- [x] **Step 3: Run full verification**
 
 Run:
 

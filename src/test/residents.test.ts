@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
+import { residents } from '../game/content/residents';
 import { buyModuleLevel, createInitialState, performPrestige } from '../game/economy';
-import { checkResidentUnlocks, isResidentUnlocked } from '../game/residents';
+import {
+  checkResidentUnlocks,
+  getResidentRoleProfile,
+  getResidentRoleTotals,
+  hasResidentRole,
+  isResidentUnlocked
+} from '../game/residents';
 import type { GameState } from '../game/types';
 
 describe('resident unlocks', () => {
@@ -83,5 +90,37 @@ describe('resident unlocks', () => {
 
     expect(isResidentUnlocked('sleepy_engineer', state)).toBe(false);
     expect(isResidentUnlocked('vacuum_gardener', state)).toBe(false);
+  });
+
+  it('defines a role profile for every resident', () => {
+    for (const resident of residents) {
+      expect(getResidentRoleProfile(resident.id).primary).toBeTruthy();
+    }
+  });
+
+  it('counts primary roles as 2 points and secondary roles as 1 point', () => {
+    const state = {
+      ...createInitialState(1_000),
+      unlockedResidents: ['sleepy_engineer', 'mist_cook', 'teleport_courier'] as GameState['unlockedResidents']
+    };
+
+    expect(getResidentRoleTotals(state)).toEqual({
+      income: 3,
+      comfort: 2,
+      maintenance: 2,
+      visitor: 2,
+      renovation: 0
+    });
+  });
+
+  it('checks resident role thresholds', () => {
+    const state = {
+      ...createInitialState(1_000),
+      unlockedResidents: ['sleepy_engineer', 'mist_cook'] as GameState['unlockedResidents']
+    };
+
+    expect(hasResidentRole(state, 'maintenance', 2)).toBe(true);
+    expect(hasResidentRole(state, 'comfort', 2)).toBe(true);
+    expect(hasResidentRole(state, 'visitor', 1)).toBe(false);
   });
 });

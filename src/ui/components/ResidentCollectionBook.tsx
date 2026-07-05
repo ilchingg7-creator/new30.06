@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { residents } from '../../game/content/residents';
 import type { GameState } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
+import { ResidentRoleTags } from './ResidentRoleTags';
 
 interface ResidentCollectionBookProps {
   gameState: GameState;
@@ -71,6 +72,7 @@ export function ResidentCollectionBook({ gameState, t }: ResidentCollectionBookP
               {isUnlocked && isOpen && (
                 <>
                   <p className="collection-bio">{bio}</p>
+                  <ResidentRoleTags residentId={resident.id} t={t} />
                   <div className="collection-bonus">{bonusText}</div>
                 </>
               )}

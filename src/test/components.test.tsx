@@ -102,6 +102,21 @@ describe('core UI components', () => {
     expect(screen.getAllByText(t.notSettled)).toHaveLength(7);
   });
 
+  it('shows resident role labels for settled residents', () => {
+    render(
+      <ResidentsPanel
+        gameState={{
+          ...createInitialState(1_000),
+          unlockedResidents: ['sleepy_engineer']
+        }}
+        t={t}
+      />
+    );
+
+    expect(screen.getAllByText(t.residentRoleMaintenance).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(t.residentRoleIncome).length).toBeGreaterThan(0);
+  });
+
   it('shows renovation requirements and disables renovation before they are complete', () => {
     render(<PrestigePanel gameState={{ ...createInitialState(1_000), totalEarnedCredits: 400_000 }} onRenovate={vi.fn()} t={t} />);
 
@@ -197,5 +212,41 @@ describe('core UI components', () => {
     fireEvent.click(screen.getByRole('button', { name: t.incidents.kitchen_borscht_fog.choices.vent_fog.label }));
 
     expect(onResolve).toHaveBeenCalledWith('kitchen_borscht_fog', 'vent_fog');
+  });
+
+  it('filters station incident choices by resident roles in the journal', () => {
+    const onResolve = vi.fn();
+    const onSeen = vi.fn();
+    const roleChoiceLabel = t.incidents.kitchen_borscht_fog.choices.make_borscht_tradition.label;
+    const gameState: GameState = {
+      ...createInitialState(1_000),
+      activeIncidents: [{ id: 'kitchen_borscht_fog', queuedAt: 10_000, isNew: true }]
+    };
+    const { rerender } = render(
+      <StationIncidentJournal
+        gameState={gameState}
+        newIncidentCount={1}
+        onResolve={onResolve}
+        onMarkSeen={onSeen}
+        t={t}
+      />
+    );
+
+    expect(screen.queryByRole('button', { name: roleChoiceLabel })).toBeNull();
+
+    rerender(
+      <StationIncidentJournal
+        gameState={{
+          ...gameState,
+          unlockedResidents: ['mist_cook']
+        }}
+        newIncidentCount={1}
+        onResolve={onResolve}
+        onMarkSeen={onSeen}
+        t={t}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: roleChoiceLabel })).toBeInTheDocument();
   });
 });

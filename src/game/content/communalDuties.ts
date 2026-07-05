@@ -7,6 +7,8 @@ export const communalDuties: CommunalDutyDefinition[] = [
     eligibleResidentIds: ['sleepy_engineer', 'mist_cook'],
     bestResidentId: 'sleepy_engineer',
     durationMs: 3 * 60 * 1_000,
+    preferredRole: 'maintenance',
+    roleBonus: { conditionRepair: { tenant_capsule: 10 } },
     outcomes: [
       {
         residentId: 'sleepy_engineer',
@@ -32,6 +34,8 @@ export const communalDuties: CommunalDutyDefinition[] = [
     eligibleResidentIds: ['mist_cook', 'sleepy_engineer', 'vacuum_gardener'],
     bestResidentId: 'mist_cook',
     durationMs: 3 * 60 * 1_000,
+    preferredRole: 'comfort',
+    roleBonus: { comfortGain: 1 },
     outcomes: [
       {
         residentId: 'mist_cook',
@@ -69,6 +73,8 @@ export const communalDuties: CommunalDutyDefinition[] = [
     eligibleResidentIds: ['vacuum_gardener', 'mist_cook'],
     bestResidentId: 'vacuum_gardener',
     durationMs: 3 * 60 * 1_000,
+    preferredRole: 'comfort',
+    roleBonus: { comfortGain: 1 },
     outcomes: [
       {
         residentId: 'vacuum_gardener',
@@ -94,6 +100,8 @@ export const communalDuties: CommunalDutyDefinition[] = [
     eligibleResidentIds: ['sock_master', 'sleepy_engineer'],
     bestResidentId: 'sock_master',
     durationMs: 3 * 60 * 1_000,
+    preferredRole: 'maintenance',
+    roleBonus: { conditionRepair: { zero_g_laundry: 10 } },
     outcomes: [
       {
         residentId: 'sock_master',

@@ -1,10 +1,12 @@
 import { activeStationIncidents } from './content/stationIncidents';
 import { calculateIncomePerSecond } from './economy';
+import { hasResidentRole } from './residents';
 import type {
   ActiveStationIncident,
   GameState,
   ModuleId,
   StationIncidentDefinition,
+  StationIncidentChoice,
   StationIncidentId
 } from './types';
 
@@ -123,6 +125,25 @@ function findDefinition(incidentId: StationIncidentId): StationIncidentDefinitio
   return activeStationIncidents.find((definition) => definition.id === incidentId);
 }
 
+export function getAvailableStationIncidentChoices(
+  state: GameState,
+  incidentId: StationIncidentId
+): StationIncidentChoice[] {
+  const definition = findDefinition(incidentId);
+
+  if (!definition) {
+    return [];
+  }
+
+  return definition.choices.filter((choice) => {
+    if (!choice.requiresRole) {
+      return true;
+    }
+
+    return hasResidentRole(state, choice.requiresRole.role, choice.requiresRole.points);
+  });
+}
+
 function addUnique<T extends string>(current: T[] | undefined, next: T[]): T[] {
   return Array.from(new Set([...(current ?? []), ...next]));
 }
@@ -140,7 +161,9 @@ export function resolveStationIncident(
   }
 
   const definition = findDefinition(incidentId);
-  const choice = definition?.choices.find((candidate) => candidate.id === choiceId);
+  const choice = definition
+    ? getAvailableStationIncidentChoices(state, incidentId).find((candidate) => candidate.id === choiceId)
+    : undefined;
 
   if (!definition || !choice) {
     return state;

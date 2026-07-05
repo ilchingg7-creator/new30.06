@@ -1309,9 +1309,35 @@ input {
   color: var(--color-utility-blue);
 }
 
+.resident-role-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.resident-role-tag {
+  border: 1px solid rgb(39 49 63 / 14%);
+  border-radius: 999px;
+  padding: 2px 6px;
+  background: color-mix(in srgb, var(--color-warm-panel), white 26%);
+  color: var(--color-utility-blue);
+  font-size: 0.64rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
 .compact-card strong,
 .compact-card span {
   display: block;
+}
+
+.compact-card .resident-role-list {
+  display: inline-flex;
+}
+
+.compact-card .resident-role-tag {
+  display: inline-block;
 }
 
 .button-stack {

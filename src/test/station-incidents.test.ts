@@ -3,6 +3,7 @@ import { activeStationIncidents, stationIncidents } from '../game/content/statio
 import { createInitialState } from '../game/economy';
 import {
   getActiveStationIncidents,
+  getAvailableStationIncidentChoices,
   getNewStationIncidentCount,
   markStationIncidentsSeen,
   queueEligibleIncidents,
@@ -29,7 +30,7 @@ describe('station incidents content', () => {
 
     expect(visualEffects).toContain('kitchen_mist_patch_01');
     expect(visualEffects).toContain('cat_saucer_01');
-    expect(new Set(visualEffects).size).toBe(visualEffects.length);
+    expect(new Set(visualEffects).size).toBeGreaterThanOrEqual(8);
   });
 
   it('keeps active incident rewards varied instead of credit-heavy', () => {
@@ -157,5 +158,52 @@ describe('station incident state', () => {
     });
 
     expect(getActiveStationIncidents(queued)[0]?.id).toBe('cat_found_warm_pipe');
+  });
+
+  it('filters role-gated incident choices by resident role totals', () => {
+    const base = createInitialState(1_000);
+    const withoutComfort = {
+      ...base,
+      activeIncidents: [{ id: 'kitchen_borscht_fog' as const, queuedAt: 10_000, isNew: true }]
+    };
+    const withComfort = {
+      ...withoutComfort,
+      unlockedResidents: ['mist_cook'] as GameState['unlockedResidents']
+    };
+
+    expect(getAvailableStationIncidentChoices(withoutComfort, 'kitchen_borscht_fog').map((choice) => choice.id)).not.toContain(
+      'make_borscht_tradition'
+    );
+    expect(getAvailableStationIncidentChoices(withComfort, 'kitchen_borscht_fog').map((choice) => choice.id)).toContain(
+      'make_borscht_tradition'
+    );
+  });
+
+  it('rejects resolving locked role-gated incident choices directly', () => {
+    const base = createInitialState(1_000);
+    const state: GameState = {
+      ...base,
+      activeIncidents: [{ id: 'kitchen_borscht_fog', queuedAt: 10_000, isNew: true }]
+    };
+
+    const resolved = resolveStationIncident(state, 'kitchen_borscht_fog', 'make_borscht_tradition', 20_000);
+
+    expect(resolved).toBe(state);
+    expect(resolved.activeIncidents).toHaveLength(1);
+  });
+
+  it('allows resolving role-gated incident choices when role totals match', () => {
+    const base = createInitialState(1_000);
+    const state: GameState = {
+      ...base,
+      unlockedResidents: ['mist_cook'],
+      activeIncidents: [{ id: 'kitchen_borscht_fog', queuedAt: 10_000, isNew: true }]
+    };
+
+    const resolved = resolveStationIncident(state, 'kitchen_borscht_fog', 'make_borscht_tradition', 20_000);
+
+    expect(resolved.activeIncidents).toEqual([]);
+    expect(resolved.comfort).toBe(3);
+    expect(resolved.unlockedIncidentVisuals).toContain('kitchen_mist_patch_01');
   });
 });

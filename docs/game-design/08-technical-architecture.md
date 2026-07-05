@@ -102,3 +102,23 @@ Rules:
 `src/game/stationIncidents.ts` owns pure incident queueing and resolving.
 `src/game/content/stationIncidents.ts` owns definitions. React only renders
 the journal and dispatches choices; it does not decide incident eligibility.
+
+## Resident Build Roles
+
+Resident roles are derived domain data, not persisted save data.
+
+Ownership:
+
+- `src/game/types.ts` defines `ResidentRole`, `ResidentRoleProfile` and role
+  requirements on incident choices.
+- `src/game/residents.ts` owns role profiles, role totals and role threshold
+  checks.
+- `src/game/communalDuties.ts` applies preferred-role bonuses only for the
+  assigned resident.
+- `src/game/stationIncidents.ts` exposes
+  `getAvailableStationIncidentChoices` and rejects locked choices during
+  resolution.
+
+React may display resident role tags and incident buttons, but it should not
+duplicate build-rule logic. Components should call the domain helpers and render
+the result.

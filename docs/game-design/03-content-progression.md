@@ -172,8 +172,8 @@ Active tiers:
 - tier 2: `residents_survive`, `capsule_head_start`, `visitor_comfort_bonus`;
 - tier 3: `reputation_income`, `offline_cap_16h`, `maintenance_drones`.
 
-Station incident content starts with 40 ids. The first 10 are active MVP
-incidents; the remaining 30 are disabled backlog entries with stable ids and
+Station incident content starts with 40 ids. The first 15 are active MVP
+incidents; the remaining entries are disabled backlog entries with stable ids and
 visual placeholder ids.
 
 ## Communal Duty Content
@@ -192,3 +192,31 @@ of 3 and the generation limit of 1 new incident per state update.
 Active incidents should vary rewards: visual placeholder details, condition
 repair and timed boosts should appear more often than direct positive kopek
 rewards.
+
+## Resident Roles
+
+Residents now act as the first build-engine layer. Role totals are derived from
+settled residents and are not stored as a new save currency.
+
+Roles:
+
+- `income`: improves rent/economy-oriented options;
+- `comfort`: improves cozy resident and comfort options;
+- `maintenance`: improves condition repair and practical station work;
+- `visitor`: improves guest, courier and traffic options;
+- `renovation`: reserved for future renovation-build choices.
+
+Each resident has one primary role worth 2 points and one optional secondary
+role worth 1 point. Current role profiles live in `src/game/residents.ts`.
+
+Communal duties use preferred roles as a bonus layer. Any eligible resident can
+finish a duty, but a matching role adds extra comfort or condition repair when
+the result is claimed.
+
+Station incidents can add optional role-gated choices. These choices are never
+required to resolve an incident; each incident keeps at least one always
+available option. Locked choices are filtered in the journal and rejected in the
+domain resolver.
+
+Renovation-build role upgrades remain future scope: the current slice only
+makes resident composition matter inside duties and incident choices.

@@ -1,5 +1,13 @@
 import { residents } from './content/residents';
-import type { GameState, ModuleId, ResidentDefinition, ResidentId } from './types';
+import type {
+  GameState,
+  ModuleId,
+  ResidentDefinition,
+  ResidentId,
+  ResidentRole,
+  ResidentRoleProfile,
+  ResidentRoleTotals
+} from './types';
 
 const RESIDENT_MODULE_INCOME_MULTIPLIERS: Partial<Record<ResidentId, Partial<Record<ModuleId, number>>>> = {
   sleepy_engineer: { tenant_capsule: 1.05 },
@@ -10,6 +18,47 @@ const RESIDENT_MODULE_INCOME_MULTIPLIERS: Partial<Record<ResidentId, Partial<Rec
 const RESIDENT_UNLOCK_COMFORT: Partial<Record<ResidentId, number>> = {
   vacuum_gardener: 5
 };
+
+const EMPTY_RESIDENT_ROLE_TOTALS: ResidentRoleTotals = {
+  income: 0,
+  comfort: 0,
+  maintenance: 0,
+  visitor: 0,
+  renovation: 0
+};
+
+const RESIDENT_ROLE_PROFILES: Record<ResidentId, ResidentRoleProfile> = {
+  sleepy_engineer: { primary: 'maintenance', secondary: 'income' },
+  mist_cook: { primary: 'comfort', secondary: 'income' },
+  vacuum_gardener: { primary: 'comfort', secondary: 'maintenance' },
+  sock_master: { primary: 'maintenance', secondary: 'comfort' },
+  teleport_courier: { primary: 'visitor', secondary: 'income' },
+  vip_astroteenant: { primary: 'income', secondary: 'visitor' },
+  retired_cosmonaut: { primary: 'renovation', secondary: 'comfort' },
+  three_eyed_housekeeper: { primary: 'maintenance', secondary: 'visitor' }
+};
+
+export function getResidentRoleProfile(residentId: ResidentId): ResidentRoleProfile {
+  return RESIDENT_ROLE_PROFILES[residentId];
+}
+
+export function getResidentRoleTotals(state: GameState): ResidentRoleTotals {
+  return state.unlockedResidents.reduce<ResidentRoleTotals>((totals, residentId) => {
+    const profile = getResidentRoleProfile(residentId);
+
+    totals[profile.primary] += 2;
+
+    if (profile.secondary) {
+      totals[profile.secondary] += 1;
+    }
+
+    return totals;
+  }, { ...EMPTY_RESIDENT_ROLE_TOTALS });
+}
+
+export function hasResidentRole(state: GameState, role: ResidentRole, points = 1): boolean {
+  return getResidentRoleTotals(state)[role] >= points;
+}
 
 export function getResidentModuleIncomeMultiplier(state: GameState, moduleId: ModuleId): number {
   return state.unlockedResidents.reduce((multiplier, residentId) => {

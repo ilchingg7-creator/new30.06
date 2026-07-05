@@ -1,5 +1,6 @@
 import { BookOpen, Sparkles } from 'lucide-react';
 import { activeStationIncidents } from '../../game/content/stationIncidents';
+import { getAvailableStationIncidentChoices } from '../../game/stationIncidents';
 import type { GameState, StationIncidentId } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
 
@@ -46,12 +47,14 @@ export function StationIncidentJournal({
             return null;
           }
 
+          const choices = getAvailableStationIncidentChoices(gameState, incident.id);
+
           return (
             <article className="incident-card" key={incident.id}>
               <strong>{copy.title}</strong>
               <p className="panel-copy">{copy.body}</p>
               <div className="incident-choice-list">
-                {definition.choices.map((choice) => {
+                {choices.map((choice) => {
                   const choiceCopy = copy.choices[choice.id];
 
                   return (

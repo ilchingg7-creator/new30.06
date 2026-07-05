@@ -4,6 +4,7 @@ import { Users } from 'lucide-react';
 import { residents } from '../../game/content/residents';
 import type { GameState } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
+import { ResidentRoleTags } from './ResidentRoleTags';
 
 interface ResidentsPanelProps {
   gameState: GameState;
@@ -38,6 +39,7 @@ export function ResidentsPanel({ gameState, t }: ResidentsPanelProps) {
                   <span className={isUnlocked ? 'resident-status settled' : 'resident-status locked'}>
                     {isUnlocked ? t.settled : t.notSettled}
                   </span>
+                  {isUnlocked && <ResidentRoleTags residentId={resident.id} t={t} />}
                 </div>
                 <span>{isUnlocked ? bonusText : unlockText}</span>
               </div>

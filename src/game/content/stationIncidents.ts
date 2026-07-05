@@ -46,6 +46,11 @@ export const stationIncidents: StationIncidentDefinition[] = [
         id: 'vent_fog',
         effects: { conditionRepair: { cosmo_kitchen: 8 }, visualPlaceholderIds: ['kitchen_mist_patch_01'] }
       },
+      {
+        id: 'make_borscht_tradition',
+        requiresRole: { role: 'comfort', points: 2 },
+        effects: { comfortDelta: 3, visualPlaceholderIds: ['kitchen_mist_patch_01'] }
+      },
       { id: 'keep_aroma', effects: { comfortDelta: 2 } }
     ]
   },
@@ -104,6 +109,11 @@ export const stationIncidents: StationIncidentDefinition[] = [
     trigger: { kind: 'roomOpened', roomId: 'teleport_entry' },
     choices: [
       { id: 'return_parcel', effects: { comfortDelta: 1, visualPlaceholderIds: ['teleport_parcel_01'] } },
+      {
+        id: 'courier_protocol',
+        requiresRole: { role: 'visitor', points: 2 },
+        effects: { comfortDelta: 2, visualPlaceholderIds: ['teleport_parcel_01'] }
+      },
       { id: 'open_parcel', effects: { creditsDelta: 250 } }
     ]
   },
@@ -135,6 +145,11 @@ export const stationIncidents: StationIncidentDefinition[] = [
           visualPlaceholderIds: ['warning_bulb_01']
         }
       },
+      {
+        id: 'maintenance_shortcut',
+        requiresRole: { role: 'maintenance', points: 2 },
+        effects: { conditionRepair: { tenant_capsule: 12 }, visualPlaceholderIds: ['warning_bulb_01'] }
+      },
       { id: 'label_switch', effects: { comfortDelta: 1 } }
     ]
   },
@@ -147,6 +162,11 @@ export const stationIncidents: StationIncidentDefinition[] = [
     trigger: { kind: 'sceneInteraction', interactionId: 'strange_cat' },
     choices: [
       { id: 'leave_saucer', effects: { comfortDelta: 1, visualPlaceholderIds: ['cat_saucer_01'] } },
+      {
+        id: 'cozy_cat_corner',
+        requiresRole: { role: 'comfort', points: 2 },
+        effects: { comfortDelta: 2, visualPlaceholderIds: ['cat_saucer_01'] }
+      },
       { id: 'mark_pipe', effects: { conditionRepair: { tenant_capsule: 4 } } }
     ]
   },
@@ -180,6 +200,7 @@ export const stationIncidents: StationIncidentDefinition[] = [
     trigger: { kind: 'comfortIncomeMismatch', minIncomePerSecond: 25, maxComfort: 20 },
     choices: [
       { id: 'fund_tea_break', effects: { creditsDelta: -200, comfortDelta: 3 } },
+      { id: 'tea_council', requiresRole: { role: 'comfort', points: 2 }, effects: { comfortDelta: 4 } },
       { id: 'take_minutes', effects: {} }
     ]
   },

@@ -148,4 +148,50 @@ describe('communal duties', () => {
 
     expect(best.comfort).toBeGreaterThan(alternate.comfort);
   });
+
+  it('adds a preferred-role bonus when claiming a matching duty resident', () => {
+    const state = {
+      ...withCapsuleResident(),
+      communalDuty: {
+        id: 'duty-role',
+        dutyId: 'capsule_quiet_hours' as const,
+        roomId: 'tenant_capsule' as const,
+        status: 'ready_to_claim' as const,
+        createdAt: NOW,
+        assignedResidentId: 'sleepy_engineer' as const,
+        startedAt: NOW,
+        completesAt: NOW + 1
+      },
+      roomConditions: { tenant_capsule: 30 }
+    };
+
+    const claimed = claimCommunalDuty(state, NOW + 10);
+
+    expect(claimed.lastCommunalDutyResult?.conditionRepair.tenant_capsule).toBe(35);
+    expect(claimed.roomConditions?.tenant_capsule).toBe(65);
+  });
+
+  it('does not add a role bonus for an eligible resident without the preferred role', () => {
+    const base = withCapsuleResident();
+    const state = {
+      ...base,
+      unlockedResidents: ['sleepy_engineer', 'mist_cook'] as GameState['unlockedResidents'],
+      communalDuty: {
+        id: 'duty-role-alt',
+        dutyId: 'capsule_quiet_hours' as const,
+        roomId: 'tenant_capsule' as const,
+        status: 'ready_to_claim' as const,
+        createdAt: NOW,
+        assignedResidentId: 'mist_cook' as const,
+        startedAt: NOW,
+        completesAt: NOW + 1
+      },
+      roomConditions: { tenant_capsule: 30 }
+    };
+
+    const claimed = claimCommunalDuty(state, NOW + 10);
+
+    expect(claimed.lastCommunalDutyResult?.conditionRepair.tenant_capsule).toBe(12);
+    expect(claimed.roomConditions?.tenant_capsule).toBe(42);
+  });
 });
