@@ -1,7 +1,7 @@
 import { BookOpen, Sparkles } from 'lucide-react';
 import { getStationIncidentChoicePreview } from '../../game/actionPreviews';
 import { activeStationIncidents } from '../../game/content/stationIncidents';
-import { getAvailableStationIncidentChoices } from '../../game/stationIncidents';
+import { getActiveStationIncidents, getAvailableStationIncidentChoices } from '../../game/stationIncidents';
 import type { GameState, StationIncidentId } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
 import { ActionPreviewLine } from './ActionPreviewLine';
@@ -23,7 +23,7 @@ export function StationIncidentJournal({
   t,
   variant = 'default'
 }: StationIncidentJournalProps) {
-  const active = gameState.activeIncidents ?? [];
+  const active = getActiveStationIncidents(gameState);
 
   return (
     <section className={variant === 'compact' ? 'panel incident-journal compact' : 'panel incident-journal'}>

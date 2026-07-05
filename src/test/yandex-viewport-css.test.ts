@@ -37,4 +37,10 @@ describe('Yandex Games viewport CSS', () => {
       'overscroll-behavior: contain'
     );
   });
+
+  it('styles internal scrollbars consistently', () => {
+    expect(ruleBody(/\*\s*\{([^}]*)\}/s)).toContain('scrollbar-color');
+    expect(css).toContain('::-webkit-scrollbar');
+    expect(css).toContain('::-webkit-scrollbar-thumb');
+  });
 });

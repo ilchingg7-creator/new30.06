@@ -1,5 +1,27 @@
 * {
   box-sizing: border-box;
+  scrollbar-color: color-mix(in srgb, var(--color-lamp-amber), var(--color-utility-blue) 38%) rgb(39 49 63 / 16%);
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgb(39 49 63 / 12%);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-lamp-amber), var(--color-utility-blue) 38%);
+  border: 2px solid rgb(39 49 63 / 12%);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-lamp-amber);
 }
 
 html,
@@ -1853,30 +1875,52 @@ input {
 
 .incident-journal .panel-header {
   align-items: center;
+  margin-bottom: 4px;
+}
+
+.incident-journal .panel-header h2 {
+  font-size: 0.9rem;
+}
+
+.incident-journal.compact .panel-header h2 {
+  font-size: 0.78rem;
 }
 
 .incident-list {
   display: grid;
-  gap: 10px;
+  gap: 6px;
 }
 
 .incident-card {
   display: grid;
-  gap: 8px;
-  padding: 10px;
+  gap: 5px;
+  padding: 7px;
   border: 1px solid rgba(194, 230, 218, 0.2);
-  border-radius: 8px;
+  border-radius: 6px;
   background: rgba(10, 22, 38, 0.34);
+}
+
+.incident-card strong {
+  font-size: 0.84rem;
+  line-height: 1.15;
+}
+
+.incident-card .panel-copy {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.25;
 }
 
 .incident-choice-list {
   display: grid;
-  gap: 8px;
+  gap: 5px;
 }
 
 .incident-choice-list button {
   justify-content: space-between;
   text-align: left;
+  min-height: 34px;
+  padding: 5px 7px;
 }
 
 .incident-choice-list .action-preview {

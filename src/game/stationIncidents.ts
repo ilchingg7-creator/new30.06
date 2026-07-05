@@ -10,7 +10,7 @@ import type {
   StationIncidentId
 } from './types';
 
-const MAX_ACTIVE_INCIDENTS = 3;
+const MAX_ACTIVE_INCIDENTS = 1;
 const MAX_NEW_PER_UPDATE = 1;
 
 export interface StationIncidentQueueContext {
@@ -19,7 +19,7 @@ export interface StationIncidentQueueContext {
 }
 
 export function getActiveStationIncidents(state: GameState): ActiveStationIncident[] {
-  return state.activeIncidents ?? [];
+  return (state.activeIncidents ?? []).slice(0, MAX_ACTIVE_INCIDENTS);
 }
 
 export function getNewStationIncidentCount(state: GameState): number {

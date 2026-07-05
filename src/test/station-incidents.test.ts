@@ -66,7 +66,7 @@ describe('station incident state', () => {
     expect(getNewStationIncidentCount(queued)).toBe(1);
   });
 
-  it('respects the unresolved incident cap', () => {
+  it('exposes only one unresolved incident at a time', () => {
     const base = createInitialState(1_000);
     const state: GameState = {
       ...base,
@@ -81,9 +81,12 @@ describe('station incident state', () => {
       }
     };
 
+    const active = getActiveStationIncidents(state);
     const queued = queueEligibleIncidents(state, { now: 10_000 });
 
-    expect(getActiveStationIncidents(queued)).toHaveLength(3);
+    expect(active).toHaveLength(1);
+    expect(active[0]?.id).toBe('kitchen_borscht_fog');
+    expect(getActiveStationIncidents(queued)).toHaveLength(1);
   });
 
   it('resolves an incident choice once and persists visual placeholder rewards', () => {
