@@ -122,3 +122,12 @@ Ownership:
 React may display resident role tags and incident buttons, but it should not
 duplicate build-rule logic. Components should call the domain helpers and render
 the result.
+
+## Action Previews
+
+`src/game/actionPreviews.ts` owns pure preview helpers for purchase, duty,
+incident, renovation and last-result summaries. React components render these
+previews through `ActionPreviewLine` and should not duplicate reward rules when
+a preview helper exists.
+
+Preview helpers do not mutate `GameState` and do not write save data.

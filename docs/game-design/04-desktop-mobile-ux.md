@@ -99,3 +99,15 @@ Desktop - режим контроля и сравнения.
 Первый экран должен сразу сообщать стиль: старая орбитальная коммуналка с теплым окном, табличкой станции и первым жилым модулем. Даже до первой покупки игрок должен понимать, что это уютный космический дом, а не обычный абстрактный кликер.
 
 PixiJS-сцена должна иметь стабильные размеры в обоих layout: canvas не должен менять высоту при покупке модулей, переключении вкладок или появлении бонусов.
+
+## Clarity Spine
+
+Every major action surface should answer four questions in one compact place:
+
+- what matters now;
+- why it matters;
+- what changes after the action;
+- where the result is visible.
+
+Desktop can show a short reason line and tags. Mobile should keep the same
+preview data but render it as compact tags plus one result line.

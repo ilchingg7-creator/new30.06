@@ -90,3 +90,12 @@ This project was developed in a sandbox that only exposes one external port (300
 - `src/test/app-smoke.test.tsx` — end-to-end App render through the real `useGameState` hook.
 
 Manual browser checks at 1366x768 and 390x844 remain a pre-publication requirement on a developer machine or CI with a headless browser.
+
+## Clarity Spine Manual Checks
+
+- Current Task explains why the suggested action matters.
+- Room cards show cost and expected purchase impact.
+- Communal Duty shows best match, role match and expected reward before assignment.
+- Incident choices show reward summaries, and role-gated choices explain the role reason.
+- Renovation panel states reset impact and reputation gain before the button.
+- Last-action feedback appears after a duty claim without blocking play.

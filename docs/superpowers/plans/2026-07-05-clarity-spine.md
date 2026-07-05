@@ -1226,7 +1226,7 @@ git commit -m "feat: show renovation and last action feedback"
 **Interfaces:**
 - No code interfaces.
 
-- [ ] **Step 1: Update UX docs**
+- [x] **Step 1: Update UX docs**
 
 Append to `docs/game-design/04-desktop-mobile-ux.md`:
 
@@ -1244,7 +1244,7 @@ Desktop can show a short reason line and tags. Mobile should keep the same
 preview data but render it as compact tags plus one result line.
 ```
 
-- [ ] **Step 2: Update architecture docs**
+- [x] **Step 2: Update architecture docs**
 
 Append to `docs/game-design/08-technical-architecture.md`:
 
@@ -1259,7 +1259,7 @@ a preview helper exists.
 Preview helpers do not mutate `GameState` and do not write save data.
 ```
 
-- [ ] **Step 3: Update MVP verification docs**
+- [x] **Step 3: Update MVP verification docs**
 
 Append to `docs/game-design/11-mvp-verification.md`:
 
@@ -1274,7 +1274,7 @@ Append to `docs/game-design/11-mvp-verification.md`:
 - Last-action feedback appears after a duty claim without blocking play.
 ```
 
-- [ ] **Step 4: Run focused tests**
+- [x] **Step 4: Run focused tests**
 
 Run:
 
@@ -1284,7 +1284,7 @@ npm.cmd test -- src/test/action-previews.test.ts src/test/station-director.test.
 
 Expected: PASS.
 
-- [ ] **Step 5: Run full verification**
+- [x] **Step 5: Run full verification**
 
 Run:
 
@@ -1302,7 +1302,7 @@ Expected:
 - `git diff --check` reports no whitespace errors;
 - status shows only files intentionally changed by this plan if not yet committed.
 
-- [ ] **Step 6: Commit docs and final plan state**
+- [x] **Step 6: Commit docs and final plan state**
 
 ```powershell
 git add -- docs/game-design/04-desktop-mobile-ux.md docs/game-design/08-technical-architecture.md docs/game-design/11-mvp-verification.md docs/superpowers/plans/2026-07-05-clarity-spine.md
