@@ -20,6 +20,7 @@ import { StationIncidentJournal } from '../components/StationIncidentJournal';
 import { StatsPanel } from '../components/StatsPanel';
 import { TopBar } from '../components/TopBar';
 import { WeeklyRepairPanel } from '../components/WeeklyRepairPanel';
+import { LeaderboardPanel } from '../components/LeaderboardPanel';
 
 type MobileTab = 'modules' | 'goals' | 'bonuses' | 'prestige';
 
@@ -90,6 +91,13 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
             <AchievementsPanel gameState={game.gameState} t={t} />
             <StatsPanel gameState={game.gameState} t={t} />
             <WeeklyRepairPanel gameState={game.gameState} onClaimBonus={game.claimWeeklyBonus} t={t} variant="compact" />
+            <LeaderboardPanel
+              score={Math.floor(game.gameState.totalEarnedCredits)}
+              onRefresh={game.refreshLeaderboard}
+              onLoadEntries={game.loadLeaderboardEntries}
+              t={t}
+              variant="compact"
+            />
           </>
         )}
         {activeTab === 'bonuses' && (

@@ -14,7 +14,9 @@ function makePlatform(grant: boolean): YandexPlatform {
     markReady: vi.fn(),
     showRewardedAd: vi.fn().mockResolvedValue(grant),
     loadCloudSave: vi.fn().mockResolvedValue(null),
-    saveCloud: vi.fn().mockResolvedValue(undefined)
+    saveCloud: vi.fn().mockResolvedValue(undefined),
+    submitLeaderboardScore: vi.fn().mockResolvedValue(undefined),
+    getLeaderboardEntries: vi.fn().mockResolvedValue([])
   };
 }
 
@@ -153,7 +155,9 @@ describe('yandex platform integration', () => {
       markReady: vi.fn(),
       showRewardedAd: vi.fn().mockResolvedValue(false),
       loadCloudSave: vi.fn().mockResolvedValue(JSON.stringify(newerCloud)),
-      saveCloud: vi.fn().mockResolvedValue(undefined)
+      saveCloud: vi.fn().mockResolvedValue(undefined),
+      submitLeaderboardScore: vi.fn().mockResolvedValue(undefined),
+      getLeaderboardEntries: vi.fn().mockResolvedValue([])
     };
 
     const { result } = renderHook(() => useGameState(storage, platform));

@@ -18,6 +18,7 @@ import { StationIncidentJournal } from '../components/StationIncidentJournal';
 import { StatsPanel } from '../components/StatsPanel';
 import { TopBar } from '../components/TopBar';
 import { WeeklyRepairPanel } from '../components/WeeklyRepairPanel';
+import { LeaderboardPanel } from '../components/LeaderboardPanel';
 
 interface DesktopLayoutProps {
   game: UseGameStateResult;
@@ -87,6 +88,12 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
         <AchievementsPanel gameState={game.gameState} t={t} />
         <StatsPanel gameState={game.gameState} t={t} />
         <WeeklyRepairPanel gameState={game.gameState} onClaimBonus={game.claimWeeklyBonus} t={t} />
+        <LeaderboardPanel
+          score={Math.floor(game.gameState.totalEarnedCredits)}
+          onRefresh={game.refreshLeaderboard}
+          onLoadEntries={game.loadLeaderboardEntries}
+          t={t}
+        />
       </aside>
     </section>
   );

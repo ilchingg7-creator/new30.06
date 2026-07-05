@@ -208,6 +208,11 @@ export interface Translation {
   weeklyRepairCondition: string;
   weeklyRepairClaimBonus: string;
   weeklyRepairBonusClaimed: string;
+  // Leaderboard
+  leaderboardTitle: string;
+  leaderboardYourScore: string;
+  leaderboardAnonymous: string;
+  leaderboardEmpty: string;
   // Daily reward labels
   dailyConditionRepair: string;
   dailyTimedBonus: string;
@@ -538,6 +543,10 @@ const ru: Translation = {
   weeklyRepairCondition: 'Довести {room} до {target} состояния',
   weeklyRepairClaimBonus: 'Забрать бонус',
   weeklyRepairBonusClaimed: 'Бонус получен!',
+  leaderboardTitle: 'Таблица лидеров',
+  leaderboardYourScore: 'Ваш счёт',
+  leaderboardAnonymous: 'Аноним',
+  leaderboardEmpty: 'Пока нет записей. Играйте, чтобы попасть в таблицу!',
   dailyConditionRepair: 'состояние всем комнатам',
   dailyTimedBonus: 'доход на 10 минут',
   communalDutyTitle: 'Дежурство',
@@ -1094,6 +1103,10 @@ const en: Translation = {
   weeklyRepairCondition: 'Reach {target} condition on {room}',
   weeklyRepairClaimBonus: 'Claim bonus',
   weeklyRepairBonusClaimed: 'Bonus claimed!',
+  leaderboardTitle: 'Leaderboard',
+  leaderboardYourScore: 'Your score',
+  leaderboardAnonymous: 'Anonymous',
+  leaderboardEmpty: 'No entries yet. Play to get on the board!',
   dailyConditionRepair: 'condition to all rooms',
   dailyTimedBonus: 'income for 10 min',
   communalDutyTitle: 'Communal duty',

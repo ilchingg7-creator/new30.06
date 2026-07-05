@@ -6,6 +6,23 @@ export interface YandexPlayer {
   ): Promise<void>;
 }
 
+export interface YandexLeaderboardEntry {
+  score: number;
+  extraData?: string;
+  rank: number;
+  player: {
+    publicName: string;
+    uniqueID: string;
+    getAvatarSrc(size: string): string;
+  };
+}
+
+export interface YandexLeaderboard {
+  entries: YandexLeaderboardEntry[];
+  userRank?: number;
+  userScore?: number;
+}
+
 export interface YandexSdk {
   features?: {
     LoadingAPI?: {
@@ -22,6 +39,16 @@ export interface YandexSdk {
     }): void;
   };
   getPlayer?(): Promise<YandexPlayer>;
+  getLeaderboards?(): Promise<YandexLeaderboardsApi>;
+}
+
+export interface YandexLeaderboardsApi {
+  getLeaderboardDescription(leaderboardName: string): Promise<{ name: string; title: string }>;
+  setLeaderboardScore(leaderboardName: string, score: number, extraData?: string): Promise<void>;
+  getLeaderboardEntries(
+    leaderboardName: string,
+    options?: { quantityTop?: number; includeUser?: boolean; quantityAround?: number }
+  ): Promise<YandexLeaderboard>;
 }
 
 export interface YandexGamesLib {
@@ -34,6 +61,11 @@ export interface YandexPlatform {
   showRewardedAd(): Promise<boolean>;
   loadCloudSave(key: string): Promise<string | null>;
   saveCloud(key: string, value: string): Promise<void>;
+  submitLeaderboardScore(leaderboardName: string, score: number): Promise<void>;
+  getLeaderboardEntries(
+    leaderboardName: string,
+    quantity?: number
+  ): Promise<YandexLeaderboardEntry[]>;
 }
 
 declare global {
@@ -105,6 +137,28 @@ export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatfo
       } catch {
         // Cloud save is best-effort; localStorage already has the data.
       }
+    },
+    async submitLeaderboardScore(leaderboardName: string, score: number) {
+      try {
+        const lb = await sdk?.getLeaderboards?.();
+        await lb?.setLeaderboardScore(leaderboardName, score);
+      } catch {
+        // Leaderboard is best-effort.
+      }
+    },
+    async getLeaderboardEntries(leaderboardName: string, quantity = 10) {
+      try {
+        const lb = await sdk?.getLeaderboards?.();
+        const result = await lb?.getLeaderboardEntries(leaderboardName, {
+          quantityTop: quantity,
+          includeUser: true,
+          quantityAround: 0
+        });
+
+        return result?.entries ?? [];
+      } catch {
+        return [];
+      }
     }
   };
 }
@@ -131,6 +185,12 @@ export function createNoOpYandexPlatform(): YandexPlatform {
     },
     async saveCloud() {
       // no-op outside Yandex Games
+    },
+    async submitLeaderboardScore() {
+      // no-op outside Yandex Games
+    },
+    async getLeaderboardEntries() {
+      return [];
     }
   };
 }

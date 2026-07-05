@@ -97,7 +97,9 @@ function buildDutyGame(): UseGameStateResult {
     markIncidentsSeen: vi.fn(),
     triggerCatIncident: vi.fn(),
     newIncidentCount: 0,
-    claimWeeklyBonus: vi.fn()
+    claimWeeklyBonus: vi.fn(),
+    refreshLeaderboard: vi.fn(),
+    loadLeaderboardEntries: vi.fn().mockResolvedValue([])
   };
 }
 

@@ -36,7 +36,8 @@ import { playSound, toggleMuted, isMuted } from '../platform/sound';
 import {
   createNoOpYandexPlatform,
   initYandexPlatform,
-  type YandexPlatform
+  type YandexPlatform,
+  type YandexLeaderboardEntry
 } from '../platform/yandex';
 import { resolveSelectedRoomId } from '../station/roomScenes';
 
@@ -82,6 +83,8 @@ export interface UseGameStateResult {
   triggerCatIncident(): void;
   newIncidentCount: number;
   claimWeeklyBonus(): void;
+  refreshLeaderboard(): void;
+  loadLeaderboardEntries(): Promise<YandexLeaderboardEntry[]>;
 }
 
 export function useGameState(
@@ -544,6 +547,13 @@ export function useGameState(
 
         return wr.claimWeeklyBonus(withEvent);
       });
+    }, []),
+    refreshLeaderboard: useCallback(() => {
+      const score = Math.floor(gameState.totalEarnedCredits);
+      void platformRef.current.submitLeaderboardScore('totalEarned', score);
+    }, [gameState.totalEarnedCredits]),
+    loadLeaderboardEntries: useCallback(async () => {
+      return platformRef.current.getLeaderboardEntries('totalEarned', 10);
     }, [])
   };
 }
