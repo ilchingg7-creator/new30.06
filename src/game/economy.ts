@@ -377,13 +377,13 @@ export interface DailyRewardInfo {
 }
 
 const DAILY_REWARD_TABLE: DailyRewardInfo[] = [
-  { kind: 'kopeks', amount: 50, labelKey: 'daily_kopeks' },                              // Day 1
-  { kind: 'comfort', amount: 1, labelKey: 'daily_comfort' },                             // Day 2
-  { kind: 'kopeks', amount: 200, labelKey: 'daily_kopeks' },                             // Day 3
-  { kind: 'condition_repair_all', amount: 30, labelKey: 'daily_condition_repair' },      // Day 4
-  { kind: 'timed_bonus', amount: 0, multiplier: 1.5, durationMs: 10 * 60 * 1_000, labelKey: 'daily_timed_bonus' }, // Day 5
-  { kind: 'comfort', amount: 3, labelKey: 'daily_comfort' },                             // Day 6
-  { kind: 'kopeks', amount: 1000, labelKey: 'daily_kopeks' }                             // Day 7
+  { kind: 'comfort', amount: 1, labelKey: 'daily_comfort' },                             // Day 1
+  { kind: 'condition_repair_all', amount: 15, labelKey: 'daily_condition_repair' },      // Day 2
+  { kind: 'timed_bonus', amount: 0, multiplier: 1.3, durationMs: 10 * 60 * 1_000, labelKey: 'daily_timed_bonus' }, // Day 3
+  { kind: 'comfort', amount: 2, labelKey: 'daily_comfort' },                             // Day 4
+  { kind: 'condition_repair_all', amount: 30, labelKey: 'daily_condition_repair' },      // Day 5
+  { kind: 'timed_bonus', amount: 0, multiplier: 1.5, durationMs: 15 * 60 * 1_000, labelKey: 'daily_timed_bonus' }, // Day 6
+  { kind: 'comfort', amount: 5, labelKey: 'daily_comfort' }                              // Day 7
 ];
 
 export function getDailyLoginReward(streak: number): DailyRewardInfo {
