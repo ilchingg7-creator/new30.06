@@ -1,6 +1,6 @@
 # Station Events, Goals And Renovation Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
 
 **Goal:** Replace low-value current tasks with meaningful station events, make visitor offers respect short wait times, rotate goals by renovation cycle, and make renovation upgrades a gated 1-of-3 tier choice.
 
