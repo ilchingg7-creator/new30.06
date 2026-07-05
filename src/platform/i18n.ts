@@ -198,6 +198,16 @@ export interface Translation {
   conditionWorn: string;
   conditionBroken: string;
   conditionHint: string;
+  // Weekly repair event
+  weeklyRepairTitle: string;
+  weeklyRepairDays: string;
+  weeklyRepairHours: string;
+  weeklyRepairExpired: string;
+  weeklyRepairRoom: string;
+  weeklyRepairLevels: string;
+  weeklyRepairCondition: string;
+  weeklyRepairClaimBonus: string;
+  weeklyRepairBonusClaimed: string;
   // Communal duties
   communalDutyTitle: string;
   communalDutyAssign: string;
@@ -516,6 +526,15 @@ const ru: Translation = {
   conditionWorn: 'Изношенное',
   conditionBroken: 'Сломано',
   conditionHint: 'Назначьте дежурство жильцу, чтобы починить комнату.',
+  weeklyRepairTitle: 'Еженедельный ремонт',
+  weeklyRepairDays: 'д',
+  weeklyRepairHours: 'ч',
+  weeklyRepairExpired: 'Истекло',
+  weeklyRepairRoom: 'Починить {room} до {target} состояния',
+  weeklyRepairLevels: 'Купить {target} уровней для {room}',
+  weeklyRepairCondition: 'Довести {room} до {target} состояния',
+  weeklyRepairClaimBonus: 'Забрать бонус',
+  weeklyRepairBonusClaimed: 'Бонус получен!',
   communalDutyTitle: 'Дежурство',
   communalDutyAssign: 'Назначить',
   communalDutyInProgress: 'Жилец на дежурстве',
@@ -1061,6 +1080,15 @@ const en: Translation = {
   conditionWorn: 'Worn',
   conditionBroken: 'Broken',
   conditionHint: 'Assign a resident duty to repair this room.',
+  weeklyRepairTitle: 'Weekly Repair',
+  weeklyRepairDays: 'd',
+  weeklyRepairHours: 'h',
+  weeklyRepairExpired: 'Expired',
+  weeklyRepairRoom: 'Repair {room} to {target} condition',
+  weeklyRepairLevels: 'Buy {target} levels for {room}',
+  weeklyRepairCondition: 'Reach {target} condition on {room}',
+  weeklyRepairClaimBonus: 'Claim bonus',
+  weeklyRepairBonusClaimed: 'Bonus claimed!',
   communalDutyTitle: 'Communal duty',
   communalDutyAssign: 'Assign',
   communalDutyInProgress: 'Resident on duty',

@@ -882,6 +882,128 @@ input {
   animation: pulse-amber 1.5s ease-in-out infinite;
 }
 
+/* Weekly repair panel */
+.weekly-repair-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.weekly-repair-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.weekly-repair-header h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.weekly-repair-timer {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-utility-blue);
+}
+
+.weekly-repair-tasks {
+  display: grid;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.weekly-task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--color-soft-white);
+  border: 1px solid rgb(39 49 63 / 14%);
+  border-radius: var(--radius-control);
+  padding: 8px 10px;
+}
+
+.weekly-task.completed {
+  opacity: 0.6;
+}
+
+.weekly-task-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.weekly-task-icon {
+  color: var(--color-enamel-green);
+  flex: 0 0 auto;
+}
+
+.weekly-task-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 2px solid var(--color-utility-blue);
+  flex: 0 0 auto;
+}
+
+.weekly-task-label {
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+.weekly-task-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  flex: 0 0 auto;
+}
+
+.weekly-task-progress {
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.weekly-task-meta small {
+  font-size: 0.68rem;
+  color: var(--color-lamp-amber);
+  font-weight: 700;
+}
+
+.weekly-repair-claim {
+  width: 100%;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--color-enamel-green);
+  color: var(--color-ink);
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.weekly-repair-claim:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.weekly-repair-claimed {
+  margin: 0;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-enamel-green);
+}
+
 /* Resident collection book */
 .collection-book-list {
   display: grid;

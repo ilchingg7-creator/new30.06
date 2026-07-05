@@ -96,7 +96,8 @@ function buildDutyGame(): UseGameStateResult {
     resolveIncident: vi.fn(),
     markIncidentsSeen: vi.fn(),
     triggerCatIncident: vi.fn(),
-    newIncidentCount: 0
+    newIncidentCount: 0,
+    claimWeeklyBonus: vi.fn()
   };
 }
 

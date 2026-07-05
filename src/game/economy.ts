@@ -4,6 +4,7 @@ import { modules } from './content/modules';
 import { prestigeUpgrades } from './content/prestigeUpgrades';
 import { completeEligibleGoals, getGoalRenovationCycle, getGoalsForCurrentCycle } from './goals';
 import { getOverallConditionMultiplier, initializeRoomCondition } from './roomConditions';
+import { trackLevelPurchase } from './weeklyRepair';
 import {
   checkResidentUnlocks,
   getResidentFirstRoomCostMultiplier,
@@ -166,7 +167,10 @@ export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState 
   // Initialize room condition on first purchase.
   const withCondition = currentLevel === 0 ? initializeRoomCondition(nextState, moduleId) : nextState;
 
-  return checkResidentUnlocks(checkAchievements(completeEligibleGoals(withCondition)));
+  // Track weekly repair buy_levels task
+  const withWeekly = trackLevelPurchase(withCondition, moduleId);
+
+  return checkResidentUnlocks(checkAchievements(completeEligibleGoals(withWeekly)));
 }
 
 export function advanceGame(state: GameState, seconds: number, now = Date.now()): GameState {

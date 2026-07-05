@@ -1,3 +1,33 @@
+// ── Weekly Repair Event ──────────────────────────────────────────
+
+export type WeeklyRepairTaskKind = 'repair_room' | 'buy_levels' | 'reach_condition';
+
+export interface WeeklyRepairTask {
+  id: string;
+  kind: WeeklyRepairTaskKind;
+  roomId: ModuleId;
+  /** For repair_room: target condition. For buy_levels: levels to buy. For reach_condition: target condition. */
+  target: number;
+  /** Current progress (0..target). */
+  progress: number;
+  completed: boolean;
+  /** Reward comfort for completing this task. */
+  rewardComfort: number;
+}
+
+export interface WeeklyRepairState {
+  /** Epoch ms when the current event started. */
+  startedAt: number;
+  /** Epoch ms when the event expires (7 days after startedAt). */
+  expiresAt: number;
+  /** Tasks for this week. */
+  tasks: WeeklyRepairTask[];
+  /** Whether the player claimed the completion bonus. */
+  bonusClaimed: boolean;
+}
+
+// ── Core Types ───────────────────────────────────────────────────
+
 export type ModuleId =
   | 'tenant_capsule'
   | 'cosmo_kitchen'
@@ -440,6 +470,8 @@ export interface GameState {
   communalDuty?: CommunalDutyState;
   lastCommunalDutyResolvedAt?: number;
   lastCommunalDutyResult?: CommunalDutyResult;
+  /** Weekly repair event state. Regenerates every 7 days. */
+  weeklyRepair?: WeeklyRepairState;
   /**
    * Save schema version. Injected by `serializeGameState` and validated by
    * `parseGameState`. Not set on fresh in-memory states created by

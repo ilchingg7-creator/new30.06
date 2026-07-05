@@ -80,6 +80,7 @@ export interface UseGameStateResult {
   markIncidentsSeen(): void;
   triggerCatIncident(): void;
   newIncidentCount: number;
+  claimWeeklyBonus(): void;
 }
 
 export function useGameState(
@@ -533,6 +534,15 @@ export function useGameState(
     resolveIncident,
     markIncidentsSeen,
     triggerCatIncident,
-    newIncidentCount: getNewStationIncidentCount(gameState)
+    newIncidentCount: getNewStationIncidentCount(gameState),
+    claimWeeklyBonus: useCallback(() => {
+      setGameState((current) => {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const wr = require('../game/weeklyRepair');
+        const withEvent = wr.updateWeeklyRepairProgress(current);
+
+        return wr.claimWeeklyBonus(withEvent);
+      });
+    }, [])
   };
 }
