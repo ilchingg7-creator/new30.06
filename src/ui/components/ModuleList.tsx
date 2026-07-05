@@ -107,7 +107,7 @@ export function ModuleList({ gameState, onBuyLevel, t }: ModuleListProps) {
                 <p>{t.content.modules[module.id]?.role ?? module.role}</p>
                 <span>{t.level} {level}</span>
                 {!locked && <MilestoneProgress level={level} t={t} />}
-                <ActionPreviewLine preview={preview} t={t} />
+                <ActionPreviewLine preview={preview} t={t} variant="compact" surface="inline" />
               </div>
               <button type="button" disabled={!canBuy} onClick={() => onBuyLevel(module.id)}>
                 <Home aria-hidden="true" size={16} />

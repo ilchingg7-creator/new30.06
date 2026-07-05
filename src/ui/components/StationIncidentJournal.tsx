@@ -70,7 +70,7 @@ export function StationIncidentJournal({
                     >
                       <span>{choiceCopy?.label ?? choice.id}</span>
                       <small>{choiceCopy?.description ?? t.reward}</small>
-                      {preview ? <ActionPreviewLine preview={preview} t={t} variant="compact" /> : null}
+                      {preview ? <ActionPreviewLine preview={preview} t={t} variant="compact" surface="inline" /> : null}
                     </button>
                   );
                 })}

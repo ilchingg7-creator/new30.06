@@ -5,6 +5,7 @@ interface ActionPreviewLineProps {
   preview: ActionPreview | LastActionFeedback;
   t: Translation;
   variant?: 'default' | 'compact';
+  surface?: 'card' | 'inline';
 }
 
 function getTagLabel(tag: ActionPreviewTag, t: Translation): string {
@@ -30,15 +31,21 @@ function getTagLabel(tag: ActionPreviewTag, t: Translation): string {
   }
 }
 
-export function ActionPreviewLine({ preview, t, variant = 'default' }: ActionPreviewLineProps) {
+export function ActionPreviewLine({ preview, t, variant = 'default', surface = 'card' }: ActionPreviewLineProps) {
   const detail = 'detail' in preview ? preview.detail : preview.result;
   const reason = 'reason' in preview ? preview.reason : undefined;
+  const className = [
+    'action-preview',
+    variant === 'compact' ? 'compact' : null,
+    surface === 'inline' ? 'inline' : null
+  ].filter(Boolean).join(' ');
 
   return (
-    <div className={variant === 'compact' ? 'action-preview compact' : 'action-preview'}>
+    <div className={className}>
       <div className="action-preview-text">
-        <strong>{preview.title}</strong>
-        {reason ? <span>{reason}</span> : null}
+        {surface === 'inline' ? null : <strong>{preview.title}</strong>}
+        {reason && surface === 'inline' ? <span className="action-preview-inline-reason">{reason}</span> : null}
+        {reason && surface !== 'inline' ? <span>{reason}</span> : null}
         <small>{detail}</small>
       </div>
       {preview.tags.length > 0 ? (
