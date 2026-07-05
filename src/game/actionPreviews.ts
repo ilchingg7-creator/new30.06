@@ -9,6 +9,7 @@ import {
 } from './economy';
 import { formatCredits } from './format';
 import { hasResidentRole } from './residents';
+import type { Translation } from '../platform/i18n';
 import type {
   ActionPreview,
   ActionPreviewTag,
@@ -22,29 +23,38 @@ import type {
   StationIncidentId
 } from './types';
 
-function formatIncomeRate(value: number): string {
-  return `+${value.toFixed(2)}/sec`;
+function interpolate(template: string, vars: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (_match, key: string) => {
+    return key in vars ? String(vars[key]) : `{${key}}`;
+  });
 }
 
-function formatConditionRepair(repair: Partial<Record<ModuleId, number>> | undefined): string | null {
+function formatIncomeRate(value: number, t: Translation): string {
+  return `+${value.toFixed(2)}${t.actionPreviews.incomeRateSuffix}`;
+}
+
+function formatConditionRepair(
+  repair: Partial<Record<ModuleId, number>> | undefined,
+  t: Translation
+): string | null {
   const total = Object.values(repair ?? {}).reduce((sum, value) => sum + value, 0);
 
-  return total > 0 ? `+${total} condition` : null;
+  return total > 0 ? `+${total} ${t.actionPreviews.conditionDelta}` : null;
 }
 
 function formatCreditDelta(value: number): string {
   return `${value > 0 ? '+' : ''}${formatCredits(value)}`;
 }
 
-function formatRewardParts(reward: CommunalDutyReward | StationIncidentEffect): string[] {
+function formatRewardParts(reward: CommunalDutyReward | StationIncidentEffect, t: Translation): string[] {
   const parts: string[] = [];
   const dutyReward = reward as CommunalDutyReward;
   const incidentReward = reward as StationIncidentEffect;
   const comfort = dutyReward.comfortGain ?? incidentReward.comfortDelta;
-  const condition = formatConditionRepair(reward.conditionRepair);
+  const condition = formatConditionRepair(reward.conditionRepair, t);
 
   if (comfort && comfort > 0) {
-    parts.push(`+${comfort} comfort`);
+    parts.push(`+${comfort} ${t.actionPreviews.comfortDelta}`);
   }
 
   if (condition) {
@@ -56,13 +66,13 @@ function formatRewardParts(reward: CommunalDutyReward | StationIncidentEffect): 
   }
 
   if (reward.timedBonus) {
-    parts.push('temporary income boost');
+    parts.push(t.actionPreviews.timedBoost);
   }
 
   const visuals = 'visualPlaceholderIds' in reward ? reward.visualPlaceholderIds : undefined;
 
   if (visuals?.length) {
-    parts.push('visual detail');
+    parts.push(t.actionPreviews.visualDetail);
   }
 
   return parts;
@@ -116,15 +126,15 @@ function getDutyRewardPreview(
   };
 }
 
-export function getModulePurchasePreview(state: GameState, moduleId: ModuleId): ActionPreview {
+export function getModulePurchasePreview(state: GameState, moduleId: ModuleId, t: Translation): ActionPreview {
   const definition = modules.find((module) => module.id === moduleId);
   const level = state.moduleLevels[moduleId];
   const cost = calculateModuleCost(moduleId, state);
 
   if (!definition) {
     return {
-      title: 'Unknown room',
-      result: 'No preview available',
+      title: t.actionPreviews.unknownRoom,
+      result: t.actionPreviews.noPreview,
       tags: [],
       tone: 'warning'
     };
@@ -132,22 +142,26 @@ export function getModulePurchasePreview(state: GameState, moduleId: ModuleId): 
 
   if (state.totalEarnedCredits < definition.unlockAtCredits) {
     return {
-      title: `${definition.name} locked`,
-      reason: 'Earn more kopeks to unlock this room.',
-      result: `Unlocks at ${formatCredits(definition.unlockAtCredits)} total earned`,
+      title: interpolate(t.actionPreviews.roomLocked, { name: definition.name }),
+      reason: t.actionPreviews.roomLockedReason,
+      result: interpolate(t.actionPreviews.unlocksAt, { amount: formatCredits(definition.unlockAtCredits) }),
       tags: ['cost'],
       tone: 'warning'
     };
   }
 
-  const comfort = level === 0 && definition.comfortBonus > 0 ? `, +${definition.comfortBonus} comfort` : '';
+  const comfort = level === 0 && definition.comfortBonus > 0
+    ? interpolate(t.actionPreviews.roomComfort, { amount: definition.comfortBonus })
+    : '';
 
   return {
-    title: level === 0 ? `Open ${definition.name}` : `Upgrade ${definition.name}`,
-    reason: level === 0
-      ? 'Creates the first working room in this station area.'
-      : 'Raises room level and moves toward the next milestone.',
-    result: `Costs ${formatCredits(cost)}, adds ${formatIncomeRate(definition.baseIncomePerSecond)}${comfort}`,
+    title: interpolate(level === 0 ? t.actionPreviews.openRoom : t.actionPreviews.upgradeRoom, { name: definition.name }),
+    reason: level === 0 ? t.actionPreviews.firstRoomReason : t.actionPreviews.upgradeReason,
+    result: interpolate(t.actionPreviews.purchaseResult, {
+      cost: formatCredits(cost),
+      income: formatIncomeRate(definition.baseIncomePerSecond, t),
+      comfort
+    }),
     tags: ['cost', 'income', ...(comfort ? (['comfort'] as ActionPreviewTag[]) : [])],
     tone: state.credits >= cost ? 'positive' : 'neutral'
   };
@@ -156,46 +170,49 @@ export function getModulePurchasePreview(state: GameState, moduleId: ModuleId): 
 export function getCommunalDutyAssignmentPreview(
   state: GameState,
   dutyId: CommunalDutyId,
-  residentId: ResidentId
+  residentId: ResidentId,
+  t: Translation
 ): ActionPreview {
   const preview = getDutyRewardPreview(state, dutyId, residentId);
 
   if (!preview) {
     return {
-      title: 'Resident cannot take this duty',
-      result: 'Choose an eligible resident.',
+      title: t.actionPreviews.dutyCannot,
+      result: t.actionPreviews.chooseResident,
       tags: [],
       tone: 'warning'
     };
   }
 
-  const rewardText = formatRewardParts(preview.reward).join(', ') || 'station stabilized';
+  const rewardText = formatRewardParts(preview.reward, t).join(', ') || t.actionPreviews.stationStabilized;
+  const roleLabel = preview.preferredRole ?? t.actionPreviews.roleResident;
 
   return {
-    title: 'Expected duty result',
+    title: t.actionPreviews.expectedDuty,
     reason: preview.roleMatched
-      ? `${preview.preferredRole ?? 'Resident'} role matches this duty.`
-      : 'Eligible resident can complete this duty.',
+      ? interpolate(t.actionPreviews.roleMatches, { role: roleLabel })
+      : t.actionPreviews.eligibleResident,
     result: rewardText,
     tags: ['condition', ...(preview.roleMatched ? (['role'] as ActionPreviewTag[]) : [])],
     tone: 'positive'
   };
 }
 
-export function getCommunalDutyClaimPreview(state: GameState): ActionPreview | null {
+export function getCommunalDutyClaimPreview(state: GameState, t: Translation): ActionPreview | null {
   const active = state.communalDuty;
 
   if (!active || active.status !== 'ready_to_claim' || !active.assignedResidentId) {
     return null;
   }
 
-  return getCommunalDutyAssignmentPreview(state, active.dutyId, active.assignedResidentId);
+  return getCommunalDutyAssignmentPreview(state, active.dutyId, active.assignedResidentId, t);
 }
 
 export function getStationIncidentChoicePreview(
   state: GameState,
   incidentId: StationIncidentId,
-  choiceId: string
+  choiceId: string,
+  t: Translation
 ): ActionPreview | null {
   const definition = activeStationIncidents.find((incident) => incident.id === incidentId);
   const choice = definition?.choices.find((item) => item.id === choiceId);
@@ -204,12 +221,14 @@ export function getStationIncidentChoicePreview(
     return null;
   }
 
-  const rewardText = formatRewardParts(choice.effects).join(', ') || 'journal memory';
+  const rewardText = formatRewardParts(choice.effects, t).join(', ') || t.actionPreviews.journalMemory;
   const role = choice.requiresRole?.role;
 
   return {
-    title: role ? 'Role solution' : 'Choice result',
-    reason: role ? `${role} role unlocks this option.` : 'Always available incident response.',
+    title: role ? t.actionPreviews.roleSolution : t.actionPreviews.choiceResult,
+    reason: role
+      ? interpolate(t.actionPreviews.roleUnlocks, { role })
+      : t.actionPreviews.alwaysAvailable,
     result: rewardText,
     tags: [
       ...(choice.effects.comfortDelta ? (['comfort'] as ActionPreviewTag[]) : []),
@@ -222,7 +241,7 @@ export function getStationIncidentChoicePreview(
   };
 }
 
-export function getRenovationPreview(state: GameState): ActionPreview {
+export function getRenovationPreview(state: GameState, t: Translation): ActionPreview {
   const reward = calculatePrestigeReward(state);
   const canRenovate = canPerformPrestige(state);
   const upgradeChoices = getAvailablePrestigeUpgrades({
@@ -231,29 +250,35 @@ export function getRenovationPreview(state: GameState): ActionPreview {
   }).length;
 
   return {
-    title: canRenovate ? 'Renovation ready' : 'Prepare renovation',
-    reason: 'Renovation resets rooms and kopeks, but reputation and purchased permanent upgrades stay.',
+    title: canRenovate ? t.actionPreviews.renovationReady : t.actionPreviews.prepareRenovation,
+    reason: t.actionPreviews.renovationReason,
     result: canRenovate
-      ? `Gain +${reward} reputation and unlock ${Math.min(3, upgradeChoices || 3)} upgrade choices`
-      : `Build toward +${Math.max(1, reward)} reputation`,
+      ? interpolate(t.actionPreviews.renovationGain, {
+          reward,
+          choices: Math.min(3, upgradeChoices || 3)
+        })
+      : interpolate(t.actionPreviews.renovationBuild, { reward: Math.max(1, reward) }),
     tags: ['renovation'],
     tone: canRenovate ? 'positive' : 'neutral'
   };
 }
 
-export function getLastActionFeedback(state: GameState): LastActionFeedback | null {
+export function getLastActionFeedback(state: GameState, t: Translation): LastActionFeedback | null {
   const duty = state.lastCommunalDutyResult;
 
   if (!duty) {
     return null;
   }
 
-  const condition = formatConditionRepair(duty.conditionRepair);
-  const parts = [duty.comfortGain > 0 ? `+${duty.comfortGain} comfort` : null, condition].filter(Boolean);
+  const condition = formatConditionRepair(duty.conditionRepair, t);
+  const parts = [
+    duty.comfortGain > 0 ? `+${duty.comfortGain} ${t.actionPreviews.comfortDelta}` : null,
+    condition
+  ].filter(Boolean);
 
   return {
-    title: 'Duty result',
-    detail: parts.join(', ') || 'Station duty completed',
+    title: t.actionPreviews.dutyResult,
+    detail: parts.join(', ') || t.actionPreviews.dutyCompleted,
     tags: [
       ...(duty.comfortGain > 0 ? (['comfort'] as ActionPreviewTag[]) : []),
       ...(condition ? (['condition'] as ActionPreviewTag[]) : [])

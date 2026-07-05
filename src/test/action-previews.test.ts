@@ -8,13 +8,16 @@ import {
   getStationIncidentChoicePreview
 } from '../game/actionPreviews';
 import { createInitialState } from '../game/economy';
+import { translations } from '../platform/i18n';
 import type { GameState } from '../game/types';
+
+const t = translations.en;
 
 describe('action previews', () => {
   it('previews a first room purchase with cost, income and comfort impact', () => {
     const state = createInitialState(1_000);
 
-    const preview = getModulePurchasePreview(state, 'tenant_capsule');
+    const preview = getModulePurchasePreview(state, 'tenant_capsule', t);
 
     expect(preview.tags).toEqual(expect.arrayContaining(['cost', 'income']));
     expect(preview.result).toContain('+1.00/sec');
@@ -24,7 +27,7 @@ describe('action previews', () => {
   it('previews locked modules with unlock progress instead of purchase impact', () => {
     const state = createInitialState(1_000);
 
-    const preview = getModulePurchasePreview(state, 'cosmo_kitchen');
+    const preview = getModulePurchasePreview(state, 'cosmo_kitchen', t);
 
     expect(preview.tone).toBe('warning');
     expect(preview.result).toContain('Unlocks at');
@@ -38,7 +41,7 @@ describe('action previews', () => {
       roomConditions: { tenant_capsule: 30 }
     };
 
-    const preview = getCommunalDutyAssignmentPreview(state, 'capsule_quiet_hours', 'sleepy_engineer');
+    const preview = getCommunalDutyAssignmentPreview(state, 'capsule_quiet_hours', 'sleepy_engineer', t);
 
     expect(preview.tags).toEqual(expect.arrayContaining(['condition', 'role']));
     expect(preview.reason).toContain('maintenance role matches');
@@ -61,7 +64,7 @@ describe('action previews', () => {
       unlockedResidents: ['sleepy_engineer']
     };
 
-    const preview = getCommunalDutyClaimPreview(state);
+    const preview = getCommunalDutyClaimPreview(state, t);
 
     expect(preview?.result).toContain('+35 condition');
     expect(preview?.tags).toContain('condition');
@@ -73,7 +76,7 @@ describe('action previews', () => {
       unlockedResidents: ['mist_cook']
     };
 
-    const preview = getStationIncidentChoicePreview(state, 'kitchen_borscht_fog', 'make_borscht_tradition');
+    const preview = getStationIncidentChoicePreview(state, 'kitchen_borscht_fog', 'make_borscht_tradition', t);
 
     expect(preview?.reason).toContain('comfort role');
     expect(preview?.result).toContain('+3 comfort');
@@ -84,7 +87,7 @@ describe('action previews', () => {
     const base = createInitialState(1_000);
     const state: GameState = {
       ...base,
-      totalEarnedCredits: 100_000,
+      totalEarnedCredits: 200_000,
       comfort: 25,
       moduleLevels: {
         ...base.moduleLevels,
@@ -94,7 +97,7 @@ describe('action previews', () => {
       completedGoals: ['buy_capsule_10', 'unlock_kitchen', 'reach_comfort_25', 'earn_credits_10000']
     };
 
-    const preview = getRenovationPreview(state);
+    const preview = getRenovationPreview(state, t);
 
     expect(preview.tags).toEqual(expect.arrayContaining(['renovation']));
     expect(preview.result).toContain('+1 reputation');
@@ -115,7 +118,7 @@ describe('action previews', () => {
       }
     };
 
-    const feedback = getLastActionFeedback(state);
+    const feedback = getLastActionFeedback(state, t);
 
     expect(feedback?.title).toContain('Duty result');
     expect(feedback?.detail).toContain('+35 condition');

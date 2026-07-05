@@ -35,7 +35,8 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
   const stationGuidance = getStationGuidance({
     state: game.gameState,
     incomePerSecond: game.incomePerSecond,
-    hasPendingDailyReward: Boolean(game.dailyReward)
+    hasPendingDailyReward: Boolean(game.dailyReward),
+    t
   });
 
   const tabs: Array<{ id: MobileTab; label: string; icon: typeof Home }> = [

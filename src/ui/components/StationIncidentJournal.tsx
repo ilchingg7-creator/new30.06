@@ -58,7 +58,7 @@ export function StationIncidentJournal({
               <div className="incident-choice-list">
                 {choices.map((choice) => {
                   const choiceCopy = copy.choices[choice.id];
-                  const preview = getStationIncidentChoicePreview(gameState, incident.id, choice.id);
+                  const preview = getStationIncidentChoicePreview(gameState, incident.id, choice.id, t);
 
                   return (
                     <button

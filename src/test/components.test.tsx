@@ -82,14 +82,14 @@ describe('core UI components', () => {
   it('shows module purchase preview on room cards', () => {
     render(<ModuleList gameState={createInitialState(1_000)} onBuyLevel={vi.fn()} t={t} />);
 
-    expect(screen.getByText(/first working room/i)).toBeInTheDocument();
-    expect(screen.getByText(/\+1.00\/sec/i)).toBeInTheDocument();
+    expect(screen.getByText(/первую рабочую комнату/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+1.00\/сек/i)).toBeInTheDocument();
   });
 
   it('shows locked module unlock preview instead of purchase impact', () => {
     render(<ModuleList gameState={createInitialState(1_000)} onBuyLevel={vi.fn()} t={t} />);
 
-    expect(screen.getAllByText(/Unlocks at/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Откроется при/i).length).toBeGreaterThan(0);
   });
 
   it('shows whether the station has settled residents yet', () => {
@@ -155,8 +155,8 @@ describe('core UI components', () => {
 
     render(<PrestigePanel gameState={gameState} onRenovate={vi.fn()} t={t} />);
 
-    expect(screen.getByText(/resets rooms and kopeks/i)).toBeInTheDocument();
-    expect(screen.getByText(/\+1 reputation/i)).toBeInTheDocument();
+    expect(screen.getByText(/сбрасывает комнаты и копейки/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+1 репутации/i)).toBeInTheDocument();
   });
 
   it('shows non-modal feedback for the latest duty result', () => {
@@ -175,8 +175,8 @@ describe('core UI components', () => {
 
     render(<LastActionFeedbackPanel gameState={gameState} t={t} />);
 
-    expect(screen.getByText(/Duty result/i)).toBeInTheDocument();
-    expect(screen.getByText(/\+35 condition/i)).toBeInTheDocument();
+    expect(screen.getByText(/Результат дежурства/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+35 состояние/i)).toBeInTheDocument();
   });
 
   it('shows the strange cat only in the tenant capsule scene', () => {
@@ -321,7 +321,7 @@ describe('core UI components', () => {
       />
     );
 
-    expect(screen.getByText(/comfort role unlocks this option/i)).toBeInTheDocument();
-    expect(screen.getByText(/\+3 comfort/i)).toBeInTheDocument();
+    expect(screen.getByText(/открывает этот вариант/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+3 комфорт/i)).toBeInTheDocument();
   });
 });

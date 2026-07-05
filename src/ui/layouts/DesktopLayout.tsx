@@ -30,7 +30,8 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
   const stationGuidance = getStationGuidance({
     state: game.gameState,
     incomePerSecond: game.incomePerSecond,
-    hasPendingDailyReward: Boolean(game.dailyReward)
+    hasPendingDailyReward: Boolean(game.dailyReward),
+    t
   });
 
   return (

@@ -35,7 +35,7 @@ export function CommunalDutyPanel({ gameState, onAssign, onClaim, variant = 'def
   const copy = t.communalDuties[definition.id];
   const eligibleResidents = definition.eligibleResidentIds.filter((residentId) => gameState.unlockedResidents.includes(residentId));
   const className = variant === 'compact' ? 'panel communal-duty-panel compact' : 'panel communal-duty-panel';
-  const claimPreview = getCommunalDutyClaimPreview(gameState);
+  const claimPreview = getCommunalDutyClaimPreview(gameState, t);
 
   return (
     <section className={className} aria-labelledby="communal-duty-title">
@@ -50,7 +50,7 @@ export function CommunalDutyPanel({ gameState, onAssign, onClaim, variant = 'def
           <div className="communal-duty-actions">
             {eligibleResidents.length === 0 && <span>{t.communalDutyNoResidents}</span>}
             {eligibleResidents.map((residentId) => {
-              const preview = getCommunalDutyAssignmentPreview(gameState, definition.id, residentId);
+              const preview = getCommunalDutyAssignmentPreview(gameState, definition.id, residentId, t);
 
               return (
                 <div className="communal-duty-choice" key={residentId}>

@@ -5,6 +5,7 @@ import {
 } from './actionPreviews';
 import { communalDuties } from './content/communalDuties';
 import { calculatePrestigeReward, canPerformPrestige } from './economy';
+import type { Translation } from '../platform/i18n';
 import type { ActionPreview, CommunalDutyId, GameState, ModuleId } from './types';
 
 export type StationGuidanceCopyKey =
@@ -54,12 +55,14 @@ export interface StationGuidanceInput {
   state: GameState;
   incomePerSecond: number;
   hasPendingDailyReward?: boolean;
+  t: Translation;
 }
 
 export function getStationGuidance({
   state,
   incomePerSecond: _incomePerSecond,
-  hasPendingDailyReward = false
+  hasPendingDailyReward = false,
+  t
 }: StationGuidanceInput): StationGuidance | null {
   if (state.activeVisitor && state.credits >= state.activeVisitor.cost) {
     return {
@@ -89,7 +92,7 @@ export function getStationGuidance({
       canActNow: true,
       dutyId: state.communalDuty.dutyId,
       targetRoomId: state.communalDuty.roomId,
-      preview: getCommunalDutyClaimPreview(state) ?? undefined
+      preview: getCommunalDutyClaimPreview(state, t) ?? undefined
     };
   }
 
@@ -105,7 +108,7 @@ export function getStationGuidance({
       canActNow: true,
       dutyId: activeDuty.dutyId,
       targetRoomId: activeDuty.roomId,
-      preview: residentId ? getCommunalDutyAssignmentPreview(state, activeDuty.dutyId, residentId) : undefined
+      preview: residentId ? getCommunalDutyAssignmentPreview(state, activeDuty.dutyId, residentId, t) : undefined
     };
   }
 
@@ -119,7 +122,7 @@ export function getStationGuidance({
       canActNow: true,
       canRenovate: true,
       expectedReputation: prestigeReward,
-      preview: getRenovationPreview(state)
+      preview: getRenovationPreview(state, t)
     };
   }
 

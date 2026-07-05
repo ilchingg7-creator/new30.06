@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { createInitialState } from '../game/economy';
 import { getStationGuidance } from '../game/stationDirector';
+import { translations } from '../platform/i18n';
 import type { GameState } from '../game/types';
+
+const t = translations.en;
 
 function withCapsuleLevel(level: number): GameState {
   const base = createInitialState(1_000);
@@ -31,7 +34,7 @@ describe('station director guidance', () => {
       }
     };
 
-    const guidance = getStationGuidance({ state, incomePerSecond: 1 });
+    const guidance = getStationGuidance({ state, incomePerSecond: 1, t });
 
     expect(guidance).not.toBeNull();
     if (!guidance) {
@@ -48,7 +51,7 @@ describe('station director guidance', () => {
       credits: 1_000
     };
 
-    const guidance = getStationGuidance({ state, incomePerSecond: 5 });
+    const guidance = getStationGuidance({ state, incomePerSecond: 5, t });
 
     expect(guidance).toBeNull();
   });
@@ -68,7 +71,7 @@ describe('station director guidance', () => {
       }
     };
 
-    const guidance = getStationGuidance({ state, incomePerSecond: 0 });
+    const guidance = getStationGuidance({ state, incomePerSecond: 0, t });
 
     expect(guidance).not.toBeNull();
     if (!guidance) {
@@ -94,7 +97,7 @@ describe('station director guidance', () => {
       unlockedResidents: ['sleepy_engineer']
     };
 
-    const guidance = getStationGuidance({ state, incomePerSecond: 0 });
+    const guidance = getStationGuidance({ state, incomePerSecond: 0, t });
 
     expect(guidance?.preview?.reason).toContain('role');
     expect(guidance?.preview?.result).toContain('condition');
@@ -112,7 +115,7 @@ describe('station director guidance', () => {
       }
     };
 
-    const guidance = getStationGuidance({ state, incomePerSecond: 5 });
+    const guidance = getStationGuidance({ state, incomePerSecond: 5, t });
 
     expect(guidance).not.toBeNull();
     if (!guidance) {
@@ -128,7 +131,7 @@ describe('station director guidance', () => {
       credits: 15
     };
 
-    const guidance = getStationGuidance({ state, incomePerSecond: 0 });
+    const guidance = getStationGuidance({ state, incomePerSecond: 0, t });
 
     expect(guidance).toBeNull();
   });
@@ -139,7 +142,7 @@ describe('station director guidance', () => {
       credits: 10
     };
 
-    const guidance = getStationGuidance({ state, incomePerSecond: 2 });
+    const guidance = getStationGuidance({ state, incomePerSecond: 2, t });
 
     expect(guidance).toBeNull();
   });
@@ -150,7 +153,7 @@ describe('station director guidance', () => {
       credits: 0
     };
 
-    const guidance = getStationGuidance({ state, incomePerSecond: 0 });
+    const guidance = getStationGuidance({ state, incomePerSecond: 0, t });
 
     expect(guidance).toBeNull();
   });
@@ -169,7 +172,7 @@ describe('station director guidance', () => {
       completedGoals: ['buy_capsule_10', 'unlock_kitchen', 'reach_comfort_25', 'earn_credits_10000'] as GameState['completedGoals']
     };
 
-    const guidance = getStationGuidance({ state, incomePerSecond: 10 });
+    const guidance = getStationGuidance({ state, incomePerSecond: 10, t });
 
     expect(guidance).not.toBeNull();
     if (!guidance) {
@@ -189,7 +192,7 @@ describe('station director guidance', () => {
       totalEarnedCredits: 100_000
     };
 
-    const guidance = getStationGuidance({ state, incomePerSecond: 10 });
+    const guidance = getStationGuidance({ state, incomePerSecond: 10, t });
 
     expect(guidance).toBeNull();
   });
@@ -198,7 +201,8 @@ describe('station director guidance', () => {
     const guidance = getStationGuidance({
       state: createInitialState(1_000),
       incomePerSecond: 0,
-      hasPendingDailyReward: true
+      hasPendingDailyReward: true,
+      t
     });
 
     expect(guidance).not.toBeNull();

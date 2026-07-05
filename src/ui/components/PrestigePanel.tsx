@@ -38,7 +38,7 @@ export function PrestigePanel({ gameState, onRenovate, t }: PrestigePanelProps) 
   const requirements = getPrestigeRequirements(gameState);
   const canRenovate = canPerformPrestige(gameState);
   const cycle = getGoalRenovationCycle(gameState);
-  const preview = getRenovationPreview(gameState);
+  const preview = getRenovationPreview(gameState, t);
 
   return (
     <section className="panel" aria-labelledby="prestige-panel-title">

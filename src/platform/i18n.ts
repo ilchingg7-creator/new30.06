@@ -157,6 +157,44 @@ export interface Translation {
   previewTagRenovation: string;
   previewTagTimedBonus: string;
   previewTagCost: string;
+  // Action previews (titles, reasons, results rendered in ActionPreviewLine)
+  actionPreviews: {
+    incomeRateSuffix: string;
+    comfortDelta: string;
+    conditionDelta: string;
+    timedBoost: string;
+    visualDetail: string;
+    stationStabilized: string;
+    journalMemory: string;
+    unknownRoom: string;
+    noPreview: string;
+    roomLocked: string;
+    roomLockedReason: string;
+    unlocksAt: string;
+    roomComfort: string;
+    openRoom: string;
+    upgradeRoom: string;
+    firstRoomReason: string;
+    upgradeReason: string;
+    purchaseResult: string;
+    dutyCannot: string;
+    chooseResident: string;
+    expectedDuty: string;
+    roleMatches: string;
+    roleResident: string;
+    eligibleResident: string;
+    roleSolution: string;
+    choiceResult: string;
+    roleUnlocks: string;
+    alwaysAvailable: string;
+    renovationReady: string;
+    prepareRenovation: string;
+    renovationReason: string;
+    renovationGain: string;
+    renovationBuild: string;
+    dutyResult: string;
+    dutyCompleted: string;
+  };
   // Achievements
   achievementsCount: string;
   // Common
@@ -302,7 +340,7 @@ const ru: Translation = {
   nextCost: 'Цена следующего',
   stationIncome: 'Текущий доход станции',
   comfortOnOpen: 'Комфорт при открытии',
-  nextMilestone: 'Следующий milestone',
+  nextMilestone: 'Следующий рубеж',
   allGoalsDone: 'Все ближайшие цели выполнены',
   allGoalsDoneHint: 'Продолжайте улучшать комнаты',
   adBonusesHint: 'Рекламные бонусы доступны на Yandex Games. Локально бонусы включаются сразу.',
@@ -375,11 +413,11 @@ const ru: Translation = {
   soundOn: 'Включить звук',
   soundOff: 'Выключить звук',
   eyebrow: 'Retro Soviet Space Cozy',
-  residentRoleIncome: 'income',
-  residentRoleComfort: 'comfort',
-  residentRoleMaintenance: 'maintenance',
-  residentRoleVisitor: 'visitor',
-  residentRoleRenovation: 'renovation',
+  residentRoleIncome: 'доход',
+  residentRoleComfort: 'комфорт',
+  residentRoleMaintenance: 'ремонт',
+  residentRoleVisitor: 'гость',
+  residentRoleRenovation: 'реновация',
   previewTags: 'Теги результата',
   previewTagIncome: 'доход',
   previewTagComfort: 'комфорт',
@@ -390,6 +428,43 @@ const ru: Translation = {
   previewTagRenovation: 'реновация',
   previewTagTimedBonus: 'буст',
   previewTagCost: 'цена',
+  actionPreviews: {
+    incomeRateSuffix: '/сек',
+    comfortDelta: 'комфорт',
+    conditionDelta: 'состояние',
+    timedBoost: 'временный буст дохода',
+    visualDetail: 'визуальная деталь',
+    stationStabilized: 'станция стабилизирована',
+    journalMemory: 'запись в журнале',
+    unknownRoom: 'Неизвестная комната',
+    noPreview: 'Предпросмотр недоступен',
+    roomLocked: '{name} — закрыто',
+    roomLockedReason: 'Заработайте больше копеек, чтобы открыть эту комнату.',
+    unlocksAt: 'Откроется при {amount} суммарно заработанных',
+    roomComfort: ', +{amount} комфорт',
+    openRoom: 'Открыть {name}',
+    upgradeRoom: 'Улучшить {name}',
+    firstRoomReason: 'Создаёт первую рабочую комнату в этой зоне станции.',
+    upgradeReason: 'Повышает уровень комнаты и приближает к следующему рубежу.',
+    purchaseResult: 'Стоит {cost}, даёт +{income}{comfort}',
+    dutyCannot: 'Жилец не может взять это дежурство',
+    chooseResident: 'Выберите подходящего жильца.',
+    expectedDuty: 'Ожидаемый результат дежурства',
+    roleMatches: 'Роль «{role}» подходит для этого дежурства.',
+    roleResident: 'Жилец',
+    eligibleResident: 'Подходящий жилец может выполнить это дежурство.',
+    roleSolution: 'Ролевое решение',
+    choiceResult: 'Результат выбора',
+    roleUnlocks: 'Роль «{role}» открывает этот вариант.',
+    alwaysAvailable: 'Всегда доступный ответ на инцидент.',
+    renovationReady: 'Реновация готова',
+    prepareRenovation: 'Готовьте реновацию',
+    renovationReason: 'Реновация сбрасывает комнаты и копейки, но репутация и купленные улучшения остаются.',
+    renovationGain: '+{reward} репутации и {choices} вариантов улучшений',
+    renovationBuild: 'Прокачивайте станцию к +{reward} репутации',
+    dutyResult: 'Результат дежурства',
+    dutyCompleted: 'Дежурство на станции завершено'
+  },
   appTitle: 'Космическая коммуналка',
   loadingHint: 'Греем шлюзы',
   loadingBody: 'Станция готовит первый жилой модуль.',
@@ -413,7 +488,7 @@ const ru: Translation = {
   adSuffix: '(реклама)',
   boostTooltip: 'Удваивает доход станции на 5 минут. На Yandex Games требует просмотра рекламы.',
   vipTooltip: 'Заселяет VIP-жильца: x2 доход на 10 минут. На Yandex Games требует просмотра рекламы.',
-  allMilestonesDone: 'Все milestones получены',
+  allMilestonesDone: 'Все рубежи получены',
   dailyRewardSuffix: 'копеек',
   rewardKindComfort: 'Бонус комфорта',
   rewardKindVisual: 'Визуальная деталь',
@@ -433,7 +508,7 @@ const ru: Translation = {
       title: 'В кухне завёлся борщевой туман',
       body: 'Туман пахнет обедом и слегка спорит с вентиляцией.',
       choices: {
-        make_borscht_tradition: { label: 'Borscht tradition', description: '+comfort, visual detail' },
+        make_borscht_tradition: { label: 'Борщевая традиция', description: '+комфорт, визуальная деталь' },
         vent_fog: { label: 'Проветрить через шлюз', description: '+состояние кухни, деталь тумана' },
         keep_aroma: { label: 'Оставить для аромата', description: '+комфорт' }
       }
@@ -466,7 +541,7 @@ const ru: Translation = {
       title: 'Телепорт принёс чужую посылку',
       body: 'На коробке написано: "Если это не вам, значит почти вам".',
       choices: {
-        courier_protocol: { label: 'Courier protocol', description: '+comfort, visual detail' },
+        courier_protocol: { label: 'Курьерский протокол', description: '+комфорт, визуальная деталь' },
         return_parcel: { label: 'Вернуть отправителю', description: '+комфорт, деталь' },
         open_parcel: { label: 'Открыть осторожно', description: '+копейки' }
       }
@@ -483,7 +558,7 @@ const ru: Translation = {
       title: 'Лампочка тревоги моргает слишком уверенно',
       body: 'Никто не помнит, что она означает, но все ходят тише.',
       choices: {
-        maintenance_shortcut: { label: 'Maintenance shortcut', description: '+condition, visual detail' },
+        maintenance_shortcut: { label: 'Ремонтный лайфхак', description: '+состояние, визуальная деталь' },
         repair_now: { label: 'Починить сейчас', description: '-копейки, +состояние, деталь' },
         label_switch: { label: 'Подписать выключатель', description: '+комфорт' }
       }
@@ -492,7 +567,7 @@ const ru: Translation = {
       title: 'Странный кот нашёл тёплую трубу',
       body: 'Кот делает вид, что это его инженерное решение.',
       choices: {
-        cozy_cat_corner: { label: 'Cozy cat corner', description: '+comfort, visual detail' },
+        cozy_cat_corner: { label: 'Уютный кошачий угол', description: '+комфорт, визуальная деталь' },
         leave_saucer: { label: 'Оставить блюдце', description: '+комфорт, деталь' },
         mark_pipe: { label: 'Пометить трубу как важную', description: '+состояние капсулы' }
       }
@@ -509,7 +584,7 @@ const ru: Translation = {
       title: 'Доход растёт, а чайник грустит',
       body: 'Жильцы намекают, что станция стала эффективной, но не уютной.',
       choices: {
-        tea_council: { label: 'Tea council', description: '+comfort' },
+        tea_council: { label: 'Чайный совет', description: '+комфорт' },
         fund_tea_break: { label: 'Профинансировать чай', description: '-копейки, +комфорт' },
         take_minutes: { label: 'Записать протокол', description: 'память журнала' }
       }
@@ -584,7 +659,7 @@ const ru: Translation = {
     courier_teleport_traffic: {
       title: 'Курьеру нужен поток',
       request: '«Телеппорт еле работает. 15 уровень — и посылки полетят сами!»',
-      complete: 'Телепорт гудит от traffic. Курьер доволен. +4 комфорта!'
+      complete: 'Телепорт гудит от потока. Курьер доволен. +4 комфорта!'
     },
     cosmonaut_warm_start: {
       title: 'Сосед-космонавт просит тепла',
@@ -725,7 +800,7 @@ const ru: Translation = {
       signal_radio_host: {
         name: 'Радиоведущий сигналов',
         unlockText: 'Открыта общая обсерватория.',
-        bonusText: '+20% к длительности timed-бонусов',
+        bonusText: '+20% к длительности временных бонусов',
         bio: 'Ведёт ночное радио из обсерватории. Ловит сигналы из дальнего космоса и превращает их в музыку. Спит днём, работает ночью. Его передачи продлевают любые бонусы — говорит, что это «резонанс волн».'
       },
       floating_librarian: {
@@ -1051,6 +1126,43 @@ const en: Translation = {
   previewTagRenovation: 'renovation',
   previewTagTimedBonus: 'boost',
   previewTagCost: 'cost',
+  actionPreviews: {
+    incomeRateSuffix: '/sec',
+    comfortDelta: 'comfort',
+    conditionDelta: 'condition',
+    timedBoost: 'temporary income boost',
+    visualDetail: 'visual detail',
+    stationStabilized: 'station stabilized',
+    journalMemory: 'journal memory',
+    unknownRoom: 'Unknown room',
+    noPreview: 'No preview available',
+    roomLocked: '{name} locked',
+    roomLockedReason: 'Earn more kopeks to unlock this room.',
+    unlocksAt: 'Unlocks at {amount} total earned',
+    roomComfort: ', +{amount} comfort',
+    openRoom: 'Open {name}',
+    upgradeRoom: 'Upgrade {name}',
+    firstRoomReason: 'Creates the first working room in this station area.',
+    upgradeReason: 'Raises room level and moves toward the next milestone.',
+    purchaseResult: 'Costs {cost}, adds +{income}{comfort}',
+    dutyCannot: 'Resident cannot take this duty',
+    chooseResident: 'Choose an eligible resident.',
+    expectedDuty: 'Expected duty result',
+    roleMatches: '{role} role matches this duty.',
+    roleResident: 'Resident',
+    eligibleResident: 'Eligible resident can complete this duty.',
+    roleSolution: 'Role solution',
+    choiceResult: 'Choice result',
+    roleUnlocks: '{role} role unlocks this option.',
+    alwaysAvailable: 'Always available incident response.',
+    renovationReady: 'Renovation ready',
+    prepareRenovation: 'Prepare renovation',
+    renovationReason: 'Renovation resets rooms and kopeks, but reputation and purchased permanent upgrades stay.',
+    renovationGain: 'Gain +{reward} reputation and unlock {choices} upgrade choices',
+    renovationBuild: 'Build toward +{reward} reputation',
+    dutyResult: 'Duty result',
+    dutyCompleted: 'Station duty completed'
+  },
   appTitle: 'Cosmic Communalka',
   loadingHint: 'Warming up the airlocks',
   loadingBody: 'The station is preparing the first living module.',

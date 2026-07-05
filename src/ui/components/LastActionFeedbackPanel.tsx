@@ -10,7 +10,7 @@ interface LastActionFeedbackPanelProps {
 }
 
 export function LastActionFeedbackPanel({ gameState, t, variant = 'default' }: LastActionFeedbackPanelProps) {
-  const feedback = getLastActionFeedback(gameState);
+  const feedback = getLastActionFeedback(gameState, t);
 
   if (!feedback) {
     return null;

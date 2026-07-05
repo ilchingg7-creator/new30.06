@@ -98,7 +98,7 @@ export function ModuleList({ gameState, onBuyLevel, t }: ModuleListProps) {
           const cost = calculateModuleCost(module.id, gameState);
           const locked = gameState.totalEarnedCredits < module.unlockAtCredits;
           const canBuy = !locked && gameState.credits >= cost;
-          const preview = getModulePurchasePreview(gameState, module.id);
+          const preview = getModulePurchasePreview(gameState, module.id, t);
 
           return (
             <li className="component-card" key={module.id} title={buildModuleTooltip(module.id, gameState, t)}>
