@@ -4,6 +4,7 @@ import { createInitialState } from '../game/economy';
 import { SAVE_KEY } from '../game/save';
 import { useGameState } from '../ui/useGameState';
 import { createLocalStoragePort } from '../platform/storage';
+import { createYandexPlatform, initYandexPlatform } from '../platform/yandex';
 import type { YandexPlatform } from '../platform/yandex';
 
 function makePlatform(grant: boolean): YandexPlatform {
@@ -39,9 +40,53 @@ function makeMemoryStorage(saved: string | null = null) {
 
 afterEach(() => {
   delete window.YaGames;
+  Object.defineProperty(window, 'parent', {
+    configurable: true,
+    value: window
+  });
 });
 
 describe('yandex platform integration', () => {
+  it('uses no-op platform in local top-level dev even when the SDK script is present', async () => {
+    const init = vi.fn().mockResolvedValue({
+      adv: {
+        showRewardedVideo: vi.fn()
+      }
+    });
+
+    window.YaGames = { init };
+
+    const platform = await initYandexPlatform();
+
+    expect(init).not.toHaveBeenCalled();
+    expect(platform.isAvailable()).toBe(false);
+  });
+
+  it('uses the current leaderboards SDK API without deprecated getLeaderboards', async () => {
+    const setLeaderboardScore = vi.fn().mockResolvedValue(undefined);
+    const getLeaderboardEntries = vi.fn().mockResolvedValue({ entries: [] });
+    const getLeaderboards = vi.fn();
+    const platform = createYandexPlatform({
+      leaderboards: {
+        getLeaderboardDescription: vi.fn(),
+        setLeaderboardScore,
+        getLeaderboardEntries
+      },
+      getLeaderboards
+    });
+
+    await platform.submitLeaderboardScore('rent', 100);
+    await platform.getLeaderboardEntries('rent', 3);
+
+    expect(getLeaderboards).not.toHaveBeenCalled();
+    expect(setLeaderboardScore).toHaveBeenCalledWith('rent', 100);
+    expect(getLeaderboardEntries).toHaveBeenCalledWith('rent', {
+      quantityTop: 3,
+      includeUser: true,
+      quantityAround: 0
+    });
+  });
+
   it('calls markReady after the save loads', async () => {
     const platform = makePlatform(true);
     const storage = makeMemoryStorage();
@@ -193,6 +238,10 @@ describe('yandex platform integration', () => {
           })
       )
     };
+    Object.defineProperty(window, 'parent', {
+      configurable: true,
+      value: {}
+    });
 
     const storage = makeMemoryStorage();
     const { result } = renderHook(() => useGameState(storage));

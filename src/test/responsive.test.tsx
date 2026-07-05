@@ -5,6 +5,7 @@ import { App } from '../App';
 import { createInitialState } from '../game/economy';
 import type { GameState, ResidentId } from '../game/types';
 import { translations } from '../platform/i18n';
+import { DesktopLayout } from '../ui/layouts/DesktopLayout';
 import { MobileLayout } from '../ui/layouts/MobileLayout';
 import type { UseGameStateResult } from '../ui/useGameState';
 
@@ -99,6 +100,19 @@ function buildDutyGame(): UseGameStateResult {
     claimWeeklyBonus: vi.fn(),
     refreshLeaderboard: vi.fn(),
     loadLeaderboardEntries: vi.fn().mockResolvedValue([])
+  };
+}
+
+function buildIncidentGame(): UseGameStateResult {
+  const game = buildDutyGame();
+
+  return {
+    ...game,
+    gameState: {
+      ...game.gameState,
+      activeIncidents: [{ id: 'kitchen_borscht_fog', queuedAt: 10_000, isNew: true }]
+    },
+    newIncidentCount: 1
   };
 }
 
@@ -220,6 +234,18 @@ describe('responsive layout rendering', () => {
     const { container } = render(<MobileLayout game={buildDutyGame()} t={t} />);
 
     expect(container.querySelector('.mobile-layout .communal-duty-panel.compact')).not.toBeNull();
+  });
+
+  it('prioritizes the compact incident journal at the top of the desktop side panel', async () => {
+    setViewportWidth(1200);
+    const { container } = render(<DesktopLayout game={buildIncidentGame()} t={t} />);
+
+    await screen.findByText(t.leaderboardEmpty);
+
+    const firstPanel = container.querySelector('.desktop-layout .side-panel > .panel');
+
+    expect(firstPanel?.classList.contains('incident-journal')).toBe(true);
+    expect(firstPanel?.classList.contains('compact')).toBe(true);
   });
 
   it('renders one room selector navigation for the active layout', async () => {

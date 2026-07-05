@@ -70,14 +70,15 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
         <RoomConditionBar gameState={game.gameState} roomId={game.selectedRoomId} t={t} />
       </div>
       <aside className="side-panel">
-        <GoalPanel gameState={game.gameState} t={t} />
         <StationIncidentJournal
           gameState={game.gameState}
           newIncidentCount={game.newIncidentCount}
           onResolve={game.resolveIncident}
           onMarkSeen={game.markIncidentsSeen}
+          variant="compact"
           t={t}
         />
+        <GoalPanel gameState={game.gameState} t={t} />
         <ResidentCollectionBook gameState={game.gameState} t={t} />
         <BonusPanel
           onIncomeBoost={game.activateIncomeBoost}

@@ -38,6 +38,7 @@ export interface YandexSdk {
       };
     }): void;
   };
+  leaderboards?: YandexLeaderboardsApi;
   getPlayer?(): Promise<YandexPlayer>;
   getLeaderboards?(): Promise<YandexLeaderboardsApi>;
 }
@@ -72,6 +73,18 @@ declare global {
   interface Window {
     YaGames?: YandexGamesLib;
   }
+}
+
+function isYandexGamesRuntime(): boolean {
+  if (typeof window === 'undefined' || !window.YaGames) {
+    return false;
+  }
+
+  return window.parent !== window || window.location.hostname.endsWith('yandex.ru');
+}
+
+async function getLeaderboardsApi(sdk: YandexSdk | null): Promise<YandexLeaderboardsApi | undefined> {
+  return sdk?.leaderboards ?? sdk?.getLeaderboards?.();
 }
 
 export function markYandexReady(sdk: YandexSdk | null): void {
@@ -140,7 +153,7 @@ export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatfo
     },
     async submitLeaderboardScore(leaderboardName: string, score: number) {
       try {
-        const lb = await sdk?.getLeaderboards?.();
+        const lb = await getLeaderboardsApi(sdk);
         await lb?.setLeaderboardScore(leaderboardName, score);
       } catch {
         // Leaderboard is best-effort.
@@ -148,7 +161,7 @@ export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatfo
     },
     async getLeaderboardEntries(leaderboardName: string, quantity = 10) {
       try {
-        const lb = await sdk?.getLeaderboards?.();
+        const lb = await getLeaderboardsApi(sdk);
         const result = await lb?.getLeaderboardEntries(leaderboardName, {
           quantityTop: quantity,
           includeUser: true,
@@ -201,12 +214,18 @@ export function createNoOpYandexPlatform(): YandexPlatform {
  * is missing or initialization fails, so the game always boots.
  */
 export async function initYandexPlatform(): Promise<YandexPlatform> {
-  if (typeof window === 'undefined' || !window.YaGames) {
+  if (!isYandexGamesRuntime()) {
+    return createNoOpYandexPlatform();
+  }
+
+  const yaGames = window.YaGames;
+
+  if (!yaGames) {
     return createNoOpYandexPlatform();
   }
 
   try {
-    const sdk = await window.YaGames.init();
+    const sdk = await yaGames.init();
     return createYandexPlatform(sdk);
   } catch {
     return createNoOpYandexPlatform();
