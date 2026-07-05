@@ -1,8 +1,10 @@
 import { BookOpen, Sparkles } from 'lucide-react';
+import { getStationIncidentChoicePreview } from '../../game/actionPreviews';
 import { activeStationIncidents } from '../../game/content/stationIncidents';
 import { getAvailableStationIncidentChoices } from '../../game/stationIncidents';
 import type { GameState, StationIncidentId } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
+import { ActionPreviewLine } from './ActionPreviewLine';
 
 interface StationIncidentJournalProps {
   gameState: GameState;
@@ -56,6 +58,7 @@ export function StationIncidentJournal({
               <div className="incident-choice-list">
                 {choices.map((choice) => {
                   const choiceCopy = copy.choices[choice.id];
+                  const preview = getStationIncidentChoicePreview(gameState, incident.id, choice.id);
 
                   return (
                     <button
@@ -67,6 +70,7 @@ export function StationIncidentJournal({
                     >
                       <span>{choiceCopy?.label ?? choice.id}</span>
                       <small>{choiceCopy?.description ?? t.reward}</small>
+                      {preview ? <ActionPreviewLine preview={preview} t={t} variant="compact" /> : null}
                     </button>
                   );
                 })}

@@ -1377,6 +1377,11 @@ input {
   gap: 8px;
 }
 
+.communal-duty-choice {
+  display: grid;
+  gap: 6px;
+}
+
 .communal-duty-panel.compact {
   padding: 8px 10px;
   gap: 6px;
@@ -1833,6 +1838,11 @@ input {
 
 .incident-choice-list button {
   justify-content: space-between;
+  text-align: left;
+}
+
+.incident-choice-list .action-preview {
+  width: 100%;
   text-align: left;
 }
 

@@ -401,7 +401,7 @@ export function getCommunalDutyAssignmentPreview(
 
   return {
     title: 'Expected duty result',
-    reason: preview.roleMatched ? 'Resident role matches this duty.' : 'Eligible resident can complete this duty.',
+    reason: preview.roleMatched ? `${preview.preferredRole ?? 'Resident'} role matches this duty.` : 'Eligible resident can complete this duty.',
     result: rewardText,
     tags: ['condition', ...(preview.roleMatched ? ['role' as const] : [])],
     tone: 'positive'
@@ -567,7 +567,7 @@ it('renders guidance preview reason and result', () => {
     targetRoomId: 'tenant_capsule',
     preview: {
       title: 'Expected duty result',
-      reason: 'Resident role matches this duty.',
+      reason: 'maintenance role matches this duty.',
       result: '+35 condition',
       tags: ['condition', 'role'],
       tone: 'positive'
@@ -576,7 +576,7 @@ it('renders guidance preview reason and result', () => {
 
   render(<StationTaskPanel guidance={guidance} onSelectRoom={vi.fn()} t={t} />);
 
-  expect(screen.getByText('Resident role matches this duty.')).toBeInTheDocument();
+  expect(screen.getByText('maintenance role matches this duty.')).toBeInTheDocument();
   expect(screen.getByText('+35 condition')).toBeInTheDocument();
 });
 ```
@@ -896,7 +896,7 @@ git commit -m "feat: preview room purchase impact"
 - Consumes: `getStationIncidentChoicePreview`
 - Consumes: `<ActionPreviewLine preview={preview} t={t} variant={variant} />`
 
-- [ ] **Step 1: Write failing duty panel preview test**
+- [x] **Step 1: Write failing duty panel preview test**
 
 Add to `src/test/communal-duty-panel.test.tsx`:
 
@@ -904,7 +904,7 @@ Add to `src/test/communal-duty-panel.test.tsx`:
 it('shows role-matched duty reward before assignment', () => {
   render(<CommunalDutyPanel gameState={availableDutyState()} onAssign={vi.fn()} onClaim={vi.fn()} t={t} />);
 
-  expect(screen.getByText(/Resident role matches this duty/i)).toBeInTheDocument();
+  expect(screen.getByText(/maintenance role matches this duty/i)).toBeInTheDocument();
   expect(screen.getByText(/\+35 condition/i)).toBeInTheDocument();
 });
 ```
@@ -913,7 +913,7 @@ Run: `npm.cmd test -- src/test/communal-duty-panel.test.tsx`
 
 Expected: FAIL because duty panel does not render preview.
 
-- [ ] **Step 2: Write failing incident preview test**
+- [x] **Step 2: Write failing incident preview test**
 
 Add to `src/test/components.test.tsx`:
 
@@ -944,7 +944,7 @@ Run: `npm.cmd test -- src/test/components.test.tsx`
 
 Expected: FAIL because incident choices only render translation descriptions.
 
-- [ ] **Step 3: Render duty assignment and claim previews**
+- [x] **Step 3: Render duty assignment and claim previews**
 
 In `src/ui/components/CommunalDutyPanel.tsx`, add imports:
 
@@ -984,7 +984,7 @@ Render:
 {claimPreview ? <ActionPreviewLine preview={claimPreview} t={t} variant={variant} /> : null}
 ```
 
-- [ ] **Step 4: Render incident choice previews**
+- [x] **Step 4: Render incident choice previews**
 
 In `src/ui/components/StationIncidentJournal.tsx`, import:
 
@@ -1005,7 +1005,7 @@ Render inside the button after `<small>`:
 {preview ? <ActionPreviewLine preview={preview} t={t} variant="compact" /> : null}
 ```
 
-- [ ] **Step 5: Add duty choice styling**
+- [x] **Step 5: Add duty choice styling**
 
 In `src/styles/global.css`, add:
 
@@ -1021,13 +1021,13 @@ In `src/styles/global.css`, add:
 }
 ```
 
-- [ ] **Step 6: Run duty and component tests**
+- [x] **Step 6: Run duty and component tests**
 
 Run: `npm.cmd test -- src/test/communal-duty-panel.test.tsx src/test/components.test.tsx`
 
 Expected: PASS.
 
-- [ ] **Step 7: Commit Task 4**
+- [x] **Step 7: Commit Task 4**
 
 ```powershell
 git add -- src/ui/components/CommunalDutyPanel.tsx src/ui/components/StationIncidentJournal.tsx src/styles/global.css src/test/communal-duty-panel.test.tsx src/test/components.test.tsx

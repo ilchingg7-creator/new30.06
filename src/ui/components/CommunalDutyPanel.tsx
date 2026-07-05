@@ -1,9 +1,11 @@
 'use client';
 
 import { ClipboardCheck, UserCheck } from 'lucide-react';
+import { getCommunalDutyAssignmentPreview, getCommunalDutyClaimPreview } from '../../game/actionPreviews';
 import { communalDuties } from '../../game/content/communalDuties';
 import type { GameState, ResidentId } from '../../game/types';
 import type { Translation } from '../../platform/i18n';
+import { ActionPreviewLine } from './ActionPreviewLine';
 
 interface CommunalDutyPanelProps {
   gameState: GameState;
@@ -33,6 +35,7 @@ export function CommunalDutyPanel({ gameState, onAssign, onClaim, variant = 'def
   const copy = t.communalDuties[definition.id];
   const eligibleResidents = definition.eligibleResidentIds.filter((residentId) => gameState.unlockedResidents.includes(residentId));
   const className = variant === 'compact' ? 'panel communal-duty-panel compact' : 'panel communal-duty-panel';
+  const claimPreview = getCommunalDutyClaimPreview(gameState);
 
   return (
     <section className={className} aria-labelledby="communal-duty-title">
@@ -46,13 +49,20 @@ export function CommunalDutyPanel({ gameState, onAssign, onClaim, variant = 'def
           <p className="panel-copy">{copy?.request ?? definition.id}</p>
           <div className="communal-duty-actions">
             {eligibleResidents.length === 0 && <span>{t.communalDutyNoResidents}</span>}
-            {eligibleResidents.map((residentId) => (
-              <button type="button" key={residentId} onClick={() => onAssign(residentId)}>
-                <UserCheck aria-hidden="true" size={15} />
-                {getResidentName(residentId, t)}
-                {residentId === definition.bestResidentId ? ` · ${t.communalDutyBestMatch}` : ''}
-              </button>
-            ))}
+            {eligibleResidents.map((residentId) => {
+              const preview = getCommunalDutyAssignmentPreview(gameState, definition.id, residentId);
+
+              return (
+                <div className="communal-duty-choice" key={residentId}>
+                  <button type="button" onClick={() => onAssign(residentId)}>
+                    <UserCheck aria-hidden="true" size={15} />
+                    {getResidentName(residentId, t)}
+                    {residentId === definition.bestResidentId ? ` · ${t.communalDutyBestMatch}` : ''}
+                  </button>
+                  <ActionPreviewLine preview={preview} t={t} variant={variant} />
+                </div>
+              );
+            })}
           </div>
         </>
       )}
@@ -64,6 +74,7 @@ export function CommunalDutyPanel({ gameState, onAssign, onClaim, variant = 'def
       {active.status === 'ready_to_claim' && (
         <div className="communal-duty-actions">
           <p className="panel-copy">{t.communalDutyReady}</p>
+          {claimPreview ? <ActionPreviewLine preview={claimPreview} t={t} variant={variant} /> : null}
           <button type="button" onClick={onClaim}>
             <ClipboardCheck aria-hidden="true" size={15} />
             {t.communalDutyClaim}

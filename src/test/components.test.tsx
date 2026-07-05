@@ -262,4 +262,25 @@ describe('core UI components', () => {
 
     expect(screen.getByRole('button', { name: roleChoiceLabel })).toBeInTheDocument();
   });
+
+  it('shows incident choice reward previews', () => {
+    const gameState: GameState = {
+      ...createInitialState(1_000),
+      unlockedResidents: ['mist_cook'],
+      activeIncidents: [{ id: 'kitchen_borscht_fog', queuedAt: 10_000, isNew: true }]
+    };
+
+    render(
+      <StationIncidentJournal
+        gameState={gameState}
+        newIncidentCount={1}
+        onResolve={vi.fn()}
+        onMarkSeen={vi.fn()}
+        t={t}
+      />
+    );
+
+    expect(screen.getByText(/comfort role unlocks this option/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+3 comfort/i)).toBeInTheDocument();
+  });
 });

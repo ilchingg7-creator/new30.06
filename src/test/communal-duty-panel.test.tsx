@@ -49,6 +49,13 @@ describe('CommunalDutyPanel', () => {
     expect(onAssign).toHaveBeenCalledWith('sleepy_engineer');
   });
 
+  it('shows role-matched duty reward before assignment', () => {
+    render(<CommunalDutyPanel gameState={availableDutyState()} onAssign={vi.fn()} onClaim={vi.fn()} t={t} />);
+
+    expect(screen.getByText(/maintenance role matches this duty/i)).toBeInTheDocument();
+    expect(screen.getByText(/\+35 condition/i)).toBeInTheDocument();
+  });
+
   it('renders ready-to-claim duty with claim action', async () => {
     const user = userEvent.setup();
     const onClaim = vi.fn();
