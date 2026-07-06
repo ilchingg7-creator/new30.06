@@ -2131,7 +2131,7 @@ input {
 }
 
 .incident-journal.compact .panel-header h2 {
-  font-size: 0.78rem;
+  font-size: 0.86rem;
 }
 
 /* "New incidents" badge button in the journal header */
@@ -2192,14 +2192,14 @@ input {
 }
 
 .incident-card strong {
-  font-size: 0.84rem;
-  line-height: 1.15;
+  font-size: 0.9rem;
+  line-height: 1.2;
 }
 
 .incident-card .panel-copy {
   margin: 0;
-  font-size: 0.72rem;
-  line-height: 1.25;
+  font-size: 0.78rem;
+  line-height: 1.35;
 }
 
 .incident-choice-list {
@@ -2244,27 +2244,36 @@ input {
 }
 
 .incident-journal.compact .incident-choice-list {
-  gap: 4px;
+  gap: 6px;
 }
 
 .incident-journal.compact .incident-choice-button {
-  grid-template-columns: minmax(86px, 0.8fr) minmax(0, 1fr);
-  gap: 5px;
-  min-height: 27px;
-  padding: 3px 6px;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  min-height: 40px;
+  padding: 6px 8px;
 }
 
 .incident-journal.compact .incident-choice-copy > span {
-  font-size: 0.66rem;
+  font-size: 0.78rem;
+  line-height: 1.2;
 }
 
 .incident-journal.compact .incident-choice-copy small {
-  font-size: 0.58rem;
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+.incident-journal.compact .incident-choice-copy > span,
+.incident-journal.compact .incident-choice-copy small {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 .incident-journal.compact .incident-choice-button .action-preview-tag {
-  padding: 0 3px;
-  font-size: 0.5rem;
+  padding: 1px 4px;
+  font-size: 0.56rem;
 }
 /* ── Onboarding Tour ────────────────────────────────────────────── */
 
