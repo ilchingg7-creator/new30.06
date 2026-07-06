@@ -65,7 +65,13 @@ describe('prestige upgrade tree', () => {
       reputation: 4,
       prestigeCount: 2,
       purchasedPrestigeUpgrades: ['warm_start_credits' as const],
-      unlockedResidents: ['sleepy_engineer' as const, 'mist_cook' as const]
+      unlockedResidents: [
+        'sleepy_engineer' as const,
+        'mist_cook' as const,
+        'vacuum_gardener' as const,
+        'sock_master' as const,
+        'teleport_courier' as const
+      ]
     });
 
     const upgraded = buyPrestigeUpgrade(state, 'residents_survive');
@@ -75,7 +81,7 @@ describe('prestige upgrade tree', () => {
 
     const renovated = performPrestige(upgraded, 2_000);
 
-    // The two owned residents survive. retired_cosmonaut auto-unlocks because
+    // Owned residents survive. retired_cosmonaut auto-unlocks because
     // reputation becomes > 0 after the first renovation.
     expect(renovated.unlockedResidents).toEqual(
       expect.arrayContaining(['sleepy_engineer', 'mist_cook', 'retired_cosmonaut'])

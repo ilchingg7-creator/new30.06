@@ -24,6 +24,15 @@ describe('action previews', () => {
     expect(preview.reason).toContain('first working room');
   });
 
+  it('does not duplicate the income plus sign in localized purchase previews', () => {
+    const state = createInitialState(1_000);
+
+    const preview = getModulePurchasePreview(state, 'tenant_capsule', translations.ru);
+
+    expect(preview.result).toContain('+1.00/сек');
+    expect(preview.result).not.toContain('++');
+  });
+
   it('previews locked modules with unlock progress instead of purchase impact', () => {
     const state = createInitialState(1_000);
 

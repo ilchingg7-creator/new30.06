@@ -30,12 +30,23 @@ describe('Yandex Games viewport CSS', () => {
   it('uses internal scrolling for constrained desktop and mobile panels', () => {
     expect(ruleBody(/\.desktop-layout\s*\{([^}]*)\}/s)).toContain('overflow: hidden');
     expect(ruleBody(/\.side-panel\s*\{([^}]*)\}/s)).toContain('overflow-y: auto');
+    expect(ruleBody(/\.desktop-layout \.desktop-modules-area\s*\{([^}]*)\}/s)).toContain('scroll-padding-top: 12px');
 
     expect(ruleBody(/\.mobile-layout\s*\{([^}]*)\}/s)).toContain('overflow: hidden');
     expect(ruleBody(/\.mobile-tab-content\s*\{([^}]*)\}/s)).toContain('overflow-y: auto');
     expect(ruleBody(/\.mobile-tab-content\s*\{([^}]*)\}/s)).toContain(
       'overscroll-behavior: contain'
     );
+    expect(ruleBody(/\.mobile-tab-content\s*\{([^}]*)\}/s)).toContain(
+      'padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px))'
+    );
+  });
+
+  it('keeps help and settings dialogs inside the mobile viewport', () => {
+    const helpPanelRule = ruleBody(/\.help-panel\s*\{([^}]*)\}/s);
+
+    expect(helpPanelRule).toContain('max-height: min(720px, calc(100dvh - 32px))');
+    expect(helpPanelRule).toContain('overflow-y: auto');
   });
 
   it('styles internal scrollbars consistently', () => {

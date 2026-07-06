@@ -244,9 +244,9 @@ function getStationProgressRequirement(state: GameState): PrestigeRequirement {
 
     return {
       id: 'station_progress',
-      completed: current >= 1,
+      completed: current >= 2,
       current,
-      target: 1
+      target: 2
     };
   }
 
@@ -255,9 +255,9 @@ function getStationProgressRequirement(state: GameState): PrestigeRequirement {
 
   return {
     id: 'station_progress',
-    completed: current >= 1,
+    completed: current >= 2,
     current,
-    target: 1
+    target: 2
   };
 }
 

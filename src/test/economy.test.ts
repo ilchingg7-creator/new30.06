@@ -104,6 +104,44 @@ describe('economy engine', () => {
     expect(renovated.prestigeCount).toBe(1);
   });
 
+  it('requires both cycle 2 station milestones before renovation', () => {
+    const base = createInitialState(1_000);
+    const state: GameState = {
+      ...base,
+      prestigeCount: 2,
+      totalEarnedCredits: 400_000,
+      completedGoals: ['repeat_renovation', 'reach_comfort_80', 'unlock_seven_residents'],
+      moduleLevels: {
+        ...base.moduleLevels,
+        teleport_entry: 1
+      },
+      unlockedResidents: []
+    };
+
+    const stationRequirement = getPrestigeRequirements(state).find((requirement) => requirement.id === 'station_progress');
+
+    expect(stationRequirement).toMatchObject({ completed: false, current: 1, target: 2 });
+  });
+
+  it('requires both cycle 3 station milestones before renovation', () => {
+    const base = createInitialState(1_000);
+    const state: GameState = {
+      ...base,
+      prestigeCount: 3,
+      totalEarnedCredits: 400_000,
+      comfort: 70,
+      completedGoals: ['repeat_renovation', 'reach_comfort_80', 'unlock_seven_residents'],
+      moduleLevels: {
+        ...base.moduleLevels,
+        orbital_library: 0
+      }
+    };
+
+    const stationRequirement = getPrestigeRequirements(state).find((requirement) => requirement.id === 'station_progress');
+
+    expect(stationRequirement).toMatchObject({ completed: false, current: 1, target: 2 });
+  });
+
   it('applies resident income bonuses to their matching rooms and global income', () => {
     const base = createInitialState(1_000);
     const tenantState: GameState = {
