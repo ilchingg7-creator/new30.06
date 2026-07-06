@@ -17,14 +17,29 @@ export const achievements: AchievementDefinition[] = [
     description: 'Суммарно 50 уровней модулей.'
   },
   {
+    id: 'hundred_module_levels',
+    title: 'Большая орбита',
+    description: 'Суммарно 100 уровней модулей.'
+  },
+  {
     id: 'first_prestige',
     title: 'Первая реновация',
     description: 'Сделать первую реновацию орбиты.'
   },
   {
+    id: 'renovation_master',
+    title: 'Мастер реновации',
+    description: 'Сделать 3 реновации орбиты.'
+  },
+  {
     id: 'comfort_50',
     title: 'Уютно как дома',
     description: 'Достичь 50 комфорта.'
+  },
+  {
+    id: 'comfort_100',
+    title: 'Обжитой космос',
+    description: 'Достичь 100 комфорта.'
   },
   {
     id: 'credits_million',

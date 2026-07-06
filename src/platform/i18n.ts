@@ -64,6 +64,17 @@ export interface Translation {
   renovationRequirementStation0: string;
   renovationRequirementStation1: string;
   renovationRequirementStation2: string;
+  renovationRequirementStation3: string;
+  renovationCycleLabel: string;
+  celebrationTitle: string;
+  celebrationCycle: string;
+  celebrationReputation: string;
+  celebrationDismiss: string;
+  saveSaving: string;
+  saveSaved: string;
+  errorBoundaryTitle: string;
+  errorBoundaryBody: string;
+  errorBoundaryReload: string;
   renovationRequirementGoals: string;
   renovate: string;
   renovateTooltip: string;
@@ -91,6 +102,8 @@ export interface Translation {
   modulesBought: string;
   renovations: string;
   totalEarned: string;
+  incomeBreakdownTitle: string;
+  incomeBreakdownHint: string;
   // Dialogs
   offlineTitle: string;
   time: string;
@@ -114,6 +127,23 @@ export interface Translation {
   helpRenovation: string;
   helpRenovationBody: string;
   helpStart: string;
+  // Onboarding tour
+  tourTitle: string;
+  tourStepStation: string;
+  tourStepStationBody: string;
+  tourStepModules: string;
+  tourStepModulesBody: string;
+  tourStepGoals: string;
+  tourStepGoalsBody: string;
+  tourStepBonuses: string;
+  tourStepBonusesBody: string;
+  tourStepStats: string;
+  tourStepStatsBody: string;
+  tourNext: string;
+  tourPrev: string;
+  tourSkip: string;
+  tourDone: string;
+  tourStep: string;
   // Settings
   settingsTitle: string;
   resetSave: string;
@@ -354,6 +384,17 @@ const ru: Translation = {
   renovationRequirementStation0: 'Капсула 10+ и открытая кухня',
   renovationRequirementStation1: 'Капсула 25+ и открытая прачечная',
   renovationRequirementStation2: 'Открыть телепорт или заселить 5 жильцов',
+  renovationRequirementStation3: 'Открыть библиотеку или достичь 70 комфорта',
+  renovationCycleLabel: 'Цикл реновации',
+  celebrationTitle: 'Реновация завершена!',
+  celebrationCycle: 'Цикл {cycle}',
+  celebrationReputation: '+{amount} репутации',
+  celebrationDismiss: 'Продолжить',
+  saveSaving: 'Сохранение…',
+  saveSaved: 'Сохранено',
+  errorBoundaryTitle: 'Станция дала сбой',
+  errorBoundaryBody: 'Что-то пошло не так. Сохранение не пострадало — перезагрузите страницу, чтобы продолжить.',
+  errorBoundaryReload: 'Перезагрузить',
   renovationRequirementGoals: 'Выполнить цели цикла',
   renovate: 'Реновировать',
   renovateTooltip: 'Реновация сбрасывает копейки и модули, но сохраняет репутацию и купленные улучшения. Награда = floor(sqrt(заработано / 100000)).',
@@ -378,6 +419,8 @@ const ru: Translation = {
   modulesBought: 'Куплено модулей',
   renovations: 'Реноваций',
   totalEarned: 'Заработано всего',
+  incomeBreakdownTitle: 'Источники дохода',
+  incomeBreakdownHint: 'Топ комнат по вкладу в доход станции',
   offlineTitle: 'Станция поработала без вас',
   time: 'Время',
   collect: 'Забрать',
@@ -399,6 +442,22 @@ const ru: Translation = {
   helpRenovation: 'Реновация орбиты',
   helpRenovationBody: 'Сбрасывает копейки и модули, но сохраняет репутацию. Репутация покупает постоянные улучшения (жильцы выживают, тёплый старт, больше офлайн-лимит).',
   helpStart: 'Понятно, начать играть',
+  tourTitle: 'Экскурсия по станции',
+  tourStepStation: 'Ваша станция',
+  tourStepStationBody: 'Это вид станции. Кликайте по комнате, чтобы получить немного копеек. Странная кошка в капсуле тоже любит внимание.',
+  tourStepModules: 'Комнаты станции',
+  tourStepModulesBody: 'Покупайте уровни модулей за копейки. Каждый модуль даёт доход в секунду. На уровнях 10, 25, 50 и 100 модуль получает множитель дохода.',
+  tourStepGoals: 'Цели',
+  tourStepGoalsBody: 'Цели направляют развитие. За выполнение дают комфорт, визуальные детали или временные бусты. Завершённые цели исчезают из списка.',
+  tourStepBonuses: 'Бонусы',
+  tourStepBonusesBody: 'На Yandex Games бонусы включаются за рекламу (x2 аренда, VIP-жилец). Локально — сразу. Есть и ежедневные награды за заход.',
+  tourStepStats: 'Ресурсы станции',
+  tourStepStatsBody: 'Копейки, комфорт, репутация и доход в секунду — ваши главные показатели. Комфорт умножает доход, репутация усиливает его после реновации.',
+  tourNext: 'Дальше',
+  tourPrev: 'Назад',
+  tourSkip: 'Пропустить',
+  tourDone: 'Поехали!',
+  tourStep: 'Шаг',
   settingsTitle: 'Настройки',
   resetSave: 'Сбросить сохранение',
   resetSaveDesc: 'Полностью стирает прогресс: копейки, модули, жильцов, достижения и репутацию. Действие необратимо.',
@@ -628,6 +687,54 @@ const ru: Translation = {
         return_mug: { label: 'Вернуть лишнюю кружку', description: '+состояние телепорта' },
         display_mug: { label: 'Поставить кружку на полку', description: '+комфорт, деталь' }
       }
+    },
+    panorama_star_argument: {
+      title: 'Жильцы спорят о названиях звёзд',
+      body: 'У купола собралась толпа — каждый уверен, что знает «правильное» имя для каждой звезды.',
+      choices: {
+        vote_names: { label: 'Устроить голосование за имена', description: '+комфорт, деталь' },
+        use_catalogue: { label: 'Открыть звёздный каталог', description: '+состояние купола' }
+      }
+    },
+    maintenance_drones_form_committee: {
+      title: 'Дроны-дворники создали комитет',
+      body: 'Дроны перестали убирать и начали обсуждать график смен. Доход падает, а комфорт просит внимания.',
+      choices: {
+        ratify_committee: { label: 'Утвердить комитет дронов', description: '+комфорт, деталь' },
+        assign_shifts: { label: 'Назначить смены вручную', description: '+состояние капсулы и кухни' }
+      }
+    },
+    cat_sleeps_on_button: {
+      title: 'Кот уснул на важной кнопке',
+      body: 'Странная кошка нашла единственную тёплую кнопку на панели и отказывается уходить. Капсула страдает.',
+      choices: {
+        relocate_cat: { label: 'Перенести кота на диван', description: '+комфорт, деталь' },
+        label_button: { label: 'Подписать кнопку «не спать»', description: '+состояние капсулы' }
+      }
+    },
+    retired_cosmonaut_mug_missing: {
+      title: 'Эмалированная кружка космонавта пропала',
+      body: 'Сосед-отставной космонавт обыскал всю капсулу — кружки нигде нет. Говорит, что без неё «не та станция».',
+      choices: {
+        search_capsule: { label: 'Обыскать капсулу вместе', description: '+комфорт, деталь' },
+        buy_new_mug: { label: 'Купить новую кружку', description: '-копейки, +комфорт' }
+      }
+    },
+    mist_cook_recipe_too_large: {
+      title: 'Рецепт повара не помещается на кухне',
+      body: 'Суп из туманных водорослей требует 47 шагов. Повар с туманной планеты утверждает, что короче никак.',
+      choices: {
+        copy_recipe: { label: 'Переписать рецепт на пергамент', description: '+комфорт, деталь' },
+        simplify_recipe: { label: 'Упростить до 12 шагов', description: '+состояние кухни' }
+      }
+    },
+    vacuum_gardener_seed_escape: {
+      title: 'Семена садовника вырвались на свободу',
+      body: 'Коллекция семян с разных планет вылетела в коридор. Садовник вакуума в панике ловит их в невесомости.',
+      choices: {
+        catch_seeds: { label: 'Помочь поймать семена', description: '+комфорт, деталь' },
+        let_them_grow: { label: 'Дать им прорасти в коридоре', description: '+состояние сада' }
+      }
     }
   },
   storyTitle: 'Просьба жильца',
@@ -814,6 +921,12 @@ const ru: Translation = {
         unlockText: 'Док для мини-тарелок достиг 10 уровня.',
         bonusText: '+3% к доходу за каждого жильца',
         bio: 'Семья из пяти маленьких летающих тарелок. Прибыли на станцию и решили остаться. Каждая тарелка — отдельная личность со своим характером. Чем больше жильцов на станции, тем активнее они помогают с доставкой.'
+      },
+      orbital_beekeeper: {
+        name: 'Орбитальный пчеловод',
+        unlockText: 'Кислородный сад достиг 15 уровня.',
+        bonusText: '+1 комфорт за каждые 5 уровней сада при разблокировке',
+        bio: 'Привёз на станцию колонию космических пчёл, которые не боятся невесомости. Пчёлы опыляют сад и гонят мёд с привкусом звёздной пыли. Чем глубже сад к моменту его прихода, тем больше пчёл он приводит — и тем больше комфорта от их гудения в куполе.'
       }
     },
     goals: {
@@ -892,6 +1005,30 @@ const ru: Translation = {
       repeat_renovation: {
         title: 'Провести ещё одну реновацию',
         rewardLabel: 'Новый цикл станции'
+      },
+      reach_comfort_80: {
+        title: 'Довести комфорт до 80',
+        rewardLabel: '+7 комфорт, тёплый режим станции'
+      },
+      unlock_seven_residents: {
+        title: 'Заселить 7 жильцов',
+        rewardLabel: '+8 комфорт, большая коммуналка'
+      },
+      earn_credits_500000: {
+        title: 'Заработать 500 000 копеек в цикле',
+        rewardLabel: '+8 комфорт, серьёзный запас копеек'
+      },
+      unlock_orbital_library: {
+        title: 'Открыть орбитальную библиотеку',
+        rewardLabel: '+9 комфорт, детали библиотеки'
+      },
+      reach_capsule_50: {
+        title: 'Развить капсулу до 50 уровня',
+        rewardLabel: '+10 комфорт, продвинутая капсула'
+      },
+      third_renovation: {
+        title: 'Сделать третью реновацию',
+        rewardLabel: 'Поздний цикл станции'
       }
     },
     achievements: {
@@ -907,13 +1044,25 @@ const ru: Translation = {
         title: 'Растущая коммуналка',
         description: 'Суммарно 50 уровней модулей.'
       },
+      hundred_module_levels: {
+        title: 'Большая орбита',
+        description: 'Суммарно 100 уровней модулей.'
+      },
       first_prestige: {
         title: 'Первая реновация',
         description: 'Сделать первую реновацию орбиты.'
       },
+      renovation_master: {
+        title: 'Мастер реновации',
+        description: 'Сделать 3 реновации орбиты.'
+      },
       comfort_50: {
         title: 'Уютно как дома',
         description: 'Достичь 50 комфорта.'
+      },
+      comfort_100: {
+        title: 'Обжитой космос',
+        description: 'Достичь 100 комфорта.'
       },
       credits_million: {
         title: 'Миллионер орбиты',
@@ -1052,6 +1201,17 @@ const en: Translation = {
   renovationRequirementStation0: 'Capsule 10+ and kitchen opened',
   renovationRequirementStation1: 'Capsule 25+ and laundry opened',
   renovationRequirementStation2: 'Open teleport or settle 5 residents',
+  renovationRequirementStation3: 'Open library or reach 70 comfort',
+  renovationCycleLabel: 'Renovation cycle',
+  celebrationTitle: 'Renovation complete!',
+  celebrationCycle: 'Cycle {cycle}',
+  celebrationReputation: '+{amount} reputation',
+  celebrationDismiss: 'Continue',
+  saveSaving: 'Saving…',
+  saveSaved: 'Saved',
+  errorBoundaryTitle: 'The station crashed',
+  errorBoundaryBody: 'Something went wrong. Your save is intact — reload the page to continue.',
+  errorBoundaryReload: 'Reload',
   renovationRequirementGoals: 'Complete cycle goals',
   renovate: 'Renovate',
   renovateTooltip: 'Renovation resets kopeks and modules but keeps reputation and purchased upgrades. Reward = floor(sqrt(earned / 100000)).',
@@ -1076,6 +1236,8 @@ const en: Translation = {
   modulesBought: 'Modules bought',
   renovations: 'Renovations',
   totalEarned: 'Total earned',
+  incomeBreakdownTitle: 'Income sources',
+  incomeBreakdownHint: 'Top rooms by contribution to station income',
   offlineTitle: 'The station worked without you',
   time: 'Time',
   collect: 'Collect',
@@ -1097,6 +1259,22 @@ const en: Translation = {
   helpRenovation: 'Orbit renovation',
   helpRenovationBody: 'Resets kopeks and modules but keeps reputation. Reputation buys permanent upgrades (residents survive, warm start, higher offline cap).',
   helpStart: 'Got it, start playing',
+  tourTitle: 'Station Tour',
+  tourStepStation: 'Your Station',
+  tourStepStationBody: 'This is the station view. Click a room to earn a few kopeks. The strange cat in the capsule also likes attention.',
+  tourStepModules: 'Station Rooms',
+  tourStepModulesBody: 'Buy module levels with kopeks. Each module gives income per second. At levels 10, 25, 50, and 100 modules get an income multiplier.',
+  tourStepGoals: 'Goals',
+  tourStepGoalsBody: 'Goals guide your progress. Completing them gives comfort, visual details, or temporary boosts. Finished goals disappear from the list.',
+  tourStepBonuses: 'Bonuses',
+  tourStepBonusesBody: 'On Yandex Games bonuses are activated via ads (x2 rent, VIP resident). Locally — instantly. There are also daily login rewards.',
+  tourStepStats: 'Station Resources',
+  tourStepStatsBody: 'Kopeks, comfort, reputation, and income per second are your key metrics. Comfort multiplies income, reputation boosts it after renovation.',
+  tourNext: 'Next',
+  tourPrev: 'Back',
+  tourSkip: 'Skip',
+  tourDone: 'Let\'s go!',
+  tourStep: 'Step',
   settingsTitle: 'Settings',
   resetSave: 'Reset save',
   resetSaveDesc: 'Completely erases progress: kopeks, modules, residents, achievements and reputation. This cannot be undone.',
@@ -1326,6 +1504,54 @@ const en: Translation = {
         return_mug: { label: 'Return the spare mug', description: '+teleport condition' },
         display_mug: { label: 'Put the mug on the shelf', description: '+comfort, detail' }
       }
+    },
+    panorama_star_argument: {
+      title: 'Residents argue about star names',
+      body: 'A crowd gathered at the dome — everyone is sure they know the "right" name for each star.',
+      choices: {
+        vote_names: { label: 'Hold a naming vote', description: '+comfort, detail' },
+        use_catalogue: { label: 'Open the star catalogue', description: '+dome condition' }
+      }
+    },
+    maintenance_drones_form_committee: {
+      title: 'Maintenance drones formed a committee',
+      body: 'The drones stopped cleaning and started debating shift schedules. Income is slipping and comfort needs attention.',
+      choices: {
+        ratify_committee: { label: 'Ratify the drone committee', description: '+comfort, detail' },
+        assign_shifts: { label: 'Assign shifts manually', description: '+capsule and kitchen condition' }
+      }
+    },
+    cat_sleeps_on_button: {
+      title: 'The cat fell asleep on an important button',
+      body: 'The strange cat found the only warm button on the panel and refuses to leave. The capsule is suffering.',
+      choices: {
+        relocate_cat: { label: 'Move the cat to the sofa', description: '+comfort, detail' },
+        label_button: { label: 'Label the button "no sleeping"', description: '+capsule condition' }
+      }
+    },
+    retired_cosmonaut_mug_missing: {
+      title: 'The cosmonaut\'s enamel mug is missing',
+      body: 'The retired cosmonaut searched the whole capsule — the mug is nowhere. He says without it "this is not the same station".',
+      choices: {
+        search_capsule: { label: 'Search the capsule together', description: '+comfort, detail' },
+        buy_new_mug: { label: 'Buy a new mug', description: '-kopeks, +comfort' }
+      }
+    },
+    mist_cook_recipe_too_large: {
+      title: 'The cook\'s recipe does not fit in the kitchen',
+      body: 'The misty algae soup takes 47 steps. The cook from the fog planet insists there is no shorter version.',
+      choices: {
+        copy_recipe: { label: 'Copy the recipe onto parchment', description: '+comfort, detail' },
+        simplify_recipe: { label: 'Simplify to 12 steps', description: '+kitchen condition' }
+      }
+    },
+    vacuum_gardener_seed_escape: {
+      title: 'The gardener\'s seeds escaped',
+      body: 'The seed collection from different planets flew into the corridor. The vacuum gardener is frantically catching them in zero gravity.',
+      choices: {
+        catch_seeds: { label: 'Help catch the seeds', description: '+comfort, detail' },
+        let_them_grow: { label: 'Let them grow in the corridor', description: '+garden condition' }
+      }
     }
   },
   storyTitle: 'Resident Request',
@@ -1512,6 +1738,12 @@ const en: Translation = {
         unlockText: 'Mini-Saucer Dock reached level 10.',
         bonusText: '+3% income per resident on station',
         bio: 'A family of five tiny flying saucers. Arrived at the station and decided to stay. Each saucer is a separate personality with its own character. The more residents on the station, the more actively they help with deliveries.'
+      },
+      orbital_beekeeper: {
+        name: 'Orbital Beekeeper',
+        unlockText: 'Oxygen Garden reached level 15.',
+        bonusText: '+1 comfort per 5 garden levels at unlock',
+        bio: 'Brought a colony of space bees to the station — bees that do not mind zero gravity. They pollinate the garden and make honey with a stardust aftertaste. The deeper the garden when they arrive, the more bees he brings — and the more comfort from their humming in the dome.'
       }
     },
     goals: {
@@ -1590,6 +1822,30 @@ const en: Translation = {
       repeat_renovation: {
         title: 'Perform another renovation',
         rewardLabel: 'New station cycle'
+      },
+      reach_comfort_80: {
+        title: 'Raise comfort to 80',
+        rewardLabel: '+7 comfort, warm station mode'
+      },
+      unlock_seven_residents: {
+        title: 'Settle 7 residents',
+        rewardLabel: '+8 comfort, large communalka'
+      },
+      earn_credits_500000: {
+        title: 'Earn 500,000 kopeks in a cycle',
+        rewardLabel: '+8 comfort, solid kopeks reserve'
+      },
+      unlock_orbital_library: {
+        title: 'Unlock the orbital library',
+        rewardLabel: '+9 comfort, library details'
+      },
+      reach_capsule_50: {
+        title: 'Develop the capsule to level 50',
+        rewardLabel: '+10 comfort, advanced capsule'
+      },
+      third_renovation: {
+        title: 'Perform the third renovation',
+        rewardLabel: 'Late station cycle'
       }
     },
     achievements: {
@@ -1605,13 +1861,25 @@ const en: Translation = {
         title: 'Growing Communalka',
         description: '50 total module levels.'
       },
+      hundred_module_levels: {
+        title: 'Big Orbit',
+        description: '100 total module levels.'
+      },
       first_prestige: {
         title: 'First Renovation',
         description: 'Perform the first orbit renovation.'
       },
+      renovation_master: {
+        title: 'Renovation Master',
+        description: 'Perform 3 orbit renovations.'
+      },
       comfort_50: {
         title: 'Cozy as Home',
         description: 'Reach 50 comfort.'
+      },
+      comfort_100: {
+        title: 'Settled Space',
+        description: 'Reach 100 comfort.'
       },
       credits_million: {
         title: 'Orbital Millionaire',

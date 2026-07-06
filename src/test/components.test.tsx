@@ -95,9 +95,9 @@ describe('core UI components', () => {
   it('shows whether the station has settled residents yet', () => {
     render(<ResidentsPanel gameState={createInitialState(1_000)} t={t} />);
 
-    expect(screen.getByText(`0/12 ${t.residentsSettled}`)).toBeInTheDocument();
+    expect(screen.getByText(`0/13 ${t.residentsSettled}`)).toBeInTheDocument();
     expect(screen.getByText('Пока жильцов нет')).toBeInTheDocument();
-    expect(screen.getAllByText(t.notSettled)).toHaveLength(12);
+    expect(screen.getAllByText(t.notSettled)).toHaveLength(13);
   });
 
   it('marks unlocked residents as settled', () => {
@@ -111,9 +111,9 @@ describe('core UI components', () => {
       />
     );
 
-    expect(screen.getByText(`1/12 ${t.residentsSettled}`)).toBeInTheDocument();
+    expect(screen.getByText(`1/13 ${t.residentsSettled}`)).toBeInTheDocument();
     expect(screen.getByText(t.settled)).toBeInTheDocument();
-    expect(screen.getAllByText(t.notSettled)).toHaveLength(11);
+    expect(screen.getAllByText(t.notSettled)).toHaveLength(12);
   });
 
   it('shows resident role labels for settled residents', () => {

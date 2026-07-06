@@ -11,7 +11,9 @@ type SoundName =
   | 'prestige'
   | 'error'
   | 'click'
-  | 'daily';
+  | 'daily'
+  | 'incident'
+  | 'boost';
 
 const MUTE_KEY = 'cosmic-communalka-muted';
 
@@ -113,6 +115,19 @@ const soundPresets: Record<SoundName, () => void> = {
   daily: () => {
     playTone(587.33, 0.1, 'sine', 0.1); // D5
     playTone(880, 0.16, 'sine', 0.1, 0.08); // A5
+  },
+  incident: () => {
+    // Curious two-tone "something happened" chime
+    playTone(523.25, 0.08, 'triangle', 0.08); // C5
+    playTone(622.25, 0.08, 'triangle', 0.08, 0.06); // Eb5
+    playTone(739.99, 0.14, 'triangle', 0.08, 0.12); // F#5
+  },
+  boost: () => {
+    // Rising arpeggio for ad-activated income boost
+    playTone(392, 0.08, 'sawtooth', 0.07); // G4
+    playTone(523.25, 0.08, 'sawtooth', 0.07, 0.06); // C5
+    playTone(659.25, 0.08, 'sawtooth', 0.07, 0.12); // E5
+    playTone(880, 0.2, 'sawtooth', 0.07, 0.18); // A5
   }
 };
 
@@ -156,6 +171,104 @@ export function resumeAudio(): void {
   if (ctx && ctx.state === 'suspended') {
     void ctx.resume();
   }
+}
+
+// ── Ambient station hum ───────────────────────────────────────────
+// A very low-volume continuous drone that plays while the game is active.
+// Uses two detuned sine oscillators through a low-pass filter for a warm
+// "station reactor" feel. Respects the global mute flag.
+
+let humOscA: OscillatorNode | null = null;
+let humOscB: OscillatorNode | null = null;
+let humGain: GainNode | null = null;
+let humFilter: BiquadFilterNode | null = null;
+let humStarted = false;
+
+export function startAmbientHum(): void {
+  if (muted || humStarted) {
+    return;
+  }
+
+  const audioCtx = ensureContext();
+
+  if (!audioCtx) {
+    return;
+  }
+
+  try {
+    humFilter = audioCtx.createBiquadFilter();
+    humFilter.type = 'lowpass';
+    humFilter.frequency.value = 180;
+    humFilter.Q.value = 0.7;
+
+    humGain = audioCtx.createGain();
+    humGain.gain.value = 0;
+
+    humOscA = audioCtx.createOscillator();
+    humOscA.type = 'sine';
+    humOscA.frequency.value = 55; // A1 — deep reactor hum
+
+    humOscB = audioCtx.createOscillator();
+    humOscB.type = 'sine';
+    humOscB.frequency.value = 82.41; // E2 — perfect fifth above, warm interval
+
+    humOscA.connect(humFilter);
+    humOscB.connect(humFilter);
+    humFilter.connect(humGain);
+    humGain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+    humGain.gain.setValueAtTime(0, now);
+    humGain.gain.linearRampToValueAtTime(0.025, now + 2.5); // fade in over 2.5s
+
+    humOscA.start(now);
+    humOscB.start(now);
+
+    humStarted = true;
+  } catch {
+    // If oscillator creation fails (old browser), silently skip.
+    humStarted = false;
+  }
+}
+
+export function stopAmbientHum(): void {
+  if (!humStarted || !ctx) {
+    humStarted = false;
+    return;
+  }
+
+  try {
+    const now = ctx.currentTime;
+    if (humGain) {
+      humGain.gain.cancelScheduledValues(now);
+      humGain.gain.setValueAtTime(humGain.gain.value, now);
+      humGain.gain.linearRampToValueAtTime(0, now + 0.5);
+    }
+
+    const oscA = humOscA;
+    const oscB = humOscB;
+
+    window.setTimeout(() => {
+      try {
+        oscA?.stop();
+        oscB?.stop();
+        oscA?.disconnect();
+        oscB?.disconnect();
+        humFilter?.disconnect();
+        humGain?.disconnect();
+      } catch {
+        // already cleaned up
+      }
+    }, 600);
+  } catch {
+    // ignore
+  }
+
+  humOscA = null;
+  humOscB = null;
+  humGain = null;
+  humFilter = null;
+  humStarted = false;
 }
 
 // Initialize from storage on module load + wire visibility change.

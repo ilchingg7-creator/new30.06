@@ -273,4 +273,70 @@ Object.assign(stationIncidents.find((incident) => incident.id === 'teleport_neig
   ]
 } satisfies Partial<StationIncidentDefinition>);
 
+Object.assign(stationIncidents.find((incident) => incident.id === 'panorama_star_argument')!, {
+  category: 'room',
+  priority: 58,
+  enabled: true,
+  trigger: { kind: 'roomOpened', roomId: 'panorama_dome' },
+  choices: [
+    { id: 'vote_names', effects: { comfortDelta: 2, visualPlaceholderIds: ['panorama_star_labels_01'] } },
+    { id: 'use_catalogue', effects: { conditionRepair: { panorama_dome: 8 } } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'maintenance_drones_form_committee')!, {
+  category: 'economy',
+  priority: 56,
+  enabled: true,
+  trigger: { kind: 'comfortIncomeMismatch', minIncomePerSecond: 15, maxComfort: 45 },
+  choices: [
+    { id: 'ratify_committee', effects: { comfortDelta: 3, visualPlaceholderIds: ['drone_schedule_board_01'] } },
+    { id: 'assign_shifts', effects: { conditionRepair: { tenant_capsule: 10, cosmo_kitchen: 6 } } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'cat_sleeps_on_button')!, {
+  category: 'cat',
+  priority: 54,
+  enabled: true,
+  trigger: { kind: 'roomConditionBelow', roomId: 'tenant_capsule', threshold: 35 },
+  choices: [
+    { id: 'relocate_cat', effects: { comfortDelta: 2, visualPlaceholderIds: ['cat_button_label_01'] } },
+    { id: 'label_button', effects: { conditionRepair: { tenant_capsule: 12 } } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'retired_cosmonaut_mug_missing')!, {
+  category: 'resident',
+  priority: 52,
+  enabled: true,
+  trigger: { kind: 'residentUnlocked', residentId: 'retired_cosmonaut' },
+  choices: [
+    { id: 'search_capsule', effects: { comfortDelta: 2, visualPlaceholderIds: ['cosmonaut_mug_01'] } },
+    { id: 'buy_new_mug', effects: { creditsDelta: -80, comfortDelta: 1 } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'mist_cook_recipe_too_large')!, {
+  category: 'resident',
+  priority: 51,
+  enabled: true,
+  trigger: { kind: 'residentUnlocked', residentId: 'mist_cook' },
+  choices: [
+    { id: 'copy_recipe', effects: { comfortDelta: 2, visualPlaceholderIds: ['kitchen_recipe_scroll_01'] } },
+    { id: 'simplify_recipe', effects: { conditionRepair: { cosmo_kitchen: 8 } } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
+Object.assign(stationIncidents.find((incident) => incident.id === 'vacuum_gardener_seed_escape')!, {
+  category: 'resident',
+  priority: 50,
+  enabled: true,
+  trigger: { kind: 'residentUnlocked', residentId: 'vacuum_gardener' },
+  choices: [
+    { id: 'catch_seeds', effects: { comfortDelta: 2, visualPlaceholderIds: ['garden_seed_trail_01'] } },
+    { id: 'let_them_grow', effects: { conditionRepair: { oxygen_garden: 8 } } }
+  ]
+} satisfies Partial<StationIncidentDefinition>);
+
 export const activeStationIncidents = stationIncidents.filter((incident) => incident.enabled);

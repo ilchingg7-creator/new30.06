@@ -31,7 +31,32 @@ function getRequirementLabel(requirement: PrestigeRequirement, cycle: number, t:
     return t.renovationRequirementStation1;
   }
 
-  return t.renovationRequirementStation2;
+  if (cycle === 2) {
+    return t.renovationRequirementStation2;
+  }
+
+  return t.renovationRequirementStation3;
+}
+
+function CycleProgress({ cycle, t }: { cycle: number; t: Translation }) {
+  const maxCycle = 4;
+  const cycles = Array.from({ length: maxCycle }, (_, i) => i);
+
+  return (
+    <div className="cycle-progress" aria-label={t.renovationCycleLabel}>
+      <span className="cycle-progress-label">{t.renovationCycleLabel}</span>
+      <div className="cycle-progress-track">
+        {cycles.map((c) => (
+          <span
+            key={c}
+            className={c < cycle ? 'cycle-dot completed' : c === cycle ? 'cycle-dot current' : 'cycle-dot'}
+            aria-hidden="true"
+          />
+        ))}
+      </div>
+      <span className="cycle-progress-count">{cycle}/{maxCycle - 1}</span>
+    </div>
+  );
 }
 
 export function PrestigePanel({ gameState, onRenovate, t }: PrestigePanelProps) {
@@ -44,6 +69,7 @@ export function PrestigePanel({ gameState, onRenovate, t }: PrestigePanelProps) 
     <section className="panel" aria-labelledby="prestige-panel-title">
       <h2 id="prestige-panel-title">{t.renovationTitle}</h2>
       <p className="panel-copy">{t.reputationStation}: {gameState.reputation}</p>
+      <CycleProgress cycle={cycle} t={t} />
       <div className="renovation-requirements">
         <strong>{t.renovationRequirements}</strong>
         <ul>

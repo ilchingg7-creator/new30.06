@@ -93,5 +93,13 @@ export const residents: ResidentDefinition[] = [
     bonusText: '+3% к доходу за каждого заселённого жильца',
     requiredModule: 'saucer_dock',
     requiredModuleLevel: 10
+  },
+  {
+    id: 'orbital_beekeeper',
+    name: 'Орбитальный пчеловод',
+    unlockText: 'Кислородный сад достиг 15 уровня.',
+    bonusText: '+1 комфорт за каждые 5 уровней кислородного сада',
+    requiredModule: 'oxygen_garden',
+    requiredModuleLevel: 15
   }
 ];
