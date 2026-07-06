@@ -67,93 +67,95 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
 
   return (
     <section className="mobile-layout" aria-label="Mobile layout">
-      <div data-tour="stats">
-        <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} variant="compact" t={t} saveStatus={game.saveStatus} />
-      </div>
-      {stationGuidance ? (
-        <StationTaskPanel
-          guidance={stationGuidance}
-          onSelectRoom={game.selectRoom}
-          onRenovate={game.renovateOrbit}
+      <div className="mobile-scroll-content">
+        <div data-tour="stats">
+          <TopBar gameState={game.gameState} incomePerSecond={game.incomePerSecond} variant="compact" t={t} saveStatus={game.saveStatus} />
+        </div>
+        {stationGuidance ? (
+          <StationTaskPanel
+            guidance={stationGuidance}
+            onSelectRoom={game.selectRoom}
+            onRenovate={game.renovateOrbit}
+            variant="compact"
+            t={t}
+          />
+        ) : null}
+        <LastActionFeedbackPanel gameState={game.gameState} t={t} variant="compact" />
+        <CommunalDutyPanel
+          gameState={game.gameState}
+          onAssign={game.assignCommunalDuty}
+          onClaim={game.claimCommunalDuty}
           variant="compact"
           t={t}
         />
-      ) : null}
-      <LastActionFeedbackPanel gameState={game.gameState} t={t} variant="compact" />
-      <CommunalDutyPanel
-        gameState={game.gameState}
-        onAssign={game.assignCommunalDuty}
-        onClaim={game.claimCommunalDuty}
-        variant="compact"
-        t={t}
-      />
-      <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} t={t} />
-      <div className="mobile-room-area" data-tour="station-view">
-        <Suspense fallback={<SceneFallback />}>
-          <PixiStationScene
-            gameState={game.gameState}
-            selectedRoomId={game.selectedRoomId}
-            onRoomClick={game.clickRoom}
-            onTenantCatClick={game.triggerCatIncident}
-            ariaLabel={t.stationView}
-          />
-        </Suspense>
-        <RoomConditionBar gameState={game.gameState} roomId={game.selectedRoomId} t={t} />
-      </div>
-      <div className="mobile-tab-content">
-        {activeTab === 'modules' && (
-          <div data-tour="modules">
-            <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} t={t} />
-          </div>
-        )}
-        {activeTab === 'goals' && (
-          <>
-            <div data-tour="goals">
-              <GoalPanel gameState={game.gameState} t={t} />
-            </div>
-            <StationIncidentJournal
+        <RoomSelector gameState={game.gameState} selectedRoomId={game.selectedRoomId} onSelectRoom={game.selectRoom} t={t} />
+        <div className="mobile-room-area" data-tour="station-view">
+          <Suspense fallback={<SceneFallback />}>
+            <PixiStationScene
               gameState={game.gameState}
-              newIncidentCount={game.newIncidentCount}
-              onResolve={game.resolveIncident}
-              onMarkSeen={game.markIncidentsSeen}
-              variant="compact"
-              t={t}
+              selectedRoomId={game.selectedRoomId}
+              onRoomClick={game.clickRoom}
+              onTenantCatClick={game.triggerCatIncident}
+              ariaLabel={t.stationView}
             />
-            <Suspense fallback={<PanelFallback />}>
-              <ResidentCollectionBook gameState={game.gameState} t={t} />
-            </Suspense>
-            <Suspense fallback={<PanelFallback />}>
-              <AchievementsPanel gameState={game.gameState} t={t} />
-            </Suspense>
-            <StatsPanel gameState={game.gameState} t={t} />
-            <WeeklyRepairPanel gameState={game.gameState} onClaimBonus={game.claimWeeklyBonus} t={t} variant="compact" />
-            <LeaderboardPanel
-              score={Math.floor(game.gameState.totalEarnedCredits)}
-              onRefresh={game.refreshLeaderboard}
-              onLoadEntries={game.loadLeaderboardEntries}
-              t={t}
-              variant="compact"
-            />
-          </>
-        )}
-        {activeTab === 'bonuses' && (
-          <div data-tour="bonuses">
-            <BonusPanel
-              onIncomeBoost={game.activateIncomeBoost}
-              onVipResident={game.activateVipResident}
-              adsAvailable={game.adsAvailable}
-              adPending={game.adPending}
-              vipResidentAvailable={game.vipResidentAvailable}
-              t={t}
-            />
-          </div>
-        )}
-        {activeTab === 'prestige' && (
-          <>
-            <PrestigePanel gameState={game.gameState} onRenovate={game.renovateOrbit} t={t} />
-            <PrestigeUpgradesPanel gameState={game.gameState} onBuyUpgrade={game.buyPrestigeUpgrade} t={t} />
-          </>
-        )}
+          </Suspense>
+          <RoomConditionBar gameState={game.gameState} roomId={game.selectedRoomId} t={t} />
+        </div>
+        <div className="mobile-tab-content">
+          {activeTab === 'modules' && (
+            <div data-tour="modules">
+              <ModuleList gameState={game.gameState} onBuyLevel={game.buyLevel} t={t} />
+            </div>
+          )}
+          {activeTab === 'goals' && (
+            <>
+              <div data-tour="goals">
+                <GoalPanel gameState={game.gameState} t={t} />
+              </div>
+              <StationIncidentJournal
+                gameState={game.gameState}
+                newIncidentCount={game.newIncidentCount}
+                onResolve={game.resolveIncident}
+                onMarkSeen={game.markIncidentsSeen}
+                variant="compact"
+                t={t}
+              />
+              <Suspense fallback={<PanelFallback />}>
+                <ResidentCollectionBook gameState={game.gameState} t={t} />
+              </Suspense>
+              <Suspense fallback={<PanelFallback />}>
+                <AchievementsPanel gameState={game.gameState} t={t} />
+              </Suspense>
+              <StatsPanel gameState={game.gameState} t={t} />
+              <WeeklyRepairPanel gameState={game.gameState} onClaimBonus={game.claimWeeklyBonus} t={t} variant="compact" />
+              <LeaderboardPanel
+                score={Math.floor(game.gameState.totalEarnedCredits)}
+                onRefresh={game.refreshLeaderboard}
+                onLoadEntries={game.loadLeaderboardEntries}
+                t={t}
+                variant="compact"
+              />
+            </>
+          )}
+          {activeTab === 'bonuses' && (
+            <div data-tour="bonuses">
+              <BonusPanel
+                onIncomeBoost={game.activateIncomeBoost}
+                onVipResident={game.activateVipResident}
+                adsAvailable={game.adsAvailable}
+                adPending={game.adPending}
+                vipResidentAvailable={game.vipResidentAvailable}
+                t={t}
+              />
+            </div>
+          )}
+          {activeTab === 'prestige' && (
+            <>
+              <PrestigePanel gameState={game.gameState} onRenovate={game.renovateOrbit} t={t} />
+              <PrestigeUpgradesPanel gameState={game.gameState} onBuyUpgrade={game.buyPrestigeUpgrade} t={t} />
+            </>
+          )}
+        </div>
       </div>
       <nav className="bottom-tabs" aria-label={t.stationSections}>
         {tabs.map((tab) => {

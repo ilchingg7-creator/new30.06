@@ -33,6 +33,12 @@ describe('Yandex Games viewport CSS', () => {
     expect(ruleBody(/\.desktop-layout \.desktop-modules-area\s*\{([^}]*)\}/s)).toContain('scroll-padding-top: 12px');
 
     expect(ruleBody(/\.mobile-layout\s*\{([^}]*)\}/s)).toContain('overflow: hidden');
+    expect(ruleBody(/\.mobile-layout\s*\{([^}]*)\}/s)).toContain('grid-template-rows: minmax(0, 1fr) auto');
+    expect(ruleBody(/\.mobile-layout\s*\{([^}]*)\}/s)).toContain(
+      'padding-bottom: env(safe-area-inset-bottom, 0px)'
+    );
+    expect(ruleBody(/\.mobile-scroll-content\s*\{([^}]*)\}/s)).toContain('overflow-y: auto');
+    expect(ruleBody(/\.mobile-scroll-content\s*\{([^}]*)\}/s)).toContain('overscroll-behavior: contain');
     expect(ruleBody(/\.mobile-tab-content\s*\{([^}]*)\}/s)).toContain('overflow-y: auto');
     expect(ruleBody(/\.mobile-tab-content\s*\{([^}]*)\}/s)).toContain(
       'overscroll-behavior: contain'

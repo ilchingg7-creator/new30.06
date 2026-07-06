@@ -580,9 +580,19 @@ input {
   flex: 1 1 auto;
   min-height: 0;
   display: grid;
-  grid-template-rows: auto auto auto auto auto minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto;
   gap: 4px;
   overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mobile-scroll-content {
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .mobile-room-area {
