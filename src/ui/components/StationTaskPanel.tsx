@@ -1,6 +1,6 @@
 'use client';
 
-import { ClipboardList, DoorOpen, RotateCcw } from 'lucide-react';
+import { ClipboardList, DoorOpen, HelpCircle, RotateCcw } from 'lucide-react';
 import { formatCredits } from '../../game/format';
 import type { StationGuidance, StationGuidanceCopyKey } from '../../game/stationDirector';
 import type { ModuleId } from '../../game/types';
@@ -80,36 +80,41 @@ export function StationTaskPanel({ guidance, onSelectRoom, onRenovate, variant =
   const body = getBody(guidance.copyKey, t);
   const canSelectRoom = Boolean(guidance.targetRoomId && onSelectRoom);
   const canRenovate = guidance.kind === 'prestige' && guidance.canRenovate && onRenovate;
-  const className = variant === 'compact' ? 'panel station-task-panel compact' : 'panel station-task-panel';
+  const className = variant === 'compact' ? 'station-task-help compact' : 'station-task-help';
 
   return (
-    <section className={className} aria-labelledby="station-task-title">
-      <div className="station-task-heading">
-        <ClipboardList aria-hidden="true" size={17} />
-        <h2 id="station-task-title">{t.currentTask}</h2>
-      </div>
-      <div className="station-task-body">
-        <div>
-          <strong>{title}</strong>
-          <p>{body}</p>
-          <GuidanceMeta guidance={guidance} t={t} />
-          {guidance.preview ? <ActionPreviewLine preview={guidance.preview} t={t} variant={variant} /> : null}
+    <div className={className}>
+      <button type="button" className="station-task-help-trigger" aria-label={t.currentTask} title={t.currentTask}>
+        <HelpCircle aria-hidden="true" size={17} />
+      </button>
+      <section className="panel station-task-tooltip" aria-labelledby="station-task-title" role="tooltip">
+        <div className="station-task-heading">
+          <ClipboardList aria-hidden="true" size={17} />
+          <h2 id="station-task-title">{t.currentTask}</h2>
         </div>
-        <div className="station-task-actions">
-          {canSelectRoom && (
-            <button type="button" onClick={() => onSelectRoom?.(guidance.targetRoomId!)}>
-              <DoorOpen aria-hidden="true" size={16} />
-              {t.taskSelectRoom}
-            </button>
-          )}
-          {canRenovate && (
-            <button type="button" onClick={onRenovate}>
-              <RotateCcw aria-hidden="true" size={16} />
-              {t.taskRenovate}
-            </button>
-          )}
+        <div className="station-task-body">
+          <div>
+            <strong>{title}</strong>
+            <p>{body}</p>
+            <GuidanceMeta guidance={guidance} t={t} />
+            {guidance.preview ? <ActionPreviewLine preview={guidance.preview} t={t} variant={variant} /> : null}
+          </div>
+          <div className="station-task-actions">
+            {canSelectRoom && (
+              <button type="button" onClick={() => onSelectRoom?.(guidance.targetRoomId!)}>
+                <DoorOpen aria-hidden="true" size={16} />
+                {t.taskSelectRoom}
+              </button>
+            )}
+            {canRenovate && (
+              <button type="button" onClick={onRenovate}>
+                <RotateCcw aria-hidden="true" size={16} />
+                {t.taskRenovate}
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

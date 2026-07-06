@@ -509,6 +509,8 @@ export interface GameState {
   communalDuty?: CommunalDutyState;
   lastCommunalDutyResolvedAt?: number;
   lastCommunalDutyResult?: CommunalDutyResult;
+  /** Epoch ms of the last rewarded VIP resident activation. */
+  lastVipResidentClaimedAt?: number;
   /** Weekly repair event state. Regenerates every 7 days. */
   weeklyRepair?: WeeklyRepairState;
   /**

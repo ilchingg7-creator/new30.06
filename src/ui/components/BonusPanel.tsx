@@ -8,6 +8,7 @@ interface BonusPanelProps {
   onVipResident(): void;
   adsAvailable?: boolean;
   adPending?: boolean;
+  vipResidentAvailable?: boolean;
   t: Translation;
 }
 
@@ -16,10 +17,13 @@ export function BonusPanel({
   onVipResident,
   adsAvailable = false,
   adPending = false,
+  vipResidentAvailable = true,
   t
 }: BonusPanelProps) {
   const boostLabel = adsAvailable ? `${t.boost2x} ${t.adSuffix}` : t.boost2x;
   const vipLabel = adsAvailable ? `${t.vipResident} ${t.adSuffix}` : t.vipResident;
+  const vipDisabled = adPending || !vipResidentAvailable;
+  const vipButtonLabel = adPending ? t.adPending : vipResidentAvailable ? vipLabel : t.vipCooldown;
 
   return (
     <section className="panel" aria-labelledby="bonus-panel-title">
@@ -40,11 +44,11 @@ export function BonusPanel({
         <button
           type="button"
           onClick={onVipResident}
-          disabled={adPending}
+          disabled={vipDisabled}
           title={t.vipTooltip}
         >
           <Star aria-hidden="true" size={16} />
-          {adPending ? t.adPending : vipLabel}
+          {vipButtonLabel}
         </button>
       </div>
     </section>

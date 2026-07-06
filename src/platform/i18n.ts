@@ -55,6 +55,7 @@ export interface Translation {
   adBonusesHint: string;
   boost2x: string;
   vipResident: string;
+  vipCooldown: string;
   adPending: string;
   // Prestige
   renovationTitle: string;
@@ -376,6 +377,7 @@ const ru: Translation = {
   adBonusesHint: 'Рекламные бонусы доступны на Yandex Games. Локально бонусы включаются сразу.',
   boost2x: 'x2 аренда',
   vipResident: 'VIP-жилец',
+  vipCooldown: 'VIP завтра',
   adPending: 'Реклама...',
   renovationTitle: 'Реновация орбиты',
   reputationStation: 'Репутация станции',
@@ -1193,6 +1195,7 @@ const en: Translation = {
   adBonusesHint: 'Ad bonuses are available on Yandex Games. Locally they activate immediately.',
   boost2x: 'x2 rent',
   vipResident: 'VIP resident',
+  vipCooldown: 'VIP tomorrow',
   adPending: 'Ad...',
   renovationTitle: 'Orbit Renovation',
   reputationStation: 'Station reputation',

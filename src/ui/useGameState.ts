@@ -62,6 +62,18 @@ export interface CelebrationInfo {
 
 export type SaveStatus = 'idle' | 'saving' | 'saved';
 
+const VIP_RESIDENT_COOLDOWN_MS = 24 * 60 * 60 * 1_000;
+
+function getVipResidentCooldownMs(state: GameState, now = Date.now()): number {
+  const lastClaimedAt = state.lastVipResidentClaimedAt;
+
+  if (lastClaimedAt === undefined) {
+    return 0;
+  }
+
+  return Math.max(0, lastClaimedAt + VIP_RESIDENT_COOLDOWN_MS - now);
+}
+
 export interface UseGameStateResult {
   gameState: GameState;
   incomePerSecond: number;
@@ -74,6 +86,8 @@ export interface UseGameStateResult {
   selectedRoomId: ModuleId;
   adPending: boolean;
   adsAvailable: boolean;
+  vipResidentAvailable: boolean;
+  vipResidentCooldownMs: number;
   buyLevel(moduleId: ModuleId): void;
   selectRoom(moduleId: ModuleId): void;
   renovateOrbit(): void;
@@ -394,7 +408,8 @@ export function useGameState(
   }, [adPending, resolveAdGrant]);
 
   const activateVipResident = useCallback(async () => {
-    if (adPending) {
+    if (adPending || getVipResidentCooldownMs(gameState) > 0) {
+      playSound('error');
       return;
     }
 
@@ -407,27 +422,36 @@ export function useGameState(
         return;
       }
 
-      setGameState((current) => ({
-        ...current,
-        // Mark the VIP resident as permanently unlocked when first activated
-        // via rewarded ad, while the timed bonus still expires.
-        unlockedResidents: current.unlockedResidents.includes('vip_astroteenant')
-          ? current.unlockedResidents
-          : [...current.unlockedResidents, 'vip_astroteenant'],
-        timedBonuses: [
-          ...current.timedBonuses,
-          {
-            id: 'vip_resident',
-            incomeMultiplier: 2,
-            expiresAt: Date.now() + 10 * 60 * 1_000
-          }
-        ]
-      }));
+      const claimedAt = Date.now();
+
+      setGameState((current) => {
+        if (getVipResidentCooldownMs(current, claimedAt) > 0) {
+          return current;
+        }
+
+        return {
+          ...current,
+          lastVipResidentClaimedAt: claimedAt,
+          // Mark the VIP resident as permanently unlocked when first activated
+          // via rewarded ad, while the timed bonus still expires.
+          unlockedResidents: current.unlockedResidents.includes('vip_astroteenant')
+            ? current.unlockedResidents
+            : [...current.unlockedResidents, 'vip_astroteenant'],
+          timedBonuses: [
+            ...current.timedBonuses,
+            {
+              id: 'vip_resident',
+              incomeMultiplier: 2,
+              expiresAt: claimedAt + 10 * 60 * 1_000
+            }
+          ]
+        };
+      });
       playSound('boost');
     } finally {
       setAdPending(false);
     }
-  }, [adPending, resolveAdGrant]);
+  }, [adPending, gameState, resolveAdGrant]);
 
   const doubleOfflineReward = useCallback(async () => {
     if (adPending || !offlineReward) {
@@ -567,6 +591,8 @@ export function useGameState(
     setGameState((current) => queueEligibleIncidents(current, { sceneInteractionId: 'strange_cat' }));
   }, []);
 
+  const vipResidentCooldownMs = getVipResidentCooldownMs(gameState);
+
   return {
     gameState,
     incomePerSecond: calculateIncomePerSecond(gameState),
@@ -579,6 +605,8 @@ export function useGameState(
     selectedRoomId,
     adPending,
     adsAvailable,
+    vipResidentAvailable: vipResidentCooldownMs <= 0,
+    vipResidentCooldownMs,
     buyLevel,
     selectRoom,
     renovateOrbit,

@@ -416,6 +416,7 @@ function isGameStateShape(value: unknown): value is GameState {
     hasOptionalCommunalDuty(value.communalDuty) &&
     hasOptionalNumber(value.lastCommunalDutyResolvedAt) &&
     hasOptionalCommunalDutyResult(value.lastCommunalDutyResult) &&
+    hasOptionalNumber(value.lastVipResidentClaimedAt) &&
     hasOptionalNumber(value.totalPlaySeconds) &&
     hasOptionalNumber(value.totalModulesBought) &&
     hasOptionalNumber(value.prestigeCount) &&

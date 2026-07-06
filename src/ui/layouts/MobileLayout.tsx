@@ -143,6 +143,7 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
               onVipResident={game.activateVipResident}
               adsAvailable={game.adsAvailable}
               adPending={game.adPending}
+              vipResidentAvailable={game.vipResidentAvailable}
               t={t}
             />
           </div>

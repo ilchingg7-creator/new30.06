@@ -20,7 +20,9 @@ describe('StationTaskPanel', () => {
 
     render(<StationTaskPanel guidance={guidance} onSelectRoom={vi.fn()} t={t} />);
 
-    expect(screen.getByRole('heading', { name: t.currentTask })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: t.currentTask })).toBeInTheDocument();
+    expect(document.querySelector('.station-task-help')).not.toBeNull();
+    expect(document.querySelector('.station-task-panel')).toBeNull();
     expect(screen.getByText(t.taskVisitorTitle)).toBeInTheDocument();
     expect(screen.getByText(t.taskVisitorBody)).toBeInTheDocument();
     expect(screen.getByText(/120/)).toBeInTheDocument();

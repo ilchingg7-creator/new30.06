@@ -1404,10 +1404,39 @@ input {
   font-size: 1.15rem;
 }
 
-.station-task-panel {
-  display: grid;
+.station-task-help {
+  position: relative;
+  z-index: 35;
+  justify-self: start;
+  align-self: start;
+}
+
+.station-task-help-trigger {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-color: rgba(94, 140, 213, 0.75);
+  background: rgba(21, 35, 58, 0.86);
+}
+
+.station-task-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 40;
+  display: none;
+  width: min(380px, calc(100vw - 32px));
   gap: 6px;
   padding: 10px;
+}
+
+.station-task-help:hover .station-task-tooltip,
+.station-task-help:focus-within .station-task-tooltip {
+  display: grid;
 }
 
 .station-task-heading {
@@ -1474,45 +1503,52 @@ input {
   justify-content: flex-end;
 }
 
-.station-task-panel.compact {
+.station-task-help.compact .station-task-help-trigger {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+}
+
+.station-task-help.compact .station-task-tooltip {
+  width: min(320px, calc(100vw - 24px));
   padding: 8px 10px;
   gap: 5px;
 }
 
-.station-task-panel.compact .station-task-heading {
+.station-task-help.compact .station-task-heading {
   gap: 6px;
 }
 
-.station-task-panel.compact .station-task-heading h2 {
+.station-task-help.compact .station-task-heading h2 {
   font-size: 0.78rem;
 }
 
-.station-task-panel.compact .station-task-body {
+.station-task-help.compact .station-task-body {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 8px;
 }
 
-.station-task-panel.compact .station-task-body strong {
+.station-task-help.compact .station-task-body strong {
   font-size: 0.9rem;
 }
 
-.station-task-panel.compact .station-task-body p {
+.station-task-help.compact .station-task-body p {
   margin-bottom: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.station-task-panel.compact .station-task-meta {
+.station-task-help.compact .station-task-meta {
   gap: 6px;
 }
 
-.station-task-panel.compact .station-task-meta dt,
-.station-task-panel.compact .station-task-meta dd {
+.station-task-help.compact .station-task-meta dt,
+.station-task-help.compact .station-task-meta dd {
   font-size: 0.74rem;
 }
 
-.station-task-panel.compact .station-task-actions button {
+.station-task-help.compact .station-task-actions button {
   min-height: 34px;
   padding: 0 8px;
   font-size: 0.78rem;
@@ -2054,15 +2090,15 @@ input {
     width: 100%;
   }
 
-  .station-task-panel.compact .station-task-body {
+  .station-task-help.compact .station-task-body {
     grid-template-columns: minmax(0, 1fr) auto;
   }
 
-  .station-task-panel.compact .station-task-actions {
+  .station-task-help.compact .station-task-actions {
     justify-content: flex-end;
   }
 
-  .station-task-panel.compact .station-task-actions button {
+  .station-task-help.compact .station-task-actions button {
     width: auto;
   }
 }

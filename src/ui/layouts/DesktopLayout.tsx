@@ -118,6 +118,7 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
             onVipResident={game.activateVipResident}
             adsAvailable={game.adsAvailable}
             adPending={game.adPending}
+            vipResidentAvailable={game.vipResidentAvailable}
             t={t}
           />
         </div>

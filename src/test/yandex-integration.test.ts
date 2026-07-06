@@ -39,6 +39,7 @@ function makeMemoryStorage(saved: string | null = null) {
 }
 
 afterEach(() => {
+  vi.restoreAllMocks();
   delete window.YaGames;
   Object.defineProperty(window, 'parent', {
     configurable: true,
@@ -130,6 +131,29 @@ describe('yandex platform integration', () => {
     expect(result.current.gameState.timedBonuses).toHaveLength(1);
     expect(result.current.gameState.timedBonuses[0].id).toBe('rent_x2');
     expect(result.current.gameState.timedBonuses[0].incomeMultiplier).toBe(2);
+  });
+
+  it('allows the VIP resident reward only once per day', async () => {
+    const platform = makePlatform(true);
+    const storage = makeMemoryStorage();
+    const now = 1_000_000;
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    await act(async () => {
+      await result.current.activateVipResident();
+    });
+
+    await act(async () => {
+      await result.current.activateVipResident();
+    });
+
+    expect(platform.showRewardedAd).toHaveBeenCalledTimes(1);
+    expect(result.current.gameState.timedBonuses.filter((bonus) => bonus.id === 'vip_resident')).toHaveLength(1);
+    expect(result.current.gameState.lastVipResidentClaimedAt).toBe(now);
   });
 
   it('doubleOfflineReward adds the reward credits and clears the dialog on success', async () => {

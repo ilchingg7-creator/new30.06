@@ -168,6 +168,17 @@ describe('save serialization', () => {
     expect(parsed?.lastCommunalDutyResolvedAt).toBe(500);
   });
 
+  it('round-trips the VIP daily cooldown timestamp', () => {
+    const state = {
+      ...createInitialState(1_000),
+      lastVipResidentClaimedAt: 123_456
+    };
+
+    const parsed = parseGameState(serializeGameState(state));
+
+    expect(parsed?.lastVipResidentClaimedAt).toBe(123_456);
+  });
+
   it('rejects saves with invalid communal duty ids', () => {
     const state = createInitialState(1_000);
     const raw = JSON.stringify({

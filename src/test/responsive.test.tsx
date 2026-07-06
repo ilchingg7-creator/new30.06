@@ -79,6 +79,8 @@ function buildDutyGame(): UseGameStateResult {
     selectedRoomId: 'tenant_capsule',
     adPending: false,
     adsAvailable: false,
+    vipResidentAvailable: true,
+    vipResidentCooldownMs: 0,
     buyLevel: vi.fn(),
     selectRoom: vi.fn(),
     renovateOrbit: vi.fn(),
@@ -221,7 +223,7 @@ describe('responsive layout rendering', () => {
     setViewportWidth(390);
     const { container } = render(<MobileLayout game={buildDutyGame()} t={t} />);
 
-    expect(container.querySelector('.mobile-layout .station-task-panel.compact')).not.toBeNull();
+    expect(container.querySelector('.mobile-layout .station-task-help.compact')).not.toBeNull();
   });
 
   it('uses compact resource metrics in the mobile layout', async () => {
