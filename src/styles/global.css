@@ -541,15 +541,19 @@ input {
   overflow: hidden;
 }
 
-.desktop-layout .top-bar {
+.desktop-layout .desktop-top-area {
   grid-area: top;
 }
 
-.desktop-layout .module-panel {
+.desktop-layout .desktop-modules-area {
   grid-area: modules;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+}
+
+.desktop-layout .module-panel {
+  min-height: 0;
 }
 
 .desktop-layout .station-stack {

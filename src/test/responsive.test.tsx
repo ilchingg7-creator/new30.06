@@ -252,6 +252,16 @@ describe('responsive layout rendering', () => {
     expect(firstPanel?.classList.contains('compact')).toBe(true);
   });
 
+  it('keeps desktop tour wrappers assigned to the main grid areas', async () => {
+    setViewportWidth(1200);
+    const { container } = render(<DesktopLayout game={buildDutyGame()} t={t} />);
+
+    await screen.findByText(t.leaderboardEmpty);
+
+    expect(container.querySelector('.desktop-layout > .desktop-top-area[data-tour="stats"]')).not.toBeNull();
+    expect(container.querySelector('.desktop-layout > .desktop-modules-area[data-tour="modules"]')).not.toBeNull();
+  });
+
   it('renders one room selector navigation for the active layout', async () => {
     setViewportWidth(1200);
     render(<App />);
