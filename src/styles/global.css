@@ -1531,7 +1531,11 @@ input {
 
 .communal-duty-heading h2 {
   margin: 0;
-  font-size: 0.92rem;
+  font-size: 1rem;
+}
+
+.communal-duty-panel > strong {
+  font-size: 1rem;
 }
 
 .communal-duty-actions {
@@ -1550,7 +1554,7 @@ input {
   min-height: 34px;
   justify-content: flex-start;
   padding: 0 10px;
-  font-size: 0.78rem;
+  font-size: 0.86rem;
 }
 
 .communal-duty-claim-row {
@@ -1567,7 +1571,7 @@ input {
 .communal-duty-claim-row button {
   min-height: 34px;
   padding: 0 10px;
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   white-space: nowrap;
 }
 
@@ -1581,18 +1585,18 @@ input {
 }
 
 .communal-duty-panel.compact .communal-duty-heading h2 {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
 }
 
 .communal-duty-panel.compact strong {
-  font-size: 0.78rem;
+  font-size: 0.86rem;
 }
 
 .communal-duty-panel.compact .panel-copy {
   margin: 0;
   overflow: hidden;
   color: var(--color-utility-blue);
-  font-size: 0.66rem;
+  font-size: 0.74rem;
   line-height: 1.15;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1601,7 +1605,7 @@ input {
 .communal-duty-panel.compact button {
   min-height: 28px;
   padding: 0 7px;
-  font-size: 0.66rem;
+  font-size: 0.74rem;
 }
 
 .communal-duty-panel.compact .communal-duty-actions {
@@ -1629,12 +1633,12 @@ input {
 }
 
 .communal-duty-panel.compact .action-preview-text small {
-  font-size: 0.6rem;
+  font-size: 0.68rem;
 }
 
 .communal-duty-panel.compact .action-preview-tag {
   padding: 0 3px;
-  font-size: 0.5rem;
+  font-size: 0.58rem;
 }
 
 .panel-heading {
@@ -2671,94 +2675,6 @@ input {
   }
   .confetti-piece {
     display: none;
-  }
-}
-
-/* ── Save Indicator (TopBar) ────────────────────────────────────── */
-
-.save-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 9px;
-  border-radius: 999px;
-  border: 1px solid rgb(39 49 63 / 14%);
-  background: rgb(39 49 63 / 4%);
-  transition: all 0.3s ease;
-  margin-left: auto;
-  min-height: 24px;
-}
-
-.save-indicator small {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: rgb(39 49 63 / 55%);
-  white-space: nowrap;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.save-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: rgb(39 49 63 / 30%);
-  transition: all 0.3s ease;
-}
-
-.save-indicator.save-saving {
-  border-color: color-mix(in srgb, var(--color-utility-blue), transparent 40%);
-  background: color-mix(in srgb, var(--color-utility-blue), transparent 88%);
-}
-
-.save-indicator.save-saving small {
-  color: var(--color-utility-blue);
-}
-
-.save-indicator.save-saving .save-dot {
-  background: var(--color-utility-blue);
-  animation: save-dot-pulse 0.9s ease-in-out infinite;
-}
-
-.save-indicator.save-saved {
-  border-color: color-mix(in srgb, #5cb85c, transparent 40%);
-  background: color-mix(in srgb, #5cb85c, transparent 88%);
-}
-
-.save-indicator.save-saved small {
-  color: #3d8b3d;
-}
-
-.save-indicator.save-saved .save-dot {
-  background: #5cb85c;
-  box-shadow: 0 0 4px rgb(92 184 92 / 50%);
-}
-
-@keyframes save-dot-pulse {
-  0%, 100% {
-    opacity: 0.4;
-    transform: scale(0.85);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.15);
-  }
-}
-
-@media (max-width: 900px) {
-  .save-indicator small {
-    display: none;
-  }
-
-  .save-indicator {
-    padding: 4px;
-    min-height: auto;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .save-indicator.save-saving .save-dot {
-    animation: none;
   }
 }
 

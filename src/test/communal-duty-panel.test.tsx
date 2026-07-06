@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
@@ -7,6 +9,13 @@ import { translations } from '../platform/i18n';
 import { CommunalDutyPanel } from '../ui/components/CommunalDutyPanel';
 
 const t = translations.en;
+const css = readFileSync(join(process.cwd(), 'src/styles/global.css'), 'utf8');
+
+function ruleBody(selectorPattern: RegExp): string {
+  const match = css.match(selectorPattern);
+  expect(match?.[1]).toBeTruthy();
+  return (match?.[1] ?? '').replace(/\s+/g, ' ');
+}
 
 function availableDutyState(): GameState {
   const base = createInitialState(1_000);
@@ -90,6 +99,18 @@ describe('CommunalDutyPanel', () => {
 
     expect(container.querySelector('.communal-duty-panel.compact .communal-duty-claim-row')).not.toBeNull();
     expect(container.querySelector('.communal-duty-claim-row .action-preview.inline')).not.toBeNull();
+  });
+
+  it('keeps compact duty text readable after density tuning', () => {
+    expect(ruleBody(/\.communal-duty-panel\.compact \.communal-duty-heading h2\s*\{([^}]*)\}/s)).toContain(
+      'font-size: 0.8rem'
+    );
+    expect(ruleBody(/\.communal-duty-panel\.compact strong\s*\{([^}]*)\}/s)).toContain('font-size: 0.86rem');
+    expect(ruleBody(/\.communal-duty-panel\.compact \.panel-copy\s*\{([^}]*)\}/s)).toContain('font-size: 0.74rem');
+    expect(ruleBody(/\.communal-duty-panel\.compact button\s*\{([^}]*)\}/s)).toContain('font-size: 0.74rem');
+    expect(ruleBody(/\.communal-duty-panel\.compact \.action-preview-text small\s*\{([^}]*)\}/s)).toContain(
+      'font-size: 0.68rem'
+    );
   });
 
   it('renders ready-to-claim duty with claim action', async () => {

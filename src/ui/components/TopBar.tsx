@@ -11,7 +11,7 @@ interface TopBarProps {
   saveStatus?: SaveStatus;
 }
 
-export function TopBar({ gameState, incomePerSecond, variant = 'default', t, saveStatus }: TopBarProps) {
+export function TopBar({ gameState, incomePerSecond, variant = 'default', t }: TopBarProps) {
   return (
     <header className={variant === 'compact' ? 'top-bar compact' : 'top-bar'} aria-label={t.stationResources}>
       <div className="metric-pulse" key={Math.floor(gameState.credits)}>
@@ -30,16 +30,6 @@ export function TopBar({ gameState, incomePerSecond, variant = 'default', t, sav
         <span>{t.reputation}</span>
         <strong>{gameState.reputation}</strong>
       </div>
-      {saveStatus ? (
-        <div
-          className={`save-indicator save-${saveStatus}`}
-          aria-live="polite"
-          title={saveStatus === 'saving' ? t.saveSaving : t.saveSaved}
-        >
-          <span className="save-dot" aria-hidden="true" />
-          <small>{saveStatus === 'saving' ? t.saveSaving : t.saveSaved}</small>
-        </div>
-      ) : null}
     </header>
   );
 }

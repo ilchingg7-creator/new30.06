@@ -79,6 +79,16 @@ describe('core UI components', () => {
     expect(container.querySelector('.room-selector button.active')).toBeNull();
   });
 
+  it('does not render the save status indicator in the resource bar', () => {
+    const gameState = createInitialState(1_000);
+    const { container } = render(
+      <TopBar gameState={gameState} incomePerSecond={calculateIncomePerSecond(gameState)} t={t} saveStatus="saved" />
+    );
+
+    expect(container.querySelector('.save-indicator')).toBeNull();
+    expect(screen.queryByText(t.saveSaved)).toBeNull();
+  });
+
   it('shows module purchase preview on room cards', () => {
     render(<ModuleList gameState={createInitialState(1_000)} onBuyLevel={vi.fn()} t={t} />);
 
