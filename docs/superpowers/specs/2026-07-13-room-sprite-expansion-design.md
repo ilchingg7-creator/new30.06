@@ -40,6 +40,8 @@ The desired style is intentionally naive, amateur pixel art:
 - a handmade, "drawn in a simple paint program" quality;
 - readable room function at mobile size despite the rough execution.
 
+Soviet domestic styling is mandatory for every room. Communicate it through ordinary household design rather than political imagery: worn painted enamel, Bakelite controls, checked oilcloth, faceted glassware, old analog appliances, simple communal furniture, repair patches, and small unreadable calendar-like paper props. Each room should use only the cues appropriate to its function and progression level.
+
 Avoid:
 
 - polished professional pixel art;
@@ -48,6 +50,7 @@ Avoid:
 - precise isometric perspective;
 - readable signs or generated text;
 - watermarks and signatures.
+- political symbols, flags, propaganda, or military imagery.
 
 ## Composition Rules
 
