@@ -227,9 +227,8 @@ input {
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--color-ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .income-breakdown-bar {
@@ -1546,9 +1545,8 @@ input {
 
 .station-task-help.compact .station-task-body p {
   margin-bottom: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .station-task-help.compact .station-task-meta {
@@ -1642,12 +1640,11 @@ input {
 
 .communal-duty-panel.compact .panel-copy {
   margin: 0;
-  overflow: hidden;
   color: var(--color-utility-blue);
   font-size: 0.74rem;
   line-height: 1.15;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .communal-duty-panel.compact button {
@@ -1926,9 +1923,8 @@ input {
 
 .action-preview.inline .action-preview-text small {
   display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .action-preview-inline-reason {
@@ -2237,9 +2233,8 @@ input {
 
 .incident-choice-copy > span,
 .incident-choice-copy small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .incident-choice-list .action-preview {
@@ -2279,7 +2274,7 @@ input {
 .incident-journal.compact .incident-choice-copy > span,
 .incident-journal.compact .incident-choice-copy small {
   overflow: visible;
-  text-overflow: clip;
+  overflow-wrap: anywhere;
   white-space: normal;
 }
 
