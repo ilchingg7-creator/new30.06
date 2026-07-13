@@ -19,7 +19,7 @@ An immediately readable round porthole from an old space station: a warm amber i
 
 ### Cover — 800×470 PNG
 
-Wide promotional illustration of the communal station: an inviting residential module joined with a compact communal kitchen, oxygen-garden plants, warm lamps, and a large porthole looking into space. Keep a calm, uncluttered area available for title treatment outside the generated image.
+Use advertising key art rather than a scene that reads as an in-game screenshot: a large luminous porthole establishes an immediate space hook, while a compact lived-in communal station fills the foreground. Include warm domestic details—such as a kettle, plaid throw, a small cat, plants and lamps—so the contrast between home and space is clear at thumbnail size. The image needs one dominant focal point, bolder contrast and a clean area for later title treatment outside the generated image.
 
 ### Desktop screenshots — three PNGs
 
