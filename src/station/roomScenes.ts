@@ -110,48 +110,39 @@ interface RoomSpriteAsset {
   src: string;
 }
 
-const tenantCapsuleSpriteAssets: Record<Exclude<RoomDetailLevel, 0>, RoomSpriteAsset> = {
-  1: { alias: 'tenant-capsule-room-01', src: '/assets/rooms/tenant_capsule/tenant_capsule_01.png' },
-  2: { alias: 'tenant-capsule-room-02', src: '/assets/rooms/tenant_capsule/tenant_capsule_02.png' },
-  3: { alias: 'tenant-capsule-room-03', src: '/assets/rooms/tenant_capsule/tenant_capsule_03.png' },
-  4: { alias: 'tenant-capsule-room-04', src: '/assets/rooms/tenant_capsule/tenant_capsule_04.png' },
-  5: { alias: 'tenant-capsule-room-05', src: '/assets/rooms/tenant_capsule/tenant_capsule_05.png' },
-  6: { alias: 'tenant-capsule-room-06', src: '/assets/rooms/tenant_capsule/tenant_capsule_06.png' },
-  7: { alias: 'tenant-capsule-room-07', src: '/assets/rooms/tenant_capsule/tenant_capsule_07.png' },
-  8: { alias: 'tenant-capsule-room-08', src: '/assets/rooms/tenant_capsule/tenant_capsule_08.png' },
-  9: { alias: 'tenant-capsule-room-09', src: '/assets/rooms/tenant_capsule/tenant_capsule_09.png' },
-  10: { alias: 'tenant-capsule-room-10', src: '/assets/rooms/tenant_capsule/tenant_capsule_10.png' }
-};
-
-let roomSpriteAssetsRegistered = false;
+const registeredRoomSpriteAliases = new Set<string>();
+const unavailableRoomSpriteAliases = new Set<string>();
 
 function getRoomSpriteAssetDefinition(moduleId: ModuleId, detailLevel: RoomDetailLevel): RoomSpriteAsset | null {
-  if (moduleId !== 'tenant_capsule' || detailLevel === 0) {
+  if (detailLevel === 0) {
     return null;
   }
 
-  return tenantCapsuleSpriteAssets[detailLevel];
+  const suffix = String(detailLevel).padStart(2, '0');
+
+  return {
+    alias: `${moduleId}-room-${suffix}`,
+    src: `/assets/rooms/${moduleId}/${moduleId}_${suffix}.png`
+  };
 }
 
 export function getRoomSpriteAsset(moduleId: ModuleId, detailLevel: RoomDetailLevel): string | null {
   return getRoomSpriteAssetDefinition(moduleId, detailLevel)?.src ?? null;
 }
 
-function registerRoomSpriteAssets() {
-  if (roomSpriteAssetsRegistered) {
+function registerRoomSpriteAsset(asset: RoomSpriteAsset) {
+  if (registeredRoomSpriteAliases.has(asset.alias)) {
     return;
   }
 
-  Object.values(tenantCapsuleSpriteAssets).forEach((asset) => {
-    Assets.add({
-      alias: asset.alias,
-      src: asset.src,
-      data: {
-        scaleMode: 'nearest'
-      }
-    });
+  Assets.add({
+    alias: asset.alias,
+    src: asset.src,
+    data: {
+      scaleMode: 'nearest'
+    }
   });
-  roomSpriteAssetsRegistered = true;
+  registeredRoomSpriteAliases.add(asset.alias);
 }
 
 export async function loadRoomSpriteAssetForState(gameState: GameState, selectedRoomId: ModuleId): Promise<void> {
@@ -162,8 +153,14 @@ export async function loadRoomSpriteAssetForState(gameState: GameState, selected
     return;
   }
 
-  registerRoomSpriteAssets();
-  await Assets.load(asset.alias);
+  registerRoomSpriteAsset(asset);
+  unavailableRoomSpriteAliases.delete(asset.alias);
+
+  try {
+    await Assets.load(asset.alias);
+  } catch {
+    unavailableRoomSpriteAliases.add(asset.alias);
+  }
 }
 
 export function calculateRoomSceneFit(canvasWidth: number, canvasHeight: number) {
@@ -745,7 +742,7 @@ export function buildRoomContainer(gameState: GameState, selectedRoomId: ModuleI
   const container = new Container();
   const spriteAsset = getRoomSpriteAssetDefinition(descriptor.moduleId, getRoomDetailLevel(descriptor.level));
 
-  if (spriteAsset) {
+  if (spriteAsset && !unavailableRoomSpriteAliases.has(spriteAsset.alias)) {
     container.addChild(createRoomSprite(spriteAsset));
     addIncidentVisualPlaceholders(container, gameState, selectedRoomId);
 

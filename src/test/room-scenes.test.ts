@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { Assets } from 'pixi.js';
+import { describe, expect, it, vi } from 'vitest';
 import { buyModuleLevel, createInitialState } from '../game/economy';
 import { modules } from '../game/content/modules';
 import {
@@ -10,6 +11,7 @@ import {
   getIncidentVisualPlaceholdersForRoom,
   getRoomSpriteAsset,
   getRoomDetailTier,
+  loadRoomSpriteAssetForState,
   TENANT_CAT_LOVE_SCENE_RECT,
   TENANT_CAT_SCENE_RECT,
   resolveSelectedRoomId
@@ -61,7 +63,7 @@ describe('focused room scene descriptors', () => {
     expect(descriptor.ambientLights.length).toBeGreaterThan(0);
   });
 
-  it('builds a detailed pixi room container from a non-sprite room', () => {
+  it('builds an approved non-capsule room from a sprite', () => {
     const state = {
       ...createInitialState(1_000),
       moduleLevels: {
@@ -71,8 +73,8 @@ describe('focused room scene descriptors', () => {
     };
     const container = buildRoomContainer(state, 'cosmo_kitchen');
 
-    expect(container.children.length).toBeGreaterThan(6);
-    expect(container.children.some((child) => (child as { label?: string }).label === 'ambient-light')).toBe(true);
+    expect(container.children).toHaveLength(1);
+    expect((container.children[0] as { label?: string }).label).toBe('room-sprite');
   });
 
   it('maps unlocked incident visual placeholders to the selected room', () => {
@@ -86,11 +88,37 @@ describe('focused room scene descriptors', () => {
     expect(getIncidentVisualPlaceholdersForRoom(state, 'cosmo_kitchen')).toContain('kitchen_mist_patch_01');
   });
 
-  it('uses tenant capsule sprite assets every ten levels', () => {
-    expect(getRoomSpriteAsset('tenant_capsule', 1)).toBe('/assets/rooms/tenant_capsule/tenant_capsule_01.png');
-    expect(getRoomSpriteAsset('tenant_capsule', 3)).toBe('/assets/rooms/tenant_capsule/tenant_capsule_03.png');
-    expect(getRoomSpriteAsset('tenant_capsule', 10)).toBe('/assets/rooms/tenant_capsule/tenant_capsule_10.png');
-    expect(getRoomSpriteAsset('cosmo_kitchen', 3)).toBeNull();
+  it('maps every room and detail level to its sprite asset', () => {
+    modules.forEach((module) => {
+      for (let detailLevel = 1; detailLevel <= 10; detailLevel += 1) {
+        const suffix = String(detailLevel).padStart(2, '0');
+
+        expect(getRoomSpriteAsset(module.id, detailLevel as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)).toBe(
+          `/assets/rooms/${module.id}/${module.id}_${suffix}.png`
+        );
+      }
+    });
+
+    expect(getRoomSpriteAsset('tenant_capsule', 0)).toBeNull();
+  });
+
+  it('keeps procedural room art when a sprite fails to load', async () => {
+    const state = {
+      ...createInitialState(1_000),
+      moduleLevels: {
+        ...createInitialState(1_000).moduleLevels,
+        oxygen_garden: 1
+      }
+    };
+    const loadSpy = vi.spyOn(Assets, 'load').mockRejectedValueOnce(new Error('missing sprite'));
+
+    await expect(loadRoomSpriteAssetForState(state, 'oxygen_garden')).resolves.toBeUndefined();
+
+    const container = buildRoomContainer(state, 'oxygen_garden');
+    expect(container.children.some((child) => (child as { label?: string }).label === 'room-sprite')).toBe(false);
+    expect(container.children.some((child) => (child as { label?: string }).label === 'ambient-light')).toBe(true);
+
+    loadSpy.mockRestore();
   });
 
   it('replaces the tenant capsule vector room with a sprite scene', () => {
