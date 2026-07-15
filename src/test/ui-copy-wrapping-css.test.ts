@@ -50,4 +50,16 @@ describe('UI copy wrapping CSS', () => {
     expect(playerNameRule).toContain('text-overflow: ellipsis');
     expect(playerNameRule).toContain('white-space: nowrap');
   });
+
+  it('gives module preview copy a full row before wrapping its tags', () => {
+    const previewRule = ruleBody(/\.module-panel \.action-preview\.inline\s*\{([^}]*)\}/s);
+    const tagsRule = ruleBody(/\.module-panel \.action-preview\.inline \.action-preview-tags\s*\{([^}]*)\}/s);
+    const copyRule = ruleBody(/\.module-panel \.action-preview\.inline \.action-preview-text small\s*\{([^}]*)\}/s);
+
+    expect(previewRule).toContain('grid-template-columns: minmax(0, 1fr)');
+    expect(tagsRule).toContain('flex-wrap: wrap');
+    expect(copyRule).toContain('overflow-wrap: break-word');
+    expect(copyRule).toContain('word-break: normal');
+    expect(copyRule).not.toContain('overflow-wrap: anywhere');
+  });
 });

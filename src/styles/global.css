@@ -2004,6 +2004,20 @@ input {
   flex-wrap: nowrap;
 }
 
+.module-panel .action-preview.inline {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.module-panel .action-preview.inline .action-preview-tags {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.module-panel .action-preview.inline .action-preview-text small {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
 .action-preview-tag {
   border-radius: 999px;
   padding: 1px 4px;
