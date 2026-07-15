@@ -113,6 +113,18 @@ describe('CommunalDutyPanel', () => {
     );
   });
 
+  it('removes excess vertical space from the compact duty summary', () => {
+    const compactPanel = ruleBody(/\.communal-duty-panel\.compact\s*\{([^}]*)\}/s);
+    const compactHeading = ruleBody(/\.communal-duty-panel\.compact \.communal-duty-heading h2\s*\{([^}]*)\}/s);
+    const compactClaimRow = ruleBody(/\.communal-duty-panel\.compact \.communal-duty-claim-row\s*\{([^}]*)\}/s);
+
+    expect(compactPanel).toContain('padding: 5px 7px');
+    expect(compactPanel).toContain('gap: 2px');
+    expect(compactHeading).toContain('margin: 0');
+    expect(compactHeading).toContain('line-height: 1');
+    expect(compactClaimRow).toContain('row-gap: 0');
+  });
+
   it('keeps the compact claim reward wide enough to wrap by words', () => {
     const claimRow = ruleBody(/\.communal-duty-panel\.compact \.communal-duty-claim-row\s*\{([^}]*)\}/s);
     const claimPreview = ruleBody(

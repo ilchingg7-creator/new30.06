@@ -1628,8 +1628,8 @@ input {
 }
 
 .communal-duty-panel.compact {
-  padding: 7px 9px;
-  gap: 5px;
+  padding: 5px 7px;
+  gap: 2px;
 }
 
 .communal-duty-panel.compact .communal-duty-heading {
@@ -1637,7 +1637,9 @@ input {
 }
 
 .communal-duty-panel.compact .communal-duty-heading h2 {
+  margin: 0;
   font-size: 0.8rem;
+  line-height: 1;
 }
 
 .communal-duty-panel.compact strong {
@@ -1670,7 +1672,8 @@ input {
 
 .communal-duty-panel.compact .communal-duty-claim-row {
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 2px 6px;
+  column-gap: 6px;
+  row-gap: 0;
 }
 
 .communal-duty-panel.compact .communal-duty-claim-row .panel-copy {
