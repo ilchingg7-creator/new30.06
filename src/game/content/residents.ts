@@ -66,7 +66,7 @@ export const residents: ResidentDefinition[] = [
     id: 'comet_plumber',
     name: 'Кометный водопроводчик',
     unlockText: 'Открыт кометный водяной бак.',
-    bonusText: '+2 часа к лимиту офлайн-дохода',
+    bonusText: '+1 час к лимиту офлайн-дохода',
     requiredModule: 'comet_water_tank',
     requiredModuleLevel: 1
   },

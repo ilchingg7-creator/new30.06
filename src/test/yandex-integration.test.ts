@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createInitialState } from '../game/economy';
+import { calculateOfflineReward, createInitialState } from '../game/economy';
 import { SAVE_KEY } from '../game/save';
 import { useGameState } from '../ui/useGameState';
 import { createLocalStoragePort } from '../platform/storage';
@@ -298,14 +298,75 @@ describe('yandex platform integration', () => {
     expect(result.current.gameState.lastVipResidentClaimedAt).toBe(now);
   });
 
-  it('doubleOfflineReward adds the reward credits and clears the dialog on success', async () => {
+  it('grants exactly the untimed 50% offline reward while advancing saved time', async () => {
+    const now = 4 * 60 * 60 * 1_000;
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+    const platform = makePlatform(true);
+    const base = createInitialState(0);
+    const saved = {
+      ...base,
+      credits: 100,
+      moduleLevels: { ...base.moduleLevels, tenant_capsule: 1 },
+      timedBonuses: [
+        { id: 'rent_x2', incomeMultiplier: 2, expiresAt: now + 1_000 },
+        { id: 'vip_resident', incomeMultiplier: 2, expiresAt: now + 1_000 }
+      ],
+      lastSavedAt: 0
+    };
+    const expectedReward = calculateOfflineReward(saved, now);
+    const storage = makeMemoryStorage(JSON.stringify(saved));
+
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    expect(result.current.offlineReward).toEqual(expectedReward);
+    expect(result.current.gameState.credits).toBe(saved.credits + expectedReward.credits);
+    expect(result.current.gameState.totalEarnedCredits).toBe(expectedReward.credits);
+    expect(result.current.gameState.totalPlaySeconds).toBe(expectedReward.seconds);
+    expect(result.current.gameState.lastSavedAt).toBe(now);
+  });
+
+  it('uses the offline calculation timestamp for daily-login day boundaries', async () => {
+    const dayMs = 24 * 60 * 60 * 1_000;
+    let clock = 0;
+    vi.spyOn(Date, 'now').mockImplementation(() => {
+      clock += dayMs;
+      return clock;
+    });
     const platform = makePlatform(true);
     const saved = {
-      ...createInitialState(1_000),
-      credits: 100,
-      moduleLevels: { ...createInitialState(1_000).moduleLevels, tenant_capsule: 1 },
-      lastSavedAt: 1_000
+      ...createInitialState(0),
+      lastSavedAt: 0
     };
+    const storage = makeMemoryStorage(JSON.stringify(saved));
+
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    expect(result.current.gameState.lastLoginDay).toBe(
+      Math.floor(result.current.gameState.lastSavedAt / dayMs)
+    );
+  });
+
+  it('doubleOfflineReward adds one untimed reward copy for an exact x2 total', async () => {
+    const now = 4 * 60 * 60 * 1_000;
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+    const platform = makePlatform(true);
+    const base = createInitialState(0);
+    const saved = {
+      ...base,
+      credits: 100,
+      totalEarnedCredits: 25,
+      moduleLevels: { ...base.moduleLevels, tenant_capsule: 1 },
+      timedBonuses: [
+        { id: 'rent_x2', incomeMultiplier: 2, expiresAt: now + 1_000 },
+        { id: 'vip_resident', incomeMultiplier: 2, expiresAt: now + 1_000 }
+      ],
+      lastSavedAt: 0
+    };
+    const expectedReward = calculateOfflineReward(saved, now);
     const storage = makeMemoryStorage(JSON.stringify(saved));
 
     const { result } = renderHook(() => useGameState(storage, platform));
@@ -313,16 +374,18 @@ describe('yandex platform integration', () => {
     await waitFor(() => expect(result.current.ready).toBe(true));
     await waitFor(() => expect(result.current.offlineReward).not.toBeNull());
 
-    const baseCredits = result.current.gameState.credits;
     const rewardCredits = result.current.offlineReward?.credits ?? 0;
-    expect(rewardCredits).toBeGreaterThan(0);
+    expect(rewardCredits).toBe(expectedReward.credits);
 
     await act(async () => {
       await result.current.doubleOfflineReward();
     });
 
     expect(platform.showRewardedAd).toHaveBeenCalledTimes(1);
-    expect(result.current.gameState.credits).toBeCloseTo(baseCredits + rewardCredits, 5);
+    expect(result.current.gameState.credits).toBe(saved.credits + expectedReward.credits * 2);
+    expect(result.current.gameState.totalEarnedCredits).toBe(
+      saved.totalEarnedCredits + expectedReward.credits * 2
+    );
     expect(result.current.offlineReward).toBeNull();
   });
 
@@ -378,12 +441,10 @@ describe('yandex platform integration', () => {
 
     await waitFor(() => expect(result.current.ready).toBe(true));
 
-    // Cloud save had 999 credits; advanceGame applies offline income from
-    // lastSavedAt=5000 to now (huge delta, ~29k credits) + a daily login
-    // reward of 50. The key assertion: we did NOT use the local save (10
-    // credits + tiny offline delta), so credits must be well above 999.
-    expect(result.current.gameState.credits).toBeGreaterThan(999);
-    expect(result.current.gameState.credits).toBeGreaterThanOrEqual(29_000);
+    const expectedCloudCredits = newerCloud.credits + calculateOfflineReward(newerCloud).credits;
+
+    expect(result.current.gameState.credits).toBeCloseTo(expectedCloudCredits, 5);
+    expect(result.current.gameState.credits).toBeGreaterThan(olderLocal.credits);
   });
 
   it('waits for the real Yandex SDK init before loading cloud save', async () => {

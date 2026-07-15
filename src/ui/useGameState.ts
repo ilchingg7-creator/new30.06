@@ -219,9 +219,10 @@ export function useGameState(
       }
 
       if (savedState) {
-        const reward = calculateOfflineReward(savedState);
-        const advanced = advanceGame(savedState, reward.seconds);
-        const daily = checkDailyLogin(advanced);
+        const now = Date.now();
+        const reward = calculateOfflineReward(savedState, now);
+        const advanced = advanceGame(savedState, reward.seconds, now, reward.credits);
+        const daily = checkDailyLogin(advanced, now);
 
         setGameState(withQueuedIncidents(daily.state));
         setOfflineReward(reward.credits > 0 ? reward : null);

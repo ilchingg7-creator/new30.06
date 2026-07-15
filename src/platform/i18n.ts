@@ -114,6 +114,7 @@ export interface Translation {
   incomeBreakdownHint: string;
   // Dialogs
   offlineTitle: string;
+  offlineRewardExplanation: string;
   time: string;
   collect: string;
   doubleViaAd: string;
@@ -419,7 +420,7 @@ const ru: Translation = {
   startingComfort: 'Тёплый старт',
   startingComfortDesc: 'Каждый новый цикл начинается с +5 комфорта.',
   higherOfflineCap: 'Запас хода станции',
-  higherOfflineCapDesc: 'Лимит офлайн-дохода увеличен с 8 до 12 часов.',
+  higherOfflineCapDesc: 'Лимит офлайн-дохода увеличен с 3 до 4,5 часа.',
   upgradesTitle: 'Улучшения реновации',
   renovationChoicesLeft: 'Выборов реновации осталось',
   cost: 'Стоимость',
@@ -438,9 +439,10 @@ const ru: Translation = {
   incomeBreakdownTitle: 'Источники дохода',
   incomeBreakdownHint: 'Топ комнат по вкладу в доход станции',
   offlineTitle: 'Станция поработала без вас',
+  offlineRewardExplanation: 'Автоматика станции приносит 50% дохода за учтённое время.',
   time: 'Время',
   collect: 'Забрать',
-  doubleViaAd: 'Удвоить за рекламу',
+  doubleViaAd: 'Посмотреть рекламу — удвоить результат',
   dailyLoginTitle: 'Ежедневный вход',
   day: 'День',
   of: 'из',
@@ -917,7 +919,7 @@ const ru: Translation = {
       comet_plumber: {
         name: 'Кометный водопроводчик',
         unlockText: 'Открыт кометный водяной бак.',
-        bonusText: '+2 часа к лимиту офлайн-дохода',
+        bonusText: '+1 час к лимиту офлайн-дохода',
         bio: 'Прилетел на хвосте кометы и остался. Чинит трубы из ледяной кометной воды. Носит шарф даже в вакууме. Утверждает, что кометная вода вкуснее земной. Всегда готов помочь с сантехникой.'
       },
       signal_radio_host: {
@@ -1120,7 +1122,7 @@ const ru: Translation = {
       },
       higher_offline_cap: {
         name: 'Запас хода станции',
-        description: 'Лимит офлайн-дохода увеличен с 8 до 12 часов.'
+        description: 'Лимит офлайн-дохода увеличен с 3 до 4,5 часа.'
       },
       reputation_income: {
         name: 'Добрая слава',
@@ -1132,7 +1134,7 @@ const ru: Translation = {
       },
       offline_cap_16h: {
         name: 'Дежурная автоматика',
-        description: 'Лимит офлайн-дохода увеличен до 16 часов.'
+        description: 'Лимит офлайн-дохода увеличен до 6 часов.'
       },
       maintenance_drones: {
         name: 'Дворницкие дроны',
@@ -1244,7 +1246,7 @@ const en: Translation = {
   startingComfort: 'Warm start',
   startingComfortDesc: 'Each new cycle starts with +5 comfort.',
   higherOfflineCap: 'Station range',
-  higherOfflineCapDesc: 'Offline income cap increased from 8 to 12 hours.',
+  higherOfflineCapDesc: 'Offline income cap increased from 3 to 4.5 hours.',
   upgradesTitle: 'Renovation upgrades',
   renovationChoicesLeft: 'Renovation choices left',
   cost: 'Cost',
@@ -1263,9 +1265,10 @@ const en: Translation = {
   incomeBreakdownTitle: 'Income sources',
   incomeBreakdownHint: 'Top rooms by contribution to station income',
   offlineTitle: 'The station worked without you',
+  offlineRewardExplanation: 'Station automation earns 50% income for the counted time.',
   time: 'Time',
   collect: 'Collect',
-  doubleViaAd: 'Double via ad',
+  doubleViaAd: 'Watch an ad — double the result',
   dailyLoginTitle: 'Daily login',
   day: 'Day',
   of: 'of',
@@ -1742,7 +1745,7 @@ const en: Translation = {
       comet_plumber: {
         name: 'Comet Plumber',
         unlockText: 'Comet Water Tank unlocked.',
-        bonusText: '+2 hours to offline income cap',
+        bonusText: '+1 hour to offline income cap',
         bio: 'Arrived on the tail of a comet and stayed. Fixes pipes with icy comet water. Wears a scarf even in vacuum. Claims comet water tastes better than Earth water. Always ready to help with plumbing.'
       },
       signal_radio_host: {
@@ -1945,7 +1948,7 @@ const en: Translation = {
       },
       higher_offline_cap: {
         name: 'Station Range',
-        description: 'Offline income cap increased from 8 to 12 hours.'
+        description: 'Offline income cap increased from 3 to 4.5 hours.'
       },
       reputation_income: {
         name: 'Good Name',
@@ -1957,7 +1960,7 @@ const en: Translation = {
       },
       offline_cap_16h: {
         name: 'Duty Automation',
-        description: 'Offline income cap increased to 16 hours.'
+        description: 'Offline income cap increased to 6 hours.'
       },
       maintenance_drones: {
         name: 'Maintenance Drones',

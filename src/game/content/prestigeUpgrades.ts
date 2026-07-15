@@ -53,7 +53,7 @@ export const prestigeUpgrades: PrestigeUpgradeDefinition[] = [
   {
     id: 'offline_cap_16h',
     name: 'Дежурная автоматика',
-    description: 'Лимит офлайн-дохода увеличен до 16 часов.',
+    description: 'Лимит офлайн-дохода увеличен до 6 часов.',
     reputationCost: 10,
     renovationTier: 3
   },

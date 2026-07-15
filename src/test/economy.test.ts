@@ -49,6 +49,30 @@ describe('economy engine', () => {
     expect(advanced.totalEarnedCredits).toBe(10);
   });
 
+  it('advances bookkeeping and progression from an explicit zero-credit override', () => {
+    const base = createInitialState(1_000);
+    const state: GameState = {
+      ...base,
+      credits: 50,
+      totalEarnedCredits: 9_999,
+      totalPlaySeconds: 20,
+      moduleLevels: {
+        ...base.moduleLevels,
+        tenant_capsule: 100
+      }
+    };
+
+    expect(calculateIncomePerSecond(state, 2_000)).toBeGreaterThan(1);
+
+    const advanced = advanceGame(state, 1, 2_000, 0);
+
+    expect(advanced.credits).toBe(50);
+    expect(advanced.totalEarnedCredits).toBe(9_999);
+    expect(advanced.lastSavedAt).toBe(2_000);
+    expect(advanced.totalPlaySeconds).toBe(21);
+    expect(advanced.completedGoals).not.toContain('earn_credits_10000');
+  });
+
   it('adds module comfort only when a room is first opened', () => {
     const started = { ...createInitialState(1_000), credits: 1_000, completedGoals: ['unlock_kitchen' as const] };
     const opened = buyModuleLevel(started, 'cosmo_kitchen');
@@ -58,12 +82,30 @@ describe('economy engine', () => {
     expect(upgraded.comfort).toBe(1);
   });
 
-  it('caps offline income at 8 hours', () => {
+  it('caps base offline income at 3 hours and earns at 50% efficiency', () => {
     const state = buyModuleLevel(createInitialState(1_000), 'tenant_capsule');
     const reward = calculateOfflineReward(state, 10 * 60 * 60 * 1_000);
 
-    expect(reward.seconds).toBe(8 * 60 * 60);
-    expect(reward.credits).toBe(8 * 60 * 60);
+    expect(reward.seconds).toBe(3 * 60 * 60);
+    expect(reward.credits).toBe(3 * 60 * 60 * 0.5);
+  });
+
+  it('ignores active rent and VIP multipliers offline while preserving live income', () => {
+    const now = 60 * 60 * 1_000;
+    const base = buyModuleLevel(createInitialState(0), 'tenant_capsule');
+    const boosted: GameState = {
+      ...base,
+      timedBonuses: [
+        { id: 'rent_x2', incomeMultiplier: 2, expiresAt: now + 1_000 },
+        { id: 'vip_resident', incomeMultiplier: 2, expiresAt: now + 1_000 }
+      ]
+    };
+
+    expect(calculateIncomePerSecond(boosted, now)).toBe(4);
+    expect(calculateOfflineReward(boosted, now)).toEqual({
+      seconds: 60 * 60,
+      credits: 60 * 60 * 0.5
+    });
   });
 
   it('uses square root prestige rewards and keeps reputation after renovation', () => {

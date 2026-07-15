@@ -27,6 +27,7 @@ export function OfflineRewardDialog({
     <div className="dialog-backdrop" role="presentation">
       <section className="dialog-panel" role="dialog" aria-modal="true" aria-labelledby="offline-reward-title">
         <h2 id="offline-reward-title">{t.offlineTitle}</h2>
+        <p>{t.offlineRewardExplanation}</p>
         <dl className="dialog-stats">
           <div>
             <dt>{t.time}</dt>

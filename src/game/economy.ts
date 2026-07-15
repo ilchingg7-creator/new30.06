@@ -14,9 +14,10 @@ import {
 import type { GameState, ModuleId, ModuleLevels, PrestigeUpgradeId, TimedBonus } from './types';
 
 export const LEVEL_COST_GROWTH = 1.18;
-export const OFFLINE_CAP_SECONDS = 8 * 60 * 60;
-const UPGRADED_OFFLINE_CAP_SECONDS = 12 * 60 * 60;
-const EXTENDED_OFFLINE_CAP_SECONDS = 16 * 60 * 60;
+export const OFFLINE_CAP_SECONDS = 3 * 60 * 60;
+const UPGRADED_OFFLINE_CAP_SECONDS = 4.5 * 60 * 60;
+const EXTENDED_OFFLINE_CAP_SECONDS = 6 * 60 * 60;
+const OFFLINE_INCOME_EFFICIENCY = 0.5;
 const STARTING_COMFORT_BONUS = 5;
 const STARTING_COMFORT_PLUS_BONUS = 10;
 const WARM_START_CREDITS = 100;
@@ -35,16 +36,15 @@ export interface PrestigeRequirement {
 
 export function getOfflineCapSeconds(state: GameState): number {
   const upgrades = state.purchasedPrestigeUpgrades ?? [];
+  let cap = upgrades.includes('offline_cap_16h')
+    ? EXTENDED_OFFLINE_CAP_SECONDS
+    : upgrades.includes('higher_offline_cap')
+      ? UPGRADED_OFFLINE_CAP_SECONDS
+      : OFFLINE_CAP_SECONDS;
 
-  if (upgrades.includes('offline_cap_16h')) {
-    return EXTENDED_OFFLINE_CAP_SECONDS;
-  }
-
-  let cap = upgrades.includes('higher_offline_cap') ? UPGRADED_OFFLINE_CAP_SECONDS : OFFLINE_CAP_SECONDS;
-
-  // Comet Plumber: +2 hours to offline cap
+  // Comet Plumber: +1 hour to whichever offline cap applies.
   if (state.unlockedResidents.includes('comet_plumber')) {
-    cap += 2 * 60 * 60;
+    cap += 60 * 60;
   }
 
   return cap;
@@ -125,7 +125,7 @@ export function calculateModuleCost(moduleId: ModuleId, state: GameState): numbe
   return Math.ceil(baseCost * firstRoomMultiplier);
 }
 
-export function calculateIncomePerSecond(state: GameState, now = Date.now()): number {
+function calculateUntimedIncomePerSecond(state: GameState): number {
   const moduleIncome = modules.reduce((sum, module) => {
     const level = state.moduleLevels[module.id];
     const milestoneMultiplier = calculateMilestoneMultiplier(level);
@@ -136,10 +136,15 @@ export function calculateIncomePerSecond(state: GameState, now = Date.now()): nu
   const reputationIncomeRate = state.purchasedPrestigeUpgrades?.includes('reputation_income') ? 0.07 : 0.05;
   const reputationMultiplier = 1 + state.reputation * reputationIncomeRate;
   const residentGlobalMultiplier = getResidentGlobalIncomeMultiplier(state);
-  const timedBonusMultiplier = calculateTimedBonusMultiplier(state.timedBonuses, now);
   const conditionMultiplier = getOverallConditionMultiplier(state);
 
-  return moduleIncome * residentGlobalMultiplier * comfortMultiplier * reputationMultiplier * timedBonusMultiplier * conditionMultiplier;
+  return moduleIncome * residentGlobalMultiplier * comfortMultiplier * reputationMultiplier * conditionMultiplier;
+}
+
+export function calculateIncomePerSecond(state: GameState, now = Date.now()): number {
+  const timedBonusMultiplier = calculateTimedBonusMultiplier(state.timedBonuses, now);
+
+  return calculateUntimedIncomePerSecond(state) * timedBonusMultiplier;
 }
 
 export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState {
@@ -173,9 +178,14 @@ export function buyModuleLevel(state: GameState, moduleId: ModuleId): GameState 
   return checkResidentUnlocks(checkAchievements(completeEligibleGoals(withWeekly)));
 }
 
-export function advanceGame(state: GameState, seconds: number, now = Date.now()): GameState {
+export function advanceGame(
+  state: GameState,
+  seconds: number,
+  now = Date.now(),
+  earnedCreditsOverride?: number
+): GameState {
   const elapsedSeconds = Math.max(0, seconds);
-  const earnedCredits = calculateIncomePerSecond(state, now) * elapsedSeconds;
+  const earnedCredits = earnedCreditsOverride ?? calculateIncomePerSecond(state, now) * elapsedSeconds;
 
   const nextState = {
     ...state,
@@ -197,7 +207,7 @@ export function calculateOfflineReward(
 
   return {
     seconds: cappedSeconds,
-    credits: calculateIncomePerSecond(state, now) * cappedSeconds
+    credits: calculateUntimedIncomePerSecond(state) * cappedSeconds * OFFLINE_INCOME_EFFICIENCY
   };
 }
 

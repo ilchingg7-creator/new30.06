@@ -251,27 +251,37 @@ describe('prestige upgrade tree', () => {
     expect(upgraded.purchasedPrestigeUpgrades).toBeUndefined();
   });
 
-  it('extends the offline cap from 8h to 12h with higher_offline_cap', () => {
+  it('extends the 3h offline cap to 4.5h with higher_offline_cap', () => {
     const base = createInitialState(0);
-    expect(getOfflineCapSeconds(base)).toBe(8 * 60 * 60);
+    expect(getOfflineCapSeconds(base)).toBe(3 * 60 * 60);
 
     const upgraded = {
       ...base,
       purchasedPrestigeUpgrades: ['higher_offline_cap' as const]
     };
-    expect(getOfflineCapSeconds(upgraded)).toBe(12 * 60 * 60);
+    expect(getOfflineCapSeconds(upgraded)).toBe(4.5 * 60 * 60);
 
     const reward = calculateOfflineReward(upgraded, 10 * 60 * 60 * 1_000);
-    expect(reward.seconds).toBe(10 * 60 * 60);
+    expect(reward.seconds).toBe(4.5 * 60 * 60);
   });
 
-  it('extends the offline cap to 16h with offline_cap_16h', () => {
+  it('extends the offline cap to 6h with offline_cap_16h', () => {
     const upgraded = {
       ...createInitialState(0),
       purchasedPrestigeUpgrades: ['offline_cap_16h' as const]
     };
 
-    expect(getOfflineCapSeconds(upgraded)).toBe(16 * 60 * 60);
+    expect(getOfflineCapSeconds(upgraded)).toBe(6 * 60 * 60);
+  });
+
+  it('stacks the comet plumber hour on top of the 6h prestige cap', () => {
+    const upgraded = {
+      ...createInitialState(0),
+      purchasedPrestigeUpgrades: ['offline_cap_16h' as const],
+      unlockedResidents: ['comet_plumber' as const]
+    };
+
+    expect(getOfflineCapSeconds(upgraded)).toBe(7 * 60 * 60);
   });
 
   it('applies new renovation upgrade effects after prestige', () => {
