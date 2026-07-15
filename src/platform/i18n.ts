@@ -52,7 +52,6 @@ export interface Translation {
   allGoalsDone: string;
   allGoalsDoneHint: string;
   // Bonus panel
-  adBonusesHint: string;
   boost2x: string;
   vipResident: string;
   strangeCatOfferTitle: string;
@@ -382,7 +381,6 @@ const ru: Translation = {
   nextMilestone: 'Следующий рубеж',
   allGoalsDone: 'Все ближайшие цели выполнены',
   allGoalsDoneHint: 'Продолжайте улучшать комнаты',
-  adBonusesHint: 'Рекламные бонусы доступны на Yandex Games. Локально бонусы включаются сразу.',
   boost2x: 'x2 аренда',
   vipResident: 'VIP-жилец',
   strangeCatOfferTitle: 'Поселить странного кота',
@@ -1208,7 +1206,6 @@ const en: Translation = {
   nextMilestone: 'Next milestone',
   allGoalsDone: 'All nearby goals completed',
   allGoalsDoneHint: 'Keep upgrading your rooms',
-  adBonusesHint: 'Ad bonuses are available on Yandex Games. Locally they activate immediately.',
   boost2x: 'x2 rent',
   vipResident: 'VIP resident',
   strangeCatOfferTitle: 'Settle the strange cat',

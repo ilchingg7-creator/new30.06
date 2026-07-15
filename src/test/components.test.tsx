@@ -88,6 +88,26 @@ describe('core UI components', () => {
     expect(screen.getByRole('button', { name: t.buyStrangeCat })).toBeDisabled();
   });
 
+  it('does not render the local ad bonuses hint', () => {
+    render(
+      <BonusPanel
+        onIncomeBoost={vi.fn()}
+        onVipResident={vi.fn()}
+        onPurchaseStrangeCat={vi.fn()}
+        strangeCatProduct={null}
+        strangeCatPurchaseStatus="unavailable"
+        adsAvailable={false}
+        t={translations.en}
+      />
+    );
+
+    expect(
+      screen.queryByText(
+        'Ad bonuses are available on Yandex Games. Locally they activate immediately.'
+      )
+    ).not.toBeInTheDocument();
+  });
+
   it('renders station, resources, modules, room selector, goals, bonuses and prestige panels', () => {
     const gameState = buyModuleLevel(createInitialState(1_000), 'tenant_capsule');
     const guidance: StationGuidance = {

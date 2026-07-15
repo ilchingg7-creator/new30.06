@@ -36,9 +36,6 @@ export function BonusPanel({
   return (
     <section className="panel" aria-labelledby="bonus-panel-title">
       <h2 id="bonus-panel-title">{t.bonuses}</h2>
-      {!adsAvailable && (
-        <p className="panel-copy">{t.adBonusesHint}</p>
-      )}
       <div className="cat-purchase-card">
         <div>
           <strong>{t.strangeCatOfferTitle}</strong>
