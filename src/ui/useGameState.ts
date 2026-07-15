@@ -46,10 +46,12 @@ import {
   toggleMuted
 } from '../platform/sound';
 import {
+  STRANGE_CAT_PRODUCT_ID,
   createNoOpYandexPlatform,
   initYandexPlatform,
   type YandexPlatform,
-  type YandexLeaderboardEntry
+  type YandexLeaderboardEntry,
+  type YandexProduct
 } from '../platform/yandex';
 import { resolveSelectedRoomId } from '../station/roomScenes';
 
@@ -69,6 +71,14 @@ export interface CelebrationInfo {
 }
 
 export type SaveStatus = 'idle' | 'saving' | 'saved';
+
+export type StrangeCatPurchaseStatus =
+  | 'loading'
+  | 'available'
+  | 'purchasing'
+  | 'owned'
+  | 'unavailable'
+  | 'error';
 
 const VIP_RESIDENT_COOLDOWN_MS = 24 * 60 * 60 * 1_000;
 
@@ -94,6 +104,9 @@ export interface UseGameStateResult {
   selectedRoomId: ModuleId;
   adPending: boolean;
   adsAvailable: boolean;
+  strangeCatProduct: YandexProduct | null;
+  strangeCatPurchaseStatus: StrangeCatPurchaseStatus;
+  strangeCatOwned: boolean;
   vipResidentAvailable: boolean;
   vipResidentCooldownMs: number;
   buyLevel(moduleId: ModuleId): void;
@@ -104,6 +117,7 @@ export interface UseGameStateResult {
   dismissCelebration(): void;
   activateIncomeBoost(): Promise<void>;
   activateVipResident(): Promise<void>;
+  purchaseStrangeCat(): Promise<void>;
   doubleOfflineReward(): Promise<void>;
   buyPrestigeUpgrade(upgradeId: PrestigeUpgradeId): void;
   toggleSound(): void;
@@ -143,10 +157,28 @@ export function useGameState(
   const [lastSavedAt, setLastSavedAt] = useState<number | null>(null);
   const [adPending, setAdPending] = useState(false);
   const [adsAvailable, setAdsAvailable] = useState(false);
+  const [strangeCatProduct, setStrangeCatProduct] = useState<YandexProduct | null>(null);
+  const [strangeCatPurchaseStatus, setStrangeCatPurchaseStatus] = useState<StrangeCatPurchaseStatus>('loading');
   const [soundMuted, setSoundMuted] = useState(() => isMuted());
 
   useEffect(() => {
     let cancelled = false;
+
+    async function loadStrangeCatPurchaseState(platform: YandexPlatform) {
+      const [catalog, purchases] = await Promise.all([
+        platform.getPurchaseCatalog(),
+        platform.getPurchases()
+      ]);
+      const catProduct = catalog.find((product) => product.id === STRANGE_CAT_PRODUCT_ID) ?? null;
+      const catOwned = purchases.some((purchase) => purchase.productID === STRANGE_CAT_PRODUCT_ID);
+
+      if (cancelled) {
+        return;
+      }
+
+      setStrangeCatProduct(catProduct);
+      setStrangeCatPurchaseStatus(catOwned ? 'owned' : catProduct ? 'available' : 'unavailable');
+    }
 
     async function loadSavedState() {
       const platform = yandexPlatform ?? (await initYandexPlatform());
@@ -157,6 +189,7 @@ export function useGameState(
 
       platformRef.current = platform;
       setAdsAvailable(platform.isAvailable());
+      void loadStrangeCatPurchaseState(platform);
 
       // Prefer the Yandex cloud save when available; fall back to local
       // storage so the game still boots offline or on other platforms.
@@ -415,6 +448,28 @@ export function useGameState(
     }
   }, [adPending, resolveAdGrant]);
 
+  const purchaseStrangeCat = useCallback(async () => {
+    if (
+      strangeCatPurchaseStatus === 'purchasing' ||
+      strangeCatPurchaseStatus === 'owned' ||
+      !strangeCatProduct
+    ) {
+      return;
+    }
+
+    setStrangeCatPurchaseStatus('purchasing');
+    const purchase = await platformRef.current.purchaseProduct(STRANGE_CAT_PRODUCT_ID);
+
+    if (purchase?.productID === STRANGE_CAT_PRODUCT_ID) {
+      setStrangeCatPurchaseStatus('owned');
+      playSound('unlock');
+      return;
+    }
+
+    setStrangeCatPurchaseStatus('error');
+    playSound('error');
+  }, [strangeCatProduct, strangeCatPurchaseStatus]);
+
   const activateVipResident = useCallback(async () => {
     if (adPending || getVipResidentCooldownMs(gameState) > 0) {
       playSound('error');
@@ -616,6 +671,9 @@ export function useGameState(
     selectedRoomId,
     adPending,
     adsAvailable,
+    strangeCatProduct,
+    strangeCatPurchaseStatus,
+    strangeCatOwned: strangeCatPurchaseStatus === 'owned',
     vipResidentAvailable: vipResidentCooldownMs <= 0,
     vipResidentCooldownMs,
     buyLevel,
@@ -626,6 +684,7 @@ export function useGameState(
     dismissCelebration,
     activateIncomeBoost,
     activateVipResident,
+    purchaseStrangeCat,
     doubleOfflineReward,
     buyPrestigeUpgrade: buyUpgrade,
     toggleSound,

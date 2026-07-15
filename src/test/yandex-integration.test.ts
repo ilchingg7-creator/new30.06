@@ -4,10 +4,41 @@ import { createInitialState } from '../game/economy';
 import { SAVE_KEY } from '../game/save';
 import { useGameState } from '../ui/useGameState';
 import { createLocalStoragePort } from '../platform/storage';
-import { createNoOpYandexPlatform, createYandexPlatform, initYandexPlatform } from '../platform/yandex';
-import type { YandexPlatform } from '../platform/yandex';
+import {
+  STRANGE_CAT_PRODUCT_ID,
+  createNoOpYandexPlatform,
+  createYandexPlatform,
+  initYandexPlatform,
+  type YandexPlatform,
+  type YandexProduct,
+  type YandexPurchase
+} from '../platform/yandex';
 
-function makePlatform(grant: boolean): YandexPlatform {
+const strangeCatProduct: YandexProduct = {
+  id: STRANGE_CAT_PRODUCT_ID,
+  title: 'Странный кот',
+  description: 'Поселить кота навсегда',
+  imageURI: 'https://example.test/cat.png',
+  price: '99 ЯН',
+  priceValue: '99',
+  priceCurrencyCode: 'YAN',
+  getPriceCurrencyImage: vi.fn(() => 'https://example.test/yan.svg')
+};
+
+const strangeCatPurchase: YandexPurchase = {
+  productID: STRANGE_CAT_PRODUCT_ID,
+  purchaseToken: 'purchase-token',
+  developerPayload: ''
+};
+
+function makePlatform(
+  grant: boolean,
+  options: {
+    catalog?: YandexProduct[];
+    purchases?: YandexPurchase[];
+    purchaseResult?: YandexPurchase | null;
+  } = {}
+): YandexPlatform {
   return {
     isAvailable() {
       return true;
@@ -18,9 +49,9 @@ function makePlatform(grant: boolean): YandexPlatform {
     saveCloud: vi.fn().mockResolvedValue(undefined),
     submitLeaderboardScore: vi.fn().mockResolvedValue(undefined),
     getLeaderboardEntries: vi.fn().mockResolvedValue([]),
-    getPurchaseCatalog: vi.fn().mockResolvedValue([]),
-    getPurchases: vi.fn().mockResolvedValue([]),
-    purchaseProduct: vi.fn().mockResolvedValue(null)
+    getPurchaseCatalog: vi.fn().mockResolvedValue(options.catalog ?? []),
+    getPurchases: vi.fn().mockResolvedValue(options.purchases ?? []),
+    purchaseProduct: vi.fn().mockResolvedValue(options.purchaseResult ?? null)
   };
 }
 
@@ -51,6 +82,55 @@ afterEach(() => {
 });
 
 describe('yandex platform integration', () => {
+  it('restores permanent strange cat ownership during platform load', async () => {
+    const platform = makePlatform(true, {
+      catalog: [strangeCatProduct],
+      purchases: [strangeCatPurchase]
+    });
+    const storage = makeMemoryStorage();
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+    await waitFor(() => expect(result.current.strangeCatPurchaseStatus).toBe('owned'));
+
+    expect(result.current.strangeCatOwned).toBe(true);
+    expect(result.current.strangeCatProduct).toEqual(strangeCatProduct);
+  });
+
+  it('unlocks the strange cat immediately after a successful purchase', async () => {
+    const platform = makePlatform(true, {
+      catalog: [strangeCatProduct],
+      purchaseResult: strangeCatPurchase
+    });
+    const storage = makeMemoryStorage();
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.strangeCatPurchaseStatus).toBe('available'));
+
+    await act(async () => {
+      await result.current.purchaseStrangeCat();
+    });
+
+    expect(platform.purchaseProduct).toHaveBeenCalledWith('strange_cat');
+    expect(result.current.strangeCatOwned).toBe(true);
+    expect(result.current.strangeCatPurchaseStatus).toBe('owned');
+  });
+
+  it('keeps the cat locked and allows retry after a cancelled purchase', async () => {
+    const platform = makePlatform(true, { catalog: [strangeCatProduct] });
+    const storage = makeMemoryStorage();
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.strangeCatPurchaseStatus).toBe('available'));
+
+    await act(async () => {
+      await result.current.purchaseStrangeCat();
+    });
+
+    expect(result.current.strangeCatOwned).toBe(false);
+    expect(result.current.strangeCatPurchaseStatus).toBe('error');
+  });
+
   it('loads the purchase catalog and permanent purchases from Yandex payments', async () => {
     const product = {
       id: 'strange_cat',
