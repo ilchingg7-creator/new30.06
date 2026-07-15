@@ -7,7 +7,9 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
+    "release": "npm run build && powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-release.ps1",
     "test": "vitest run",
+    "test:release": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/test-release-package.ps1",
     "test:watch": "vitest"
   },
   "dependencies": {
