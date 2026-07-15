@@ -173,6 +173,155 @@ export function resumeAudio(): void {
   }
 }
 
+// Procedural sovietwave background music. Notes are scheduled ahead through
+// one master gain so the original 16-beat loop has no audible boundary gap.
+
+const MUSIC_BPM = 84;
+const MUSIC_BEAT_SECONDS = 60 / MUSIC_BPM;
+const MUSIC_LOOP_BEATS = 16;
+const MUSIC_LOOP_SECONDS = MUSIC_BEAT_SECONDS * MUSIC_LOOP_BEATS;
+const MUSIC_LOOKAHEAD_SECONDS = 2.5;
+
+interface ActiveMusic {
+  master: GainNode;
+  voices: Set<OscillatorNode>;
+  schedulerId: number;
+  nextLoopAt: number;
+}
+
+let activeMusic: ActiveMusic | null = null;
+
+function scheduleMusicVoice(
+  audioCtx: AudioContext,
+  music: ActiveMusic,
+  frequency: number,
+  beat: number,
+  beatsLong: number,
+  type: OscillatorType,
+  volume: number
+): void {
+  const start = music.nextLoopAt + beat * MUSIC_BEAT_SECONDS;
+  const duration = beatsLong * MUSIC_BEAT_SECONDS;
+  const oscillator = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  oscillator.type = type;
+  oscillator.frequency.setValueAtTime(frequency, start);
+  gain.gain.setValueAtTime(0.0001, start);
+  gain.gain.linearRampToValueAtTime(volume, start + 0.04);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+  oscillator.connect(gain);
+  gain.connect(music.master);
+  music.voices.add(oscillator);
+  oscillator.addEventListener('ended', () => {
+    music.voices.delete(oscillator);
+    oscillator.disconnect();
+    gain.disconnect();
+  }, { once: true });
+  oscillator.start(start);
+  oscillator.stop(start + duration + 0.05);
+}
+
+function scheduleMusicLoop(audioCtx: AudioContext, music: ActiveMusic): void {
+  const chords = [
+    [220, 261.63, 329.63],
+    [174.61, 220, 261.63],
+    [130.81, 164.81, 196],
+    [196, 246.94, 293.66]
+  ];
+  const bass = [110, 110, 87.31, 87.31, 65.41, 65.41, 98, 98];
+  const melody = [329.63, 440, 523.25, 493.88, 392, 329.63, 293.66, 246.94];
+
+  chords.forEach((chord, chordIndex) => {
+    chord.forEach((frequency) => {
+      scheduleMusicVoice(audioCtx, music, frequency, chordIndex * 4, 4.05, 'triangle', 0.022);
+    });
+  });
+
+  bass.forEach((frequency, index) => {
+    scheduleMusicVoice(audioCtx, music, frequency, index * 2, 1.5, 'sine', 0.038);
+  });
+
+  melody.forEach((frequency, index) => {
+    scheduleMusicVoice(audioCtx, music, frequency, index * 2 + 0.5, 0.85, 'triangle', 0.018);
+  });
+
+  for (let beat = 0; beat < MUSIC_LOOP_BEATS; beat += 2) {
+    scheduleMusicVoice(audioCtx, music, 68, beat, 0.18, 'sine', 0.03);
+  }
+}
+
+function scheduleUpcomingMusic(audioCtx: AudioContext, music: ActiveMusic): void {
+  while (music.nextLoopAt < audioCtx.currentTime + MUSIC_LOOKAHEAD_SECONDS) {
+    scheduleMusicLoop(audioCtx, music);
+    music.nextLoopAt += MUSIC_LOOP_SECONDS;
+  }
+}
+
+export function startBackgroundMusic(): void {
+  if (muted || activeMusic) {
+    return;
+  }
+
+  const audioCtx = ensureContext();
+
+  if (!audioCtx) {
+    return;
+  }
+
+  try {
+    const master = audioCtx.createGain();
+    const now = audioCtx.currentTime;
+    master.gain.setValueAtTime(0, now);
+    master.gain.linearRampToValueAtTime(0.28, now + 2.5);
+    master.connect(audioCtx.destination);
+
+    const music: ActiveMusic = {
+      master,
+      voices: new Set(),
+      schedulerId: 0,
+      nextLoopAt: now + 0.05
+    };
+
+    activeMusic = music;
+    scheduleUpcomingMusic(audioCtx, music);
+    music.schedulerId = window.setInterval(() => {
+      scheduleUpcomingMusic(audioCtx, music);
+    }, 1000);
+  } catch {
+    activeMusic = null;
+  }
+}
+
+export function stopBackgroundMusic(): void {
+  const music = activeMusic;
+
+  if (!music || !ctx) {
+    activeMusic = null;
+    return;
+  }
+
+  activeMusic = null;
+  window.clearInterval(music.schedulerId);
+  const now = ctx.currentTime;
+  music.master.gain.cancelScheduledValues(now);
+  music.master.gain.setValueAtTime(music.master.gain.value, now);
+  music.master.gain.linearRampToValueAtTime(0, now + 0.5);
+
+  window.setTimeout(() => {
+    music.voices.forEach((voice) => {
+      try {
+        voice.stop();
+        voice.disconnect();
+      } catch {
+        // Voice may already have ended.
+      }
+    });
+    music.voices.clear();
+    music.master.disconnect();
+  }, 600);
+}
+
 // ── Ambient station hum ───────────────────────────────────────────
 // A very low-volume continuous drone that plays while the game is active.
 // Uses two detuned sine oscillators through a low-pass filter for a warm
@@ -219,7 +368,7 @@ export function startAmbientHum(): void {
 
     const now = audioCtx.currentTime;
     humGain.gain.setValueAtTime(0, now);
-    humGain.gain.linearRampToValueAtTime(0.025, now + 2.5); // fade in over 2.5s
+    humGain.gain.linearRampToValueAtTime(0.015, now + 2.5); // fade in over 2.5s
 
     humOscA.start(now);
     humOscB.start(now);
