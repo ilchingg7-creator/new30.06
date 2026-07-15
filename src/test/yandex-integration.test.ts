@@ -82,6 +82,22 @@ afterEach(() => {
 });
 
 describe('yandex platform integration', () => {
+  it('reuses one Player instance for cloud load and saves', async () => {
+    const player = {
+      getData: vi.fn().mockResolvedValue({ [SAVE_KEY]: 'saved-state' }),
+      setData: vi.fn().mockResolvedValue(undefined)
+    };
+    const getPlayer = vi.fn().mockResolvedValue(player);
+    const platform = createYandexPlatform({ getPlayer });
+
+    await platform.loadCloudSave(SAVE_KEY);
+    await platform.saveCloud(SAVE_KEY, 'first');
+    await platform.saveCloud(SAVE_KEY, 'second');
+
+    expect(getPlayer).toHaveBeenCalledTimes(1);
+    expect(player.setData).toHaveBeenCalledTimes(2);
+  });
+
   it('restores permanent strange cat ownership during platform load', async () => {
     const platform = makePlatform(true, {
       catalog: [strangeCatProduct],

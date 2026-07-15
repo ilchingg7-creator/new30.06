@@ -134,6 +134,23 @@ export function markYandexReady(sdk: YandexSdk | null): void {
 }
 
 export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatform {
+  let playerPromise: Promise<YandexPlayer | null> | null = null;
+
+  function getPlayer(): Promise<YandexPlayer | null> {
+    if (!sdk?.getPlayer) {
+      return Promise.resolve(null);
+    }
+
+    if (!playerPromise) {
+      playerPromise = sdk.getPlayer().catch(() => {
+        playerPromise = null;
+        return null;
+      });
+    }
+
+    return playerPromise;
+  }
+
   return {
     isAvailable() {
       return Boolean(sdk?.adv?.showRewardedVideo);
@@ -165,7 +182,7 @@ export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatfo
       });
     },
     async loadCloudSave(key: string) {
-      const player = await sdk?.getPlayer?.().catch(() => null);
+      const player = await getPlayer();
 
       if (!player) {
         return null;
@@ -181,7 +198,7 @@ export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatfo
       }
     },
     async saveCloud(key: string, value: string) {
-      const player = await sdk?.getPlayer?.().catch(() => null);
+      const player = await getPlayer();
 
       if (!player) {
         return;

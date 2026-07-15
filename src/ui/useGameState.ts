@@ -17,6 +17,7 @@ import {
 } from '../game/communalDuties';
 import { applyRoomClickReward } from '../game/roomClicks';
 import { parseGameState, SAVE_KEY, serializeGameState } from '../game/save';
+import { CloudSaveQueue } from '../platform/cloudSaveQueue';
 import type { GameState, ModuleId, PrestigeUpgradeId, ResidentId, StationIncidentId } from '../game/types';
 import { decayRoomConditions, DECAY_INTERVAL_SECONDS } from '../game/roomConditions';
 import {
@@ -147,6 +148,10 @@ export function useGameState(
 
   const storage = useMemo(() => storagePort ?? createLocalStoragePort(), [storagePort]);
   const platformRef = useRef<YandexPlatform>(yandexPlatform ?? createNoOpYandexPlatform());
+  const cloudSaveQueue = useMemo(
+    () => new CloudSaveQueue((key, value) => platformRef.current.saveCloud(key, value)),
+    []
+  );
   const [gameState, setGameState] = useState(() => createInitialState());
   const [selectedRoomId, setSelectedRoomId] = useState<ModuleId>('tenant_capsule');
   const [ready, setReady] = useState(false);
@@ -260,7 +265,7 @@ export function useGameState(
     // Yandex cloud in the background. Cloud failures are swallowed by the
     // platform so a network drop never blocks gameplay.
     void storage.save(SAVE_KEY, serialized);
-    void platformRef.current.saveCloud(SAVE_KEY, serialized);
+    cloudSaveQueue.enqueue(SAVE_KEY, serialized);
 
     const now = Date.now();
     setLastSavedAt(now);
@@ -270,7 +275,22 @@ export function useGameState(
     }, 400);
 
     return () => window.clearTimeout(timer);
-  }, [gameState, ready, storage]);
+  }, [cloudSaveQueue, gameState, ready, storage]);
+
+  useEffect(() => {
+    const flushWhenHidden = () => {
+      if (document.hidden) {
+        void cloudSaveQueue.flushNow();
+      }
+    };
+
+    document.addEventListener('visibilitychange', flushWhenHidden);
+
+    return () => {
+      document.removeEventListener('visibilitychange', flushWhenHidden);
+      cloudSaveQueue.dispose();
+    };
+  }, [cloudSaveQueue]);
 
   useEffect(() => {
     if (!ready) {
@@ -625,10 +645,8 @@ export function useGameState(
     setOfflineReward(null);
     setDailyReward(null);
     setSelectedRoomId('tenant_capsule');
-    void storage.save(SAVE_KEY, serializeGameState(fresh));
-    void platformRef.current.saveCloud(SAVE_KEY, serializeGameState(fresh));
     playSound('prestige');
-  }, [storage]);
+  }, []);
 
   const clickRoom = useCallback(() => {
     setGameState((current) => applyRoomClickReward(current));
