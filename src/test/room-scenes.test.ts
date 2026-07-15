@@ -149,7 +149,7 @@ describe('focused room scene descriptors', () => {
         const suffix = String(detailLevel).padStart(2, '0');
 
         expect(getRoomSpriteAsset(module.id, detailLevel as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10)).toBe(
-          `/assets/rooms/${module.id}/${module.id}_${suffix}.png`
+          `./assets/rooms/${module.id}/${module.id}_${suffix}.png`
         );
       }
     });
@@ -165,9 +165,12 @@ describe('focused room scene descriptors', () => {
         oxygen_garden: 1
       }
     };
-    const loadSpy = vi.spyOn(Assets, 'load').mockRejectedValueOnce(new Error('missing sprite'));
+    const loadSpy = vi.spyOn(Assets, 'load').mockRejectedValue(new Error('missing sprite'));
 
     await expect(loadRoomSpriteAssetForState(state, 'oxygen_garden')).resolves.toBeUndefined();
+    await expect(loadRoomSpriteAssetForState(state, 'oxygen_garden')).resolves.toBeUndefined();
+
+    expect(loadSpy).toHaveBeenCalledTimes(1);
 
     const container = buildRoomContainer(state, 'oxygen_garden');
     expect(container.children.some((child) => (child as { label?: string }).label === 'room-sprite')).toBe(false);

@@ -343,7 +343,7 @@ describe('core UI components', () => {
 
       fireEvent.click(catButton);
 
-      expect(screen.getByTestId('tenant-cat-love')).toHaveAttribute('src', '/assets/rooms/tenant_capsule/cat-love.gif');
+      expect(screen.getByTestId('tenant-cat-love')).toHaveAttribute('src', './assets/rooms/tenant_capsule/cat-love.gif');
       expect(onTenantCatClick).toHaveBeenCalledTimes(1);
       expect(catButton).toBeDisabled();
 

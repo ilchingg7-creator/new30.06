@@ -2,6 +2,7 @@ import { Application, type Container, type Ticker } from 'pixi.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, MouseEvent } from 'react';
 import type { GameState, ModuleId } from '../../game/types';
+import { resolveAssetUrl } from '../../platform/assets';
 import {
   buildRoomContainer,
   calculateRoomSceneFit,
@@ -21,8 +22,8 @@ interface PixiStationSceneProps {
   ariaLabel?: string;
 }
 
-const TENANT_CAT_ASSET = '/assets/rooms/tenant_capsule/strange-cat.gif';
-const TENANT_CAT_LOVE_ASSET = '/assets/rooms/tenant_capsule/cat-love.gif';
+const TENANT_CAT_ASSET = resolveAssetUrl('assets/rooms/tenant_capsule/strange-cat.gif');
+const TENANT_CAT_LOVE_ASSET = resolveAssetUrl('assets/rooms/tenant_capsule/cat-love.gif');
 const TENANT_CAT_LOVE_DISPLAY_MS = 900;
 const TENANT_CAT_COOLDOWN_MIN_MS = 2_000;
 const TENANT_CAT_COOLDOWN_RANGE_MS = 2_000;

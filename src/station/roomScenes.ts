@@ -1,6 +1,7 @@
 import { Assets, Cache, Container, Graphics, Sprite, Texture } from 'pixi.js';
 import { modules } from '../game/content/modules';
 import type { GameState, ModuleId, RoomDetailLevel, WindowLightColor } from '../game/types';
+import { resolveAssetUrl } from '../platform/assets';
 import {
   getRoomRewardSpritesForRoom,
   type ResolvedRoomRewardSprite
@@ -80,7 +81,7 @@ function getRoomSpriteAssetDefinition(moduleId: ModuleId, detailLevel: RoomDetai
 
   return {
     alias: `${moduleId}-room-${suffix}`,
-    src: `/assets/rooms/${moduleId}/${moduleId}_${suffix}.png`
+    src: resolveAssetUrl(`assets/rooms/${moduleId}/${moduleId}_${suffix}.png`)
   };
 }
 
@@ -132,8 +133,11 @@ async function loadRoomRewardAssets(
         return;
       }
 
+      if (unavailableRoomRewardAliases.has(reward.alias)) {
+        return;
+      }
+
       registerRoomRewardAsset(reward);
-      unavailableRoomRewardAliases.delete(reward.alias);
 
       try {
         await Assets.load(reward.alias);
@@ -149,9 +153,8 @@ export async function loadRoomSpriteAssetForState(gameState: GameState, selected
   const detailLevel = getRoomDetailLevel(descriptor.level);
   const asset = getRoomSpriteAssetDefinition(descriptor.moduleId, detailLevel);
 
-  if (asset && !Cache.has(asset.alias)) {
+  if (asset && !Cache.has(asset.alias) && !unavailableRoomSpriteAliases.has(asset.alias)) {
     registerRoomSpriteAsset(asset);
-    unavailableRoomSpriteAliases.delete(asset.alias);
 
     try {
       await Assets.load(asset.alias);

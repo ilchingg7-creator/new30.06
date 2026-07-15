@@ -14,7 +14,7 @@ describe('room reward sprite registry', () => {
       const definition = getRoomRewardSpriteDefinition(id);
 
       expect(definition).not.toBeNull();
-      expect(definition?.src).toBe(`/assets/room-rewards/${id}.png`);
+      expect(definition?.src).toBe(`./assets/room-rewards/${id}.png`);
       expect(Object.keys(definition?.placements ?? {})).toEqual([
         '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
       ]);

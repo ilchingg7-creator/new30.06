@@ -1,4 +1,5 @@
 import type { ModuleId, RoomDetailLevel, VisualPlaceholderId } from '../game/types';
+import { resolveAssetUrl } from '../platform/assets';
 
 export type UnlockedRoomDetailLevel = Exclude<RoomDetailLevel, 0>;
 
@@ -57,7 +58,7 @@ function defineReward(
     id,
     roomId,
     alias: `room-reward-${id}`,
-    src: `/assets/room-rewards/${id}.png`,
+    src: resolveAssetUrl(`assets/room-rewards/${id}.png`),
     placements: explicitPlacements(width, height, zIndex, positions)
   };
 }
