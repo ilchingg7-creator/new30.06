@@ -4,7 +4,7 @@ import { createInitialState } from '../game/economy';
 import { SAVE_KEY } from '../game/save';
 import { useGameState } from '../ui/useGameState';
 import { createLocalStoragePort } from '../platform/storage';
-import { createYandexPlatform, initYandexPlatform } from '../platform/yandex';
+import { createNoOpYandexPlatform, createYandexPlatform, initYandexPlatform } from '../platform/yandex';
 import type { YandexPlatform } from '../platform/yandex';
 
 function makePlatform(grant: boolean): YandexPlatform {
@@ -17,7 +17,10 @@ function makePlatform(grant: boolean): YandexPlatform {
     loadCloudSave: vi.fn().mockResolvedValue(null),
     saveCloud: vi.fn().mockResolvedValue(undefined),
     submitLeaderboardScore: vi.fn().mockResolvedValue(undefined),
-    getLeaderboardEntries: vi.fn().mockResolvedValue([])
+    getLeaderboardEntries: vi.fn().mockResolvedValue([]),
+    getPurchaseCatalog: vi.fn().mockResolvedValue([]),
+    getPurchases: vi.fn().mockResolvedValue([]),
+    purchaseProduct: vi.fn().mockResolvedValue(null)
   };
 }
 
@@ -48,6 +51,65 @@ afterEach(() => {
 });
 
 describe('yandex platform integration', () => {
+  it('loads the purchase catalog and permanent purchases from Yandex payments', async () => {
+    const product = {
+      id: 'strange_cat',
+      title: 'Странный кот',
+      description: 'Поселить кота навсегда',
+      imageURI: 'https://example.test/cat.png',
+      price: '99 ЯН',
+      priceValue: '99',
+      priceCurrencyCode: 'YAN',
+      getPriceCurrencyImage: vi.fn(() => 'https://example.test/yan.svg')
+    };
+    const purchase = {
+      productID: 'strange_cat',
+      purchaseToken: 'purchase-token',
+      developerPayload: ''
+    };
+    const getCatalog = vi.fn().mockResolvedValue([product]);
+    const getPurchases = vi.fn().mockResolvedValue([purchase]);
+    const platform = createYandexPlatform({
+      payments: {
+        getCatalog,
+        getPurchases,
+        purchase: vi.fn()
+      }
+    });
+
+    await expect(platform.getPurchaseCatalog()).resolves.toEqual([product]);
+    await expect(platform.getPurchases()).resolves.toEqual([purchase]);
+    expect(getCatalog).toHaveBeenCalledTimes(1);
+    expect(getPurchases).toHaveBeenCalledTimes(1);
+  });
+
+  it('purchases the requested product without consuming it', async () => {
+    const purchase = {
+      productID: 'strange_cat',
+      purchaseToken: 'purchase-token',
+      developerPayload: ''
+    };
+    const purchaseSdk = vi.fn().mockResolvedValue(purchase);
+    const platform = createYandexPlatform({
+      payments: {
+        getCatalog: vi.fn(),
+        getPurchases: vi.fn(),
+        purchase: purchaseSdk
+      }
+    });
+
+    await expect(platform.purchaseProduct('strange_cat')).resolves.toEqual(purchase);
+    expect(purchaseSdk).toHaveBeenCalledWith({ id: 'strange_cat' });
+  });
+
+  it('returns safe purchase fallbacks when payments are unavailable', async () => {
+    const platform = createNoOpYandexPlatform();
+
+    await expect(platform.getPurchaseCatalog()).resolves.toEqual([]);
+    await expect(platform.getPurchases()).resolves.toEqual([]);
+    await expect(platform.purchaseProduct('strange_cat')).resolves.toBeNull();
+  });
+
   it('uses no-op platform in local top-level dev even when the SDK script is present', async () => {
     const init = vi.fn().mockResolvedValue({
       adv: {
@@ -226,7 +288,10 @@ describe('yandex platform integration', () => {
       loadCloudSave: vi.fn().mockResolvedValue(JSON.stringify(newerCloud)),
       saveCloud: vi.fn().mockResolvedValue(undefined),
       submitLeaderboardScore: vi.fn().mockResolvedValue(undefined),
-      getLeaderboardEntries: vi.fn().mockResolvedValue([])
+      getLeaderboardEntries: vi.fn().mockResolvedValue([]),
+      getPurchaseCatalog: vi.fn().mockResolvedValue([]),
+      getPurchases: vi.fn().mockResolvedValue([]),
+      purchaseProduct: vi.fn().mockResolvedValue(null)
     };
 
     const { result } = renderHook(() => useGameState(storage, platform));

@@ -34,7 +34,10 @@ function makePlatform(): YandexPlatform {
     loadCloudSave: vi.fn().mockResolvedValue(null),
     saveCloud: vi.fn().mockResolvedValue(undefined),
     submitLeaderboardScore: vi.fn().mockResolvedValue(undefined),
-    getLeaderboardEntries: vi.fn().mockResolvedValue([])
+    getLeaderboardEntries: vi.fn().mockResolvedValue([]),
+    getPurchaseCatalog: vi.fn().mockResolvedValue([]),
+    getPurchases: vi.fn().mockResolvedValue([]),
+    purchaseProduct: vi.fn().mockResolvedValue(null)
   };
 }
 

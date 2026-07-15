@@ -23,6 +23,31 @@ export interface YandexLeaderboard {
   userScore?: number;
 }
 
+export const STRANGE_CAT_PRODUCT_ID = 'strange_cat';
+
+export interface YandexProduct {
+  id: string;
+  title: string;
+  description: string;
+  imageURI: string;
+  price: string;
+  priceValue: string;
+  priceCurrencyCode: string;
+  getPriceCurrencyImage(size: 'small' | 'medium' | 'svg'): string;
+}
+
+export interface YandexPurchase {
+  productID: string;
+  purchaseToken: string;
+  developerPayload: string;
+}
+
+export interface YandexPaymentsApi {
+  getCatalog(): Promise<YandexProduct[]>;
+  getPurchases(): Promise<YandexPurchase[]>;
+  purchase(data: { id: string; developerPayload?: string }): Promise<YandexPurchase>;
+}
+
 export interface YandexSdk {
   features?: {
     LoadingAPI?: {
@@ -39,8 +64,10 @@ export interface YandexSdk {
     }): void;
   };
   leaderboards?: YandexLeaderboardsApi;
+  payments?: YandexPaymentsApi;
   getPlayer?(): Promise<YandexPlayer>;
   getLeaderboards?(): Promise<YandexLeaderboardsApi>;
+  getPayments?(): Promise<YandexPaymentsApi>;
 }
 
 export interface YandexLeaderboardsApi {
@@ -67,6 +94,9 @@ export interface YandexPlatform {
     leaderboardName: string,
     quantity?: number
   ): Promise<YandexLeaderboardEntry[]>;
+  getPurchaseCatalog(): Promise<YandexProduct[]>;
+  getPurchases(): Promise<YandexPurchase[]>;
+  purchaseProduct(productId: string): Promise<YandexPurchase | null>;
 }
 
 declare global {
@@ -85,6 +115,18 @@ function isYandexGamesRuntime(): boolean {
 
 async function getLeaderboardsApi(sdk: YandexSdk | null): Promise<YandexLeaderboardsApi | undefined> {
   return sdk?.leaderboards ?? sdk?.getLeaderboards?.();
+}
+
+async function getPaymentsApi(sdk: YandexSdk | null): Promise<YandexPaymentsApi | null> {
+  if (sdk?.payments) {
+    return sdk.payments;
+  }
+
+  try {
+    return (await sdk?.getPayments?.()) ?? null;
+  } catch {
+    return null;
+  }
 }
 
 export function markYandexReady(sdk: YandexSdk | null): void {
@@ -172,6 +214,27 @@ export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatfo
       } catch {
         return [];
       }
+    },
+    async getPurchaseCatalog() {
+      const payments = await getPaymentsApi(sdk);
+      return payments?.getCatalog().catch(() => []) ?? [];
+    },
+    async getPurchases() {
+      const payments = await getPaymentsApi(sdk);
+      return payments?.getPurchases().catch(() => []) ?? [];
+    },
+    async purchaseProduct(productId: string) {
+      const payments = await getPaymentsApi(sdk);
+
+      if (!payments) {
+        return null;
+      }
+
+      try {
+        return await payments.purchase({ id: productId });
+      } catch {
+        return null;
+      }
     }
   };
 }
@@ -204,6 +267,15 @@ export function createNoOpYandexPlatform(): YandexPlatform {
     },
     async getLeaderboardEntries() {
       return [];
+    },
+    async getPurchaseCatalog() {
+      return [];
+    },
+    async getPurchases() {
+      return [];
+    },
+    async purchaseProduct() {
+      return null;
     }
   };
 }
