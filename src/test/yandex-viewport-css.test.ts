@@ -55,6 +55,14 @@ describe('Yandex Games viewport CSS', () => {
     expect(helpPanelRule).toContain('overflow-y: auto');
   });
 
+  it('uses dense resource cards in the mobile layout', () => {
+    const compactBarRule = ruleBody(/\.mobile-layout \.top-bar\.compact\s*\{([^}]*)\}/s);
+    const compactCardRule = ruleBody(/\.mobile-layout \.top-bar\.compact div\s*\{([^}]*)\}/s);
+
+    expect(compactBarRule).toContain('gap: 4px');
+    expect(compactCardRule).toContain('padding: 4px 7px');
+  });
+
   it('styles internal scrollbars consistently', () => {
     expect(ruleBody(/\*\s*\{([^}]*)\}/s)).toContain('scrollbar-color');
     expect(css).toContain('::-webkit-scrollbar');

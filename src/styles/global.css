@@ -736,7 +736,7 @@ input {
 
 .visitor-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 2fr) minmax(96px, 1fr);
   gap: 8px;
 }
 
@@ -842,6 +842,11 @@ input {
   margin: 0 0 10px;
   font-size: 0.85rem;
   line-height: 1.4;
+}
+
+.language-switcher {
+  display: grid;
+  gap: 8px;
 }
 
 .settings-action-list {
@@ -1605,9 +1610,10 @@ input {
 
 .communal-duty-claim-row {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: max-content minmax(0, max-content) max-content;
   align-items: center;
-  gap: 8px;
+  justify-content: start;
+  gap: 6px;
 }
 
 .communal-duty-claim-row .panel-copy {
@@ -1663,11 +1669,31 @@ input {
 }
 
 .communal-duty-panel.compact .communal-duty-claim-row {
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 6px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 6px;
+}
+
+.communal-duty-panel.compact .communal-duty-claim-row .panel-copy {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.communal-duty-panel.compact .communal-duty-claim-row .action-preview {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  width: 100%;
+}
+
+.communal-duty-panel.compact .communal-duty-claim-row .action-preview-text small {
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .communal-duty-panel.compact .communal-duty-claim-row button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
   min-height: 28px;
   padding: 0 7px;
 }
@@ -1993,6 +2019,10 @@ input {
   border-color: color-mix(in srgb, var(--color-enamel-green), transparent 40%);
 }
 
+.last-action-feedback .action-preview-text strong {
+  color: var(--color-ink);
+}
+
 .cosmetics-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2107,8 +2137,12 @@ input {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .top-bar.compact {
-    gap: 5px;
+  .mobile-layout .top-bar.compact {
+    gap: 4px;
+  }
+
+  .mobile-layout .top-bar.compact div {
+    padding: 4px 7px;
   }
 
   .component-card {
@@ -2246,9 +2280,9 @@ input {
 
 .incident-choice-button {
   display: grid;
-  grid-template-columns: minmax(96px, 0.9fr) minmax(0, 1fr);
-  align-items: center;
-  gap: 7px;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 4px;
   text-align: left;
   min-height: 30px;
   padding: 4px 7px;
@@ -2262,7 +2296,7 @@ input {
 
 .incident-choice-copy > span,
 .incident-choice-copy small {
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   white-space: normal;
 }
 
@@ -2272,7 +2306,16 @@ input {
 }
 
 .incident-choice-list .action-preview.inline {
+  grid-template-columns: minmax(0, 1fr) auto;
   margin-top: 0;
+}
+
+.incident-choice-list .action-preview-text {
+  min-width: 0;
+}
+
+.incident-choice-list .action-preview-tags {
+  flex-shrink: 0;
 }
 
 .incident-choice-list small {
@@ -2303,7 +2346,7 @@ input {
 .incident-journal.compact .incident-choice-copy > span,
 .incident-journal.compact .incident-choice-copy small {
   overflow: visible;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
   white-space: normal;
 }
 

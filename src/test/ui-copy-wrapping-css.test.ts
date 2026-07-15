@@ -23,14 +23,25 @@ describe('UI copy wrapping CSS', () => {
       ruleBody(/\.income-breakdown-name\s*\{([^}]*)\}/s),
       ruleBody(/\.station-task-help\.compact \.station-task-body p\s*\{([^}]*)\}/s),
       ruleBody(/\.communal-duty-panel\.compact \.panel-copy\s*\{([^}]*)\}/s),
-      ruleBody(/\.action-preview\.inline \.action-preview-text small\s*\{([^}]*)\}/s),
+      ruleBody(/\.action-preview\.inline \.action-preview-text small\s*\{([^}]*)\}/s)
+    ];
+
+    wrappingRules.forEach(expectWrapping);
+  });
+
+  it('wraps incident labels only between words where space allows it', () => {
+    const wrappingRules = [
       ruleBody(/\.incident-choice-copy > span,\s*\.incident-choice-copy small\s*\{([^}]*)\}/s),
       ruleBody(
         /\.incident-journal\.compact \.incident-choice-copy > span,\s*\.incident-journal\.compact \.incident-choice-copy small\s*\{([^}]*)\}/s
       )
     ];
 
-    wrappingRules.forEach(expectWrapping);
+    for (const rule of wrappingRules) {
+      expect(rule).toContain('white-space: normal');
+      expect(rule).toContain('overflow-wrap: break-word');
+      expect(rule).not.toContain('overflow-wrap: anywhere');
+    }
   });
 
   it('keeps unbounded player names truncated on one line', () => {

@@ -113,6 +113,33 @@ describe('CommunalDutyPanel', () => {
     );
   });
 
+  it('keeps the compact claim reward wide enough to wrap by words', () => {
+    const claimRow = ruleBody(/\.communal-duty-panel\.compact \.communal-duty-claim-row\s*\{([^}]*)\}/s);
+    const claimPreview = ruleBody(
+      /\.communal-duty-panel\.compact \.communal-duty-claim-row \.action-preview\s*\{([^}]*)\}/s
+    );
+
+    expect(claimRow).toContain('grid-template-columns: minmax(0, 1fr) auto');
+    expect(claimPreview).toContain('grid-column: 1');
+    expect(claimPreview).toContain('min-width: 0');
+    expect(
+      ruleBody(/\.communal-duty-panel\.compact \.communal-duty-claim-row \.action-preview-text small\s*\{([^}]*)\}/s)
+    ).toContain('overflow-wrap: break-word');
+  });
+
+  it('uses compact content-sized spacing for desktop claim results', () => {
+    const claimRow = ruleBody(/\.communal-duty-claim-row\s*\{([^}]*)\}/s);
+
+    expect(claimRow).toContain('grid-template-columns: max-content minmax(0, max-content) max-content');
+    expect(claimRow).toContain('justify-content: start');
+  });
+
+  it('uses a high-contrast title in the latest duty result card', () => {
+    expect(ruleBody(/\.last-action-feedback \.action-preview-text strong\s*\{([^}]*)\}/s)).toContain(
+      'color: var(--color-ink)'
+    );
+  });
+
   it('renders ready-to-claim duty with claim action', async () => {
     const user = userEvent.setup();
     const onClaim = vi.fn();
