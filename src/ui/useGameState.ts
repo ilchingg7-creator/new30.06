@@ -40,10 +40,12 @@ import { createLocalStoragePort, type StoragePort } from '../platform/storage';
 import {
   isMuted,
   playSound,
+  resumeAudio,
   startAmbientHum,
   startBackgroundMusic,
   stopAmbientHum,
   stopBackgroundMusic,
+  suspendAudio,
   toggleMuted
 } from '../platform/sound';
 import {
@@ -435,7 +437,19 @@ export function useGameState(
       return true;
     }
 
-    return platformRef.current.showRewardedAd();
+    // Requirement 4.7: stop game audio while the ad is visible.
+    const granted = await platformRef.current.showRewardedAd(() => {
+      suspendAudio();
+    });
+
+    // Restore audio after the ad closes, but only if the player has not muted
+    // the game. If the tab is hidden the visibilitychange handler keeps the
+    // context suspended — resumeAudio is a no-op when already suspended.
+    if (!isMuted()) {
+      resumeAudio();
+    }
+
+    return granted;
   }, []);
 
   const activateIncomeBoost = useCallback(async () => {

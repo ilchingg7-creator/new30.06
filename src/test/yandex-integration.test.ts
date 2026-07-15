@@ -14,6 +14,21 @@ import {
   type YandexPurchase
 } from '../platform/yandex';
 
+// Mock the sound module so we can verify audio pause/restore during ads.
+vi.mock('../platform/sound', () => ({
+  isMuted: vi.fn(() => false),
+  playSound: vi.fn(),
+  resumeAudio: vi.fn(),
+  startAmbientHum: vi.fn(),
+  startBackgroundMusic: vi.fn(),
+  stopAmbientHum: vi.fn(),
+  stopBackgroundMusic: vi.fn(),
+  suspendAudio: vi.fn(),
+  toggleMuted: vi.fn(() => false)
+}));
+
+import { isMuted, resumeAudio, suspendAudio } from '../platform/sound';
+
 const strangeCatProduct: YandexProduct = {
   id: STRANGE_CAT_PRODUCT_ID,
   title: 'Странный кот',
@@ -37,14 +52,22 @@ function makePlatform(
     catalog?: YandexProduct[];
     purchases?: YandexPurchase[];
     purchaseResult?: YandexPurchase | null;
+    /** When true, the mock simulates the SDK by invoking onOpen before resolving. */
+    simulateAdOpen?: boolean;
   } = {}
 ): YandexPlatform {
+  const simulateAdOpen = options.simulateAdOpen ?? true;
   return {
     isAvailable() {
       return true;
     },
     markReady: vi.fn(),
-    showRewardedAd: vi.fn().mockResolvedValue(grant),
+    showRewardedAd: vi.fn((onOpen?: () => void) => {
+      if (simulateAdOpen && onOpen) {
+        onOpen();
+      }
+      return Promise.resolve(grant);
+    }),
     loadCloudSave: vi.fn().mockResolvedValue(null),
     saveCloud: vi.fn().mockResolvedValue(undefined),
     submitLeaderboardScore: vi.fn().mockResolvedValue(undefined),
@@ -74,6 +97,8 @@ function makeMemoryStorage(saved: string | null = null) {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.clearAllMocks();
+  vi.mocked(isMuted).mockReturnValue(false);
   delete window.YaGames;
   delete window.__yaSdkLang;
   Object.defineProperty(window, 'parent', {
@@ -306,6 +331,77 @@ describe('yandex platform integration', () => {
     expect(result.current.gameState.timedBonuses).toHaveLength(1);
     expect(result.current.gameState.timedBonuses[0].id).toBe('rent_x2');
     expect(result.current.gameState.timedBonuses[0].incomeMultiplier).toBe(2);
+  });
+
+  it('forwards the onOpen callback to the platform showRewardedAd', async () => {
+    const platform = makePlatform(true);
+    const storage = makeMemoryStorage();
+
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    await act(async () => {
+      await result.current.activateIncomeBoost();
+    });
+
+    // showRewardedAd should have been called with a function argument (onOpen callback)
+    expect(platform.showRewardedAd).toHaveBeenCalledTimes(1);
+    const callArgs = (platform.showRewardedAd as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(callArgs[0]).toBeTypeOf('function');
+  });
+
+  it('suspends audio on ad open and resumes after close when unmuted', async () => {
+    vi.mocked(isMuted).mockReturnValue(false);
+    const platform = makePlatform(true);
+    const storage = makeMemoryStorage();
+
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    await act(async () => {
+      await result.current.activateIncomeBoost();
+    });
+
+    // suspendAudio called when ad opens (mock simulates onOpen before resolving)
+    expect(suspendAudio).toHaveBeenCalledTimes(1);
+    // resumeAudio called after ad closes (not muted)
+    expect(resumeAudio).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not resume audio after ad close when muted', async () => {
+    vi.mocked(isMuted).mockReturnValue(true);
+    const platform = makePlatform(true, { simulateAdOpen: false });
+    const storage = makeMemoryStorage();
+
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    await act(async () => {
+      await result.current.activateIncomeBoost();
+    });
+
+    // resumeAudio should NOT be called when muted
+    expect(resumeAudio).not.toHaveBeenCalled();
+  });
+
+  it('does not suspend audio when platform is unavailable (dev mode)', async () => {
+    vi.mocked(isMuted).mockReturnValue(false);
+    const platform = createNoOpYandexPlatform();
+    const storage = makeMemoryStorage();
+
+    const { result } = renderHook(() => useGameState(storage, platform));
+
+    await waitFor(() => expect(result.current.ready).toBe(true));
+
+    await act(async () => {
+      await result.current.activateIncomeBoost();
+    });
+
+    // No ad shown in dev mode — audio should not be suspended
+    expect(suspendAudio).not.toHaveBeenCalled();
   });
 
   it('allows the VIP resident reward only once per day', async () => {

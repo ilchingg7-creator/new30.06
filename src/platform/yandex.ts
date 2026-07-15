@@ -62,6 +62,7 @@ export interface YandexSdk {
   adv?: {
     showRewardedVideo(options: {
       callbacks?: {
+        onOpen?: () => void;
         onRewarded?: () => void;
         onClose?: () => void;
         onError?: () => void;
@@ -91,7 +92,7 @@ export interface YandexGamesLib {
 export interface YandexPlatform {
   isAvailable(): boolean;
   markReady(): void;
-  showRewardedAd(): Promise<boolean>;
+  showRewardedAd(onOpen?: () => void): Promise<boolean>;
   loadCloudSave(key: string): Promise<string | null>;
   saveCloud(key: string, value: string): Promise<void>;
   submitLeaderboardScore(leaderboardName: string, score: number): Promise<void>;
@@ -165,7 +166,7 @@ export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatfo
     markReady() {
       markYandexReady(sdk);
     },
-    async showRewardedAd() {
+    async showRewardedAd(onOpen?: () => void) {
       if (!sdk?.adv?.showRewardedVideo) {
         return false;
       }
@@ -175,6 +176,9 @@ export function createYandexPlatform(sdk: YandexSdk | null = null): YandexPlatfo
 
         sdk.adv?.showRewardedVideo({
           callbacks: {
+            onOpen() {
+              onOpen?.();
+            },
             onRewarded() {
               rewarded = true;
             },
@@ -277,7 +281,7 @@ export function createNoOpYandexPlatform(): YandexPlatform {
     markReady() {
       // no-op outside Yandex Games
     },
-    async showRewardedAd() {
+    async showRewardedAd(_onOpen?: () => void) {
       return false;
     },
     async loadCloudSave() {
