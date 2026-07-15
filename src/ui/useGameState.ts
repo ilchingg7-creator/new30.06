@@ -36,7 +36,15 @@ import {
   isVisitorExpired
 } from '../game/visitors';
 import { createLocalStoragePort, type StoragePort } from '../platform/storage';
-import { playSound, toggleMuted, isMuted, startAmbientHum, stopAmbientHum } from '../platform/sound';
+import {
+  isMuted,
+  playSound,
+  startAmbientHum,
+  startBackgroundMusic,
+  stopAmbientHum,
+  stopBackgroundMusic,
+  toggleMuted
+} from '../platform/sound';
 import {
   createNoOpYandexPlatform,
   initYandexPlatform,
@@ -505,25 +513,28 @@ export function useGameState(
     setSoundMuted(next);
     if (next) {
       stopAmbientHum();
+      stopBackgroundMusic();
     } else {
       playSound('click');
       startAmbientHum();
+      startBackgroundMusic();
     }
   }, []);
 
-  // Start ambient hum once the game is ready and sound is not muted.
-  // The AudioContext requires a user gesture before it can produce sound,
-  // so the hum may not actually start until the first click — that's fine,
-  // startAmbientHum is a no-op if the context is suspended.
+  // Start ambient audio once the game is ready and sound is not muted.
+  // Browser autoplay policy may keep the shared AudioContext suspended until
+  // the first user gesture; the scheduled audio begins when it resumes.
   useEffect(() => {
     if (!ready || soundMuted) {
       return;
     }
 
     startAmbientHum();
+    startBackgroundMusic();
 
     return () => {
       stopAmbientHum();
+      stopBackgroundMusic();
     };
   }, [ready, soundMuted]);
 
