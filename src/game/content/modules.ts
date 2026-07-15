@@ -74,7 +74,7 @@ export const modules: ModuleDefinition[] = [
   {
     id: 'saucer_dock',
     name: 'Док для мини-тарелок',
-    role: 'Поздний MVP',
+    role: 'Транспортный узел',
     baseCost: 6000000,
     baseIncomePerSecond: 23000,
     comfortBonus: 12,

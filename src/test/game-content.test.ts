@@ -23,6 +23,12 @@ describe('game content', () => {
     expect(modules.every((module) => module.visualKey.length > 0)).toBe(true);
   });
 
+  it('describes the mini-saucer dock without MVP jargon in both languages', () => {
+    expect(modules.find((module) => module.id === 'saucer_dock')?.role).toBe('Транспортный узел');
+    expect(translations.ru.content.modules.saucer_dock.role).toBe('Транспортный узел');
+    expect(translations.en.content.modules.saucer_dock.role).toBe('Transport hub');
+  });
+
   it('describes offline cap upgrades and the plumber bonus with current values', () => {
     expect(translations.ru.higherOfflineCapDesc).toBe('Лимит офлайн-дохода увеличен с 3 до 4,5 часа.');
     expect(translations.en.higherOfflineCapDesc).toBe('Offline income cap increased from 3 to 4.5 hours.');
