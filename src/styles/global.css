@@ -2306,7 +2306,8 @@ input {
 }
 
 .incident-choice-list .action-preview.inline {
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
   margin-top: 0;
 }
 
@@ -2314,8 +2315,13 @@ input {
   min-width: 0;
 }
 
-.incident-choice-list .action-preview-tags {
-  flex-shrink: 0;
+.incident-choice-list .action-preview.inline .action-preview-text small {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.incident-choice-list .action-preview.inline .action-preview-tags {
+  flex-wrap: wrap;
 }
 
 .incident-choice-list small {
