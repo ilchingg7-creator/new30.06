@@ -49,6 +49,11 @@ export interface YandexPaymentsApi {
 }
 
 export interface YandexSdk {
+  environment?: {
+    i18n?: {
+      lang?: string;
+    };
+  };
   features?: {
     LoadingAPI?: {
       ready(): void;
@@ -102,6 +107,8 @@ export interface YandexPlatform {
 declare global {
   interface Window {
     YaGames?: YandexGamesLib;
+    __cosmicCommunalkaSessionLanguage?: 'ru' | 'en';
+    __yaSdkLang?: string;
   }
 }
 
@@ -315,6 +322,12 @@ export async function initYandexPlatform(): Promise<YandexPlatform> {
 
   try {
     const sdk = await yaGames.init();
+    const sdkLanguage = sdk.environment?.i18n?.lang;
+
+    if (sdkLanguage) {
+      window.__yaSdkLang = sdkLanguage;
+    }
+
     return createYandexPlatform(sdk);
   } catch {
     return createNoOpYandexPlatform();

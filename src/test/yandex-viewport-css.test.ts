@@ -68,4 +68,12 @@ describe('Yandex Games viewport CSS', () => {
     expect(css).toContain('::-webkit-scrollbar');
     expect(css).toContain('::-webkit-scrollbar-thumb');
   });
+
+  it('prevents selection and touch callouts only on the station canvas', () => {
+    const canvasRule = ruleBody(/\.station-view canvas\s*\{([^}]*)\}/s);
+
+    expect(canvasRule).toContain('-webkit-user-select: none');
+    expect(canvasRule).toContain('user-select: none');
+    expect(canvasRule).toContain('-webkit-touch-callout: none');
+  });
 });

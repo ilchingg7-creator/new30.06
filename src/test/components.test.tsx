@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { buyModuleLevel, calculateIncomePerSecond, createInitialState } from '../game/economy';
 import type { StationGuidance } from '../game/stationDirector';
@@ -160,6 +160,23 @@ describe('core UI components', () => {
     expect(screen.getByRole('heading', { name: 'Цели' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Бонусы' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Реновация орбиты' })).toBeInTheDocument();
+  });
+
+  it('prevents the browser context menu on the Pixi game canvas', async () => {
+    const { container } = render(
+      <PixiStationScene
+        gameState={createInitialState(1_000)}
+        selectedRoomId="tenant_capsule"
+        ariaLabel={t.stationView}
+      />
+    );
+
+    await waitFor(() => expect(container.querySelector('canvas')).not.toBeNull());
+    const canvas = container.querySelector('canvas') as HTMLCanvasElement;
+    const contextMenu = new MouseEvent('contextmenu', { bubbles: true, cancelable: true });
+
+    expect(canvas.dispatchEvent(contextMenu)).toBe(false);
+    expect(contextMenu.defaultPrevented).toBe(true);
   });
 
   it('does not mark locked rooms as active in the selector', () => {

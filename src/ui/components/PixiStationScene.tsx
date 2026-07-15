@@ -174,6 +174,9 @@ export function PixiStationScene({
     let cancelled = false;
     let initialized = false;
     const app = new Application();
+    const preventCanvasContextMenu = (event: Event) => {
+      event.preventDefault();
+    };
     const animateAmbientLights = (ticker: Ticker) => {
       pulseTimeRef.current += ticker.deltaTime * 0.04;
       const alpha = 0.78 + Math.sin(pulseTimeRef.current) * 0.18;
@@ -216,6 +219,7 @@ export function PixiStationScene({
         const canvas = app.canvas;
 
         canvas.style.cursor = 'pointer';
+        canvas.addEventListener('contextmenu', preventCanvasContextMenu);
         canvas.addEventListener('pointerdown', () => {
           onRoomClickRef.current?.();
         });
@@ -224,6 +228,7 @@ export function PixiStationScene({
     return () => {
       cancelled = true;
       if (initialized) {
+        app.canvas.removeEventListener('contextmenu', preventCanvasContextMenu);
         app.ticker.remove(animateAmbientLights);
         app.destroy(true);
       }

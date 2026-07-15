@@ -1990,36 +1990,50 @@ const en: Translation = {
 
 export const translations: Record<Language, Translation> = { ru, en };
 
-const LANGUAGE_KEY = 'cosmic-communalka-language';
+const RUSSIAN_INTERFACE_LANGUAGES = new Set(['ru', 'be', 'uk', 'kk', 'uz']);
+
+function normalizeDetectedLanguage(rawLanguage: string | null | undefined): Language | null {
+  const language = rawLanguage?.trim().toLowerCase().split(/[-_]/, 1)[0];
+
+  if (!language || !/^[a-z]{2}$/.test(language)) {
+    return null;
+  }
+
+  return RUSSIAN_INTERFACE_LANGUAGES.has(language) ? 'ru' : 'en';
+}
 
 export function getDefaultLanguage(): Language {
   if (typeof window === 'undefined') {
     return 'ru';
   }
 
-  // Stored preference takes priority.
-  const stored = window.localStorage.getItem(LANGUAGE_KEY);
+  const sessionLanguage = window.__cosmicCommunalkaSessionLanguage;
 
-  if (stored === 'ru' || stored === 'en') {
-    return stored;
+  if (sessionLanguage === 'ru' || sessionLanguage === 'en') {
+    return sessionLanguage;
   }
 
-  // Auto-detect from browser/Yandex environment (requirement 2.14).
-  // Check Yandex SDK environment first, then fall back to navigator.language.
-  const yaEnv = (window as unknown as { YaGames?: { environment?: { i18n?: { lang?: string } } } }).YaGames;
-  const yaLang = yaEnv?.environment?.i18n?.lang;
+  const urlLanguage = normalizeDetectedLanguage(
+    new URLSearchParams(window.location.search).get('lang')
+  );
 
-  if (yaLang) {
-    return yaLang.startsWith('en') ? 'en' : 'ru';
+  if (urlLanguage) {
+    return urlLanguage;
   }
 
-  const navLang = navigator.language ?? 'ru';
+  const sdkLanguage = normalizeDetectedLanguage(window.__yaSdkLang);
 
-  return navLang.startsWith('en') ? 'en' : 'ru';
+  if (sdkLanguage) {
+    return sdkLanguage;
+  }
+
+  return normalizeDetectedLanguage(
+    typeof navigator === 'undefined' ? null : navigator.language
+  ) ?? 'ru';
 }
 
 export function setStoredLanguage(lang: Language): void {
   if (typeof window !== 'undefined') {
-    window.localStorage.setItem(LANGUAGE_KEY, lang);
+    window.__cosmicCommunalkaSessionLanguage = lang;
   }
 }

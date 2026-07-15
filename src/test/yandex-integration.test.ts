@@ -75,6 +75,7 @@ function makeMemoryStorage(saved: string | null = null) {
 afterEach(() => {
   vi.restoreAllMocks();
   delete window.YaGames;
+  delete window.__yaSdkLang;
   Object.defineProperty(window, 'parent', {
     configurable: true,
     value: window
@@ -219,6 +220,22 @@ describe('yandex platform integration', () => {
 
     expect(init).not.toHaveBeenCalled();
     expect(platform.isAvailable()).toBe(false);
+  });
+
+  it('exposes the initialized SDK language to synchronous language detection', async () => {
+    window.YaGames = {
+      init: vi.fn().mockResolvedValue({
+        environment: { i18n: { lang: 'en' } }
+      })
+    };
+    Object.defineProperty(window, 'parent', {
+      configurable: true,
+      value: {}
+    });
+
+    await initYandexPlatform();
+
+    expect(window.__yaSdkLang).toBe('en');
   });
 
   it('uses the current leaderboards SDK API without deprecated getLeaderboards', async () => {
