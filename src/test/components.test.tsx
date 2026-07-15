@@ -4,6 +4,7 @@ import { buyModuleLevel, calculateIncomePerSecond, createInitialState } from '..
 import type { StationGuidance } from '../game/stationDirector';
 import type { GameState } from '../game/types';
 import { translations } from '../platform/i18n';
+import type { YandexProduct } from '../platform/yandex';
 import { BonusPanel } from '../ui/components/BonusPanel';
 import { CommunalDutyPanel } from '../ui/components/CommunalDutyPanel';
 import { GoalPanel } from '../ui/components/GoalPanel';
@@ -19,7 +20,74 @@ import { TopBar } from '../ui/components/TopBar';
 
 const t = translations.ru;
 
+const strangeCatProduct: YandexProduct = {
+  id: 'strange_cat',
+  title: 'Странный кот',
+  description: 'Поселить кота навсегда',
+  imageURI: 'https://example.test/cat.png',
+  price: '99 ЯН',
+  priceValue: '99',
+  priceCurrencyCode: 'YAN',
+  getPriceCurrencyImage: vi.fn(() => 'https://example.test/yan.svg')
+};
+
 describe('core UI components', () => {
+  it('shows the strange cat catalog price and currency icon in Bonuses', () => {
+    const onPurchase = vi.fn();
+
+    render(
+      <BonusPanel
+        onIncomeBoost={vi.fn()}
+        onVipResident={vi.fn()}
+        onPurchaseStrangeCat={onPurchase}
+        strangeCatProduct={strangeCatProduct}
+        strangeCatPurchaseStatus="available"
+        t={t}
+      />
+    );
+
+    expect(screen.getByText('99 ЯН')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: t.portalCurrency })).toHaveAttribute(
+      'src',
+      'https://example.test/yan.svg'
+    );
+    fireEvent.click(screen.getByRole('button', { name: t.buyStrangeCat }));
+    expect(onPurchase).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows an owned state without another cat purchase button', () => {
+    render(
+      <BonusPanel
+        onIncomeBoost={vi.fn()}
+        onVipResident={vi.fn()}
+        onPurchaseStrangeCat={vi.fn()}
+        strangeCatProduct={strangeCatProduct}
+        strangeCatPurchaseStatus="owned"
+        t={t}
+      />
+    );
+
+    expect(screen.getByText(t.strangeCatOwned)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: t.buyStrangeCat })).toBeNull();
+  });
+
+  it('keeps the cat offer visible but disabled when purchases are unavailable', () => {
+    render(
+      <BonusPanel
+        onIncomeBoost={vi.fn()}
+        onVipResident={vi.fn()}
+        onPurchaseStrangeCat={vi.fn()}
+        strangeCatProduct={null}
+        strangeCatPurchaseStatus="unavailable"
+        t={t}
+      />
+    );
+
+    expect(screen.getByText(t.strangeCatOfferTitle)).toBeInTheDocument();
+    expect(screen.getByText(t.strangeCatUnavailable)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: t.buyStrangeCat })).toBeDisabled();
+  });
+
   it('renders station, resources, modules, room selector, goals, bonuses and prestige panels', () => {
     const gameState = buyModuleLevel(createInitialState(1_000), 'tenant_capsule');
     const guidance: StationGuidance = {
@@ -52,6 +120,9 @@ describe('core UI components', () => {
         <BonusPanel
           onIncomeBoost={vi.fn()}
           onVipResident={vi.fn()}
+          onPurchaseStrangeCat={vi.fn()}
+          strangeCatProduct={null}
+          strangeCatPurchaseStatus="unavailable"
           adsAvailable={false}
           adPending={false}
           t={t}

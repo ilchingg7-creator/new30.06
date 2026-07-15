@@ -1880,6 +1880,35 @@ input {
   gap: 10px;
 }
 
+.cat-purchase-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgb(214 159 46 / 45%);
+  border-radius: var(--radius-control);
+  background: rgb(214 159 46 / 8%);
+}
+
+.cat-purchase-price {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+}
+
+.cat-purchase-price img {
+  width: 18px;
+  height: 18px;
+}
+
+.cat-purchase-status.success {
+  color: var(--color-enamel-green);
+}
+
+.cat-purchase-status.error {
+  color: var(--color-signal-red);
+}
+
 .action-preview {
   display: grid;
   gap: 4px;

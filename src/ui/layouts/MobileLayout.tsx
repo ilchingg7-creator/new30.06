@@ -142,6 +142,9 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
               <BonusPanel
                 onIncomeBoost={game.activateIncomeBoost}
                 onVipResident={game.activateVipResident}
+                onPurchaseStrangeCat={game.purchaseStrangeCat}
+                strangeCatProduct={game.strangeCatProduct}
+                strangeCatPurchaseStatus={game.strangeCatPurchaseStatus}
                 adsAvailable={game.adsAvailable}
                 adPending={game.adPending}
                 vipResidentAvailable={game.vipResidentAvailable}

@@ -55,6 +55,14 @@ export interface Translation {
   adBonusesHint: string;
   boost2x: string;
   vipResident: string;
+  strangeCatOfferTitle: string;
+  strangeCatOfferBody: string;
+  buyStrangeCat: string;
+  strangeCatPurchasing: string;
+  strangeCatOwned: string;
+  strangeCatUnavailable: string;
+  strangeCatPurchaseError: string;
+  portalCurrency: string;
   vipCooldown: string;
   adPending: string;
   // Prestige
@@ -377,6 +385,14 @@ const ru: Translation = {
   adBonusesHint: 'Рекламные бонусы доступны на Yandex Games. Локально бонусы включаются сразу.',
   boost2x: 'x2 аренда',
   vipResident: 'VIP-жилец',
+  strangeCatOfferTitle: 'Поселить странного кота',
+  strangeCatOfferBody: 'Постоянная покупка: кот навсегда поселится в жилой капсуле.',
+  buyStrangeCat: 'Купить странного кота',
+  strangeCatPurchasing: 'Покупка обрабатывается…',
+  strangeCatOwned: 'Кот поселён',
+  strangeCatUnavailable: 'Покупка временно недоступна',
+  strangeCatPurchaseError: 'Покупка не завершена. Можно попробовать снова.',
+  portalCurrency: 'Валюта портала',
   vipCooldown: 'VIP завтра',
   adPending: 'Реклама...',
   renovationTitle: 'Реновация орбиты',
@@ -446,7 +462,7 @@ const ru: Translation = {
   helpStart: 'Понятно, начать играть',
   tourTitle: 'Экскурсия по станции',
   tourStepStation: 'Ваша станция',
-  tourStepStationBody: 'Это вид станции. Кликайте по комнате, чтобы получить немного копеек. Странная кошка в капсуле тоже любит внимание.',
+  tourStepStationBody: 'Это вид станции. Кликайте по комнате, чтобы получить немного копеек. Странного кота можно навсегда поселить через раздел «Бонусы».',
   tourStepModules: 'Комнаты станции',
   tourStepModulesBody: 'Покупайте уровни модулей за копейки. Каждый модуль даёт доход в секунду. На уровнях 10, 25, 50 и 100 модуль получает множитель дохода.',
   tourStepGoals: 'Цели',
@@ -1195,6 +1211,14 @@ const en: Translation = {
   adBonusesHint: 'Ad bonuses are available on Yandex Games. Locally they activate immediately.',
   boost2x: 'x2 rent',
   vipResident: 'VIP resident',
+  strangeCatOfferTitle: 'Settle the strange cat',
+  strangeCatOfferBody: 'Permanent purchase: the cat will live in the tenant capsule forever.',
+  buyStrangeCat: 'Buy the strange cat',
+  strangeCatPurchasing: 'Processing purchase…',
+  strangeCatOwned: 'Cat settled',
+  strangeCatUnavailable: 'Purchase temporarily unavailable',
+  strangeCatPurchaseError: 'Purchase not completed. You can try again.',
+  portalCurrency: 'Portal currency',
   vipCooldown: 'VIP tomorrow',
   adPending: 'Ad...',
   renovationTitle: 'Orbit Renovation',
@@ -1264,7 +1288,7 @@ const en: Translation = {
   helpStart: 'Got it, start playing',
   tourTitle: 'Station Tour',
   tourStepStation: 'Your Station',
-  tourStepStationBody: 'This is the station view. Click a room to earn a few kopeks. The strange cat in the capsule also likes attention.',
+  tourStepStationBody: 'This is the station view. Click a room to earn a few kopeks. You can permanently settle the strange cat from Bonuses.',
   tourStepModules: 'Station Rooms',
   tourStepModulesBody: 'Buy module levels with kopeks. Each module gives income per second. At levels 10, 25, 50, and 100 modules get an income multiplier.',
   tourStepGoals: 'Goals',
