@@ -2,13 +2,13 @@ import { Assets } from 'pixi.js';
 import { describe, expect, it, vi } from 'vitest';
 import { buyModuleLevel, createInitialState } from '../game/economy';
 import { modules } from '../game/content/modules';
+import type { VisualPlaceholderId } from '../game/types';
 import {
   buildRoomContainer,
   calculateSceneOverlayRect,
   calculateRoomSceneFit,
   createRoomSceneDescriptor,
   createRoomSelectorItems,
-  getIncidentVisualPlaceholdersForRoom,
   getRoomSpriteAsset,
   getRoomDetailTier,
   loadRoomSpriteAssetForState,
@@ -77,15 +77,70 @@ describe('focused room scene descriptors', () => {
     expect((container.children[0] as { label?: string }).label).toBe('room-sprite');
   });
 
-  it('maps unlocked incident visual placeholders to the selected room', () => {
+  it('renders each unlocked reward for the selected room once without generic markers', () => {
     const state = {
       ...createInitialState(1_000),
-      unlockedIncidentVisuals: ['cat_saucer_01' as const, 'kitchen_mist_patch_01' as const]
+      moduleLevels: { ...createInitialState(1_000).moduleLevels, cosmo_kitchen: 100 },
+      unlockedIncidentVisuals: [
+        'kitchen_soup_pot_01',
+        'capsule_rug_01',
+        'kitchen_recipe_scroll_01',
+        'kitchen_soup_pot_01'
+      ] as VisualPlaceholderId[]
+    };
+    const labels = buildRoomContainer(state, 'cosmo_kitchen').children.map(
+      (child) => (child as { label?: string }).label
+    );
+
+    expect(labels.filter((label) => label === 'room-reward-kitchen_soup_pot_01')).toHaveLength(1);
+    expect(labels).toContain('room-reward-kitchen_recipe_scroll_01');
+    expect(labels).not.toContain('room-reward-capsule_rug_01');
+    expect(labels.some((label) => label?.startsWith('incident-placeholder-'))).toBe(false);
+  });
+
+  it('uses the selected detail-level placement for a reward', () => {
+    const base = createInitialState(1_000);
+    const state = {
+      ...base,
+      moduleLevels: { ...base.moduleLevels, cosmo_kitchen: 50 },
+      unlockedIncidentVisuals: ['table_schedule_01'] as VisualPlaceholderId[]
     };
 
-    expect(getIncidentVisualPlaceholdersForRoom(state, 'tenant_capsule')).toContain('cat_saucer_01');
-    expect(getIncidentVisualPlaceholdersForRoom(state, 'tenant_capsule')).not.toContain('kitchen_mist_patch_01');
-    expect(getIncidentVisualPlaceholdersForRoom(state, 'cosmo_kitchen')).toContain('kitchen_mist_patch_01');
+    const reward = buildRoomContainer(state, 'cosmo_kitchen').children.find(
+      (child) => (child as { label?: string }).label === 'room-reward-table_schedule_01'
+    );
+
+    expect(reward?.position.x).toBe(96);
+    expect(reward?.position.y).toBe(288);
+  });
+
+  it('skips only a reward whose asset load fails', async () => {
+    const base = createInitialState(1_000);
+    const state = {
+      ...base,
+      moduleLevels: { ...base.moduleLevels, cosmo_kitchen: 100 },
+      unlockedIncidentVisuals: ['kitchen_soup_pot_01', 'kitchen_recipe_scroll_01'] as VisualPlaceholderId[]
+    };
+    const loadSpy = vi.spyOn(Assets, 'load').mockImplementation(async (aliases) => {
+      const aliasList = (Array.isArray(aliases) ? aliases : [aliases]) as unknown[];
+
+      if (aliasList.some((alias) => alias === 'room-reward-kitchen_soup_pot_01')) {
+        throw new Error('missing reward');
+      }
+
+      return {};
+    });
+
+    await expect(loadRoomSpriteAssetForState(state, 'cosmo_kitchen')).resolves.toBeUndefined();
+    const labels = buildRoomContainer(state, 'cosmo_kitchen').children.map(
+      (child) => (child as { label?: string }).label
+    );
+
+    expect(labels).not.toContain('room-reward-kitchen_soup_pot_01');
+    expect(labels).toContain('room-reward-kitchen_recipe_scroll_01');
+    expect(labels).toContain('room-sprite');
+
+    loadSpy.mockRestore();
   });
 
   it('maps every room and detail level to its sprite asset', () => {

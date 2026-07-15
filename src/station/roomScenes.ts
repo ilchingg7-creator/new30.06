@@ -1,6 +1,10 @@
 import { Assets, Cache, Container, Graphics, Sprite, Texture } from 'pixi.js';
 import { modules } from '../game/content/modules';
-import type { GameState, ModuleId, RoomDetailLevel, VisualPlaceholderId, WindowLightColor } from '../game/types';
+import type { GameState, ModuleId, RoomDetailLevel, WindowLightColor } from '../game/types';
+import {
+  getRoomRewardSpritesForRoom,
+  type ResolvedRoomRewardSprite
+} from './roomRewardSprites';
 import { stationTheme } from './stationTheme';
 
 const windowLightColorMap: Record<WindowLightColor, number> = {
@@ -9,54 +13,6 @@ const windowLightColorMap: Record<WindowLightColor, number> = {
   red: stationTheme.signalRed,
   blue: stationTheme.utilityBlue
 };
-
-const INCIDENT_VISUAL_ROOM_MAP: Record<VisualPlaceholderId, ModuleId> = {
-  kitchen_mist_patch_01: 'cosmo_kitchen',
-  capsule_padding_01: 'tenant_capsule',
-  laundry_sock_cluster_01: 'zero_g_laundry',
-  garden_sprout_label_01: 'oxygen_garden',
-  teleport_parcel_01: 'teleport_entry',
-  capsule_rug_01: 'tenant_capsule',
-  warning_bulb_01: 'tenant_capsule',
-  cat_saucer_01: 'tenant_capsule',
-  kitchen_soup_pot_01: 'cosmo_kitchen',
-  capsule_frost_01: 'tenant_capsule',
-  kitchen_spoon_bundle_01: 'cosmo_kitchen',
-  garden_radio_plant_01: 'oxygen_garden',
-  laundry_static_socks_01: 'zero_g_laundry',
-  teleport_duplicate_mug_01: 'teleport_entry',
-  panorama_star_labels_01: 'panorama_dome',
-  pantry_labels_01: 'meteorite_pantry',
-  drone_schedule_board_01: 'tenant_capsule',
-  cosmonaut_mug_01: 'tenant_capsule',
-  kitchen_recipe_scroll_01: 'cosmo_kitchen',
-  garden_seed_trail_01: 'oxygen_garden',
-  laundry_sock_calendar_01: 'zero_g_laundry',
-  teleport_future_notice_01: 'teleport_entry',
-  vip_towel_carpet_01: 'tenant_capsule',
-  cat_button_label_01: 'tenant_capsule',
-  cat_dust_jar_01: 'tenant_capsule',
-  old_wallpaper_patch_01: 'tenant_capsule',
-  resident_reunion_table_01: 'cosmo_kitchen',
-  soup_smell_note_01: 'cosmo_kitchen',
-  housewarming_lamp_01: 'tenant_capsule',
-  station_song_poster_01: 'tenant_capsule',
-  teleport_pollen_pot_01: 'oxygen_garden',
-  steam_towel_hook_01: 'zero_g_laundry',
-  stargazing_blanket_01: 'panorama_dome',
-  kopeks_jar_01: 'tenant_capsule',
-  upgrade_labels_01: 'tenant_capsule',
-  table_schedule_01: 'cosmo_kitchen',
-  reputation_review_frame_01: 'tenant_capsule',
-  panorama_reserved_sign_01: 'panorama_dome',
-  moss_sock_01: 'zero_g_laundry'
-};
-
-export function getIncidentVisualPlaceholdersForRoom(state: GameState, roomId: ModuleId): VisualPlaceholderId[] {
-  return (state.unlockedIncidentVisuals ?? []).filter((placeholderId) => {
-    return INCIDENT_VISUAL_ROOM_MAP[placeholderId] === roomId;
-  });
-}
 
 function resolveWindowLightColor(state: GameState): number {
   return state.windowLightColor ? windowLightColorMap[state.windowLightColor] : stationTheme.lampAmber;
@@ -112,6 +68,8 @@ interface RoomSpriteAsset {
 
 const registeredRoomSpriteAliases = new Set<string>();
 const unavailableRoomSpriteAliases = new Set<string>();
+const registeredRoomRewardAliases = new Set<string>();
+const unavailableRoomRewardAliases = new Set<string>();
 
 function getRoomSpriteAssetDefinition(moduleId: ModuleId, detailLevel: RoomDetailLevel): RoomSpriteAsset | null {
   if (detailLevel === 0) {
@@ -145,22 +103,64 @@ function registerRoomSpriteAsset(asset: RoomSpriteAsset) {
   registeredRoomSpriteAliases.add(asset.alias);
 }
 
-export async function loadRoomSpriteAssetForState(gameState: GameState, selectedRoomId: ModuleId): Promise<void> {
-  const descriptor = createRoomSceneDescriptor(gameState, selectedRoomId);
-  const asset = getRoomSpriteAssetDefinition(descriptor.moduleId, getRoomDetailLevel(descriptor.level));
-
-  if (!asset || Cache.has(asset.alias)) {
+function registerRoomRewardAsset(reward: ResolvedRoomRewardSprite): void {
+  if (registeredRoomRewardAliases.has(reward.alias)) {
     return;
   }
 
-  registerRoomSpriteAsset(asset);
-  unavailableRoomSpriteAliases.delete(asset.alias);
+  Assets.add({
+    alias: reward.alias,
+    src: reward.src,
+    data: {
+      scaleMode: 'nearest'
+    }
+  });
+  registeredRoomRewardAliases.add(reward.alias);
+}
 
-  try {
-    await Assets.load(asset.alias);
-  } catch {
-    unavailableRoomSpriteAliases.add(asset.alias);
+async function loadRoomRewardAssets(
+  gameState: GameState,
+  roomId: ModuleId,
+  detailLevel: RoomDetailLevel
+): Promise<void> {
+  const rewards = getRoomRewardSpritesForRoom(gameState.unlockedIncidentVisuals ?? [], roomId, detailLevel);
+
+  await Promise.all(
+    rewards.map(async (reward) => {
+      if (Cache.has(reward.alias)) {
+        unavailableRoomRewardAliases.delete(reward.alias);
+        return;
+      }
+
+      registerRoomRewardAsset(reward);
+      unavailableRoomRewardAliases.delete(reward.alias);
+
+      try {
+        await Assets.load(reward.alias);
+      } catch {
+        unavailableRoomRewardAliases.add(reward.alias);
+      }
+    })
+  );
+}
+
+export async function loadRoomSpriteAssetForState(gameState: GameState, selectedRoomId: ModuleId): Promise<void> {
+  const descriptor = createRoomSceneDescriptor(gameState, selectedRoomId);
+  const detailLevel = getRoomDetailLevel(descriptor.level);
+  const asset = getRoomSpriteAssetDefinition(descriptor.moduleId, detailLevel);
+
+  if (asset && !Cache.has(asset.alias)) {
+    registerRoomSpriteAsset(asset);
+    unavailableRoomSpriteAliases.delete(asset.alias);
+
+    try {
+      await Assets.load(asset.alias);
+    } catch {
+      unavailableRoomSpriteAliases.add(asset.alias);
+    }
   }
+
+  await loadRoomRewardAssets(gameState, descriptor.moduleId, detailLevel);
 }
 
 export function calculateRoomSceneFit(canvasWidth: number, canvasHeight: number) {
@@ -495,6 +495,21 @@ function createRoomSprite(asset: RoomSpriteAsset): Sprite {
   return sprite;
 }
 
+function createRoomRewardSprite(reward: ResolvedRoomRewardSprite): Sprite {
+  const texture = Cache.has(reward.alias) ? Cache.get<Texture>(reward.alias) : Texture.EMPTY;
+  const sprite = new Sprite(texture);
+
+  sprite.position.set(reward.placement.x, reward.placement.y);
+  sprite.width = reward.placement.width;
+  sprite.height = reward.placement.height;
+  sprite.zIndex = reward.placement.zIndex;
+  sprite.roundPixels = true;
+  sprite.texture.source.scaleMode = 'nearest';
+  sprite.label = `room-reward-${reward.id}`;
+
+  return sprite;
+}
+
 function createRoomShell(descriptor: RoomSceneDescriptor): Graphics {
   const shell = new Graphics();
   const light = descriptor.windowLightColor;
@@ -718,33 +733,30 @@ function createRoomProp(prop: RoomSceneProp): Graphics {
   }
 }
 
-function addIncidentVisualPlaceholders(
+function addRoomRewardSprites(
   container: Container,
   gameState: GameState,
-  selectedRoomId: ModuleId
+  roomId: ModuleId,
+  detailLevel: RoomDetailLevel
 ): void {
-  const placeholders = getIncidentVisualPlaceholdersForRoom(gameState, selectedRoomId);
+  const rewards = getRoomRewardSpritesForRoom(gameState.unlockedIncidentVisuals ?? [], roomId, detailLevel);
 
-  placeholders.forEach((placeholderId, index) => {
-    const marker = new Graphics();
-
-    marker.label = `incident-placeholder-${placeholderId}`;
-    marker
-      .roundRect(132 + index * 34, 318, 24, 18, 5)
-      .fill(stationTheme.lampAmber)
-      .stroke({ color: stationTheme.softWhite, width: 2, alpha: 0.8 });
-    container.addChild(marker);
+  rewards.forEach((reward) => {
+    if (!unavailableRoomRewardAliases.has(reward.alias)) {
+      container.addChild(createRoomRewardSprite(reward));
+    }
   });
 }
 
 export function buildRoomContainer(gameState: GameState, selectedRoomId: ModuleId): Container {
   const descriptor = createRoomSceneDescriptor(gameState, selectedRoomId);
   const container = new Container();
-  const spriteAsset = getRoomSpriteAssetDefinition(descriptor.moduleId, getRoomDetailLevel(descriptor.level));
+  const detailLevel = getRoomDetailLevel(descriptor.level);
+  const spriteAsset = getRoomSpriteAssetDefinition(descriptor.moduleId, detailLevel);
 
   if (spriteAsset && !unavailableRoomSpriteAliases.has(spriteAsset.alias)) {
     container.addChild(createRoomSprite(spriteAsset));
-    addIncidentVisualPlaceholders(container, gameState, selectedRoomId);
+    addRoomRewardSprites(container, gameState, descriptor.moduleId, detailLevel);
 
     return container;
   }
@@ -758,7 +770,7 @@ export function buildRoomContainer(gameState: GameState, selectedRoomId: ModuleI
   descriptor.props.forEach((prop) => {
     container.addChild(createRoomProp(prop));
   });
-  addIncidentVisualPlaceholders(container, gameState, selectedRoomId);
+  addRoomRewardSprites(container, gameState, descriptor.moduleId, detailLevel);
 
   return container;
 }
