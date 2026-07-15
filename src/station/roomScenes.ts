@@ -193,14 +193,14 @@ export interface SceneOverlayPixelRect {
 
 export const TENANT_CAT_SCENE_RECT: SceneOverlayRect = {
   x: 540,
-  y: 208,
+  y: 230,
   width: 228,
   height: 228
 };
 
 export const TENANT_CAT_LOVE_SCENE_RECT: SceneOverlayRect = {
   x: 591,
-  y: 132,
+  y: 154,
   width: 126,
   height: 126
 };

@@ -17,6 +17,7 @@ interface PixiStationSceneProps {
   selectedRoomId: ModuleId;
   onRoomClick?: () => void;
   onTenantCatClick?: () => void;
+  hasStrangeCat?: boolean;
   ariaLabel?: string;
 }
 
@@ -48,7 +49,14 @@ function getRendererSize(app: Application): { width: number; height: number } | 
   };
 }
 
-export function PixiStationScene({ gameState, selectedRoomId, onRoomClick, onTenantCatClick, ariaLabel }: PixiStationSceneProps) {
+export function PixiStationScene({
+  gameState,
+  selectedRoomId,
+  onRoomClick,
+  onTenantCatClick,
+  hasStrangeCat,
+  ariaLabel
+}: PixiStationSceneProps) {
   const hostRef = useRef<HTMLElement | null>(null);
   const appRef = useRef<Application | null>(null);
   const gameStateRef = useRef(gameState);
@@ -62,7 +70,10 @@ export function PixiStationScene({ gameState, selectedRoomId, onRoomClick, onTen
   const [hostSize, setHostSize] = useState({ width: 0, height: 0 });
   const [catLoveVisible, setCatLoveVisible] = useState(false);
   const [catCooldownActive, setCatCooldownActive] = useState(false);
-  const tenantCatVisible = selectedRoomId === 'tenant_capsule' && (gameState.moduleLevels.tenant_capsule ?? 0) > 0;
+  const tenantCatVisible =
+    hasStrangeCat === true &&
+    selectedRoomId === 'tenant_capsule' &&
+    (gameState.moduleLevels.tenant_capsule ?? 0) > 0;
   const tenantCatStyle = useMemo(
     () => toOverlayStyle(calculateSceneOverlayRect(hostSize.width, hostSize.height, TENANT_CAT_SCENE_RECT)),
     [hostSize.height, hostSize.width]

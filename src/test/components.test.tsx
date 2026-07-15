@@ -260,7 +260,7 @@ describe('core UI components', () => {
     expect(screen.getByText(/\+35 состояние/i)).toBeInTheDocument();
   });
 
-  it('shows the strange cat only in the tenant capsule scene', () => {
+  it('shows the strange cat only when the entitlement is owned in the tenant capsule', () => {
     const gameState = {
       ...buyModuleLevel(createInitialState(1_000), 'tenant_capsule'),
       moduleLevels: {
@@ -270,12 +270,34 @@ describe('core UI components', () => {
       }
     };
     const { rerender } = render(
-      <PixiStationScene gameState={gameState} selectedRoomId="tenant_capsule" ariaLabel={t.stationView} />
+      <PixiStationScene
+        gameState={gameState}
+        selectedRoomId="tenant_capsule"
+        hasStrangeCat={false}
+        ariaLabel={t.stationView}
+      />
     );
 
+    expect(screen.queryByRole('button', { name: 'strange-cat' })).toBeNull();
+
+    rerender(
+      <PixiStationScene
+        gameState={gameState}
+        selectedRoomId="tenant_capsule"
+        hasStrangeCat
+        ariaLabel={t.stationView}
+      />
+    );
     expect(screen.getByRole('button', { name: 'strange-cat' })).toBeInTheDocument();
 
-    rerender(<PixiStationScene gameState={gameState} selectedRoomId="cosmo_kitchen" ariaLabel={t.stationView} />);
+    rerender(
+      <PixiStationScene
+        gameState={gameState}
+        selectedRoomId="cosmo_kitchen"
+        hasStrangeCat
+        ariaLabel={t.stationView}
+      />
+    );
 
     expect(screen.queryByRole('button', { name: 'strange-cat' })).toBeNull();
   });
@@ -291,6 +313,7 @@ describe('core UI components', () => {
         <PixiStationScene
           gameState={gameState}
           selectedRoomId="tenant_capsule"
+          hasStrangeCat
           ariaLabel={t.stationView}
           onTenantCatClick={onTenantCatClick}
         />

@@ -205,10 +205,10 @@ describe('focused room scene descriptors', () => {
 
     expect(TENANT_CAT_SCENE_RECT.width).toBe(228);
     expect(TENANT_CAT_SCENE_RECT.height).toBe(228);
-    expect(TENANT_CAT_SCENE_RECT.y).toBe(208);
+    expect(TENANT_CAT_SCENE_RECT.y).toBe(230);
     expect(TENANT_CAT_LOVE_SCENE_RECT.width).toBe(126);
     expect(TENANT_CAT_LOVE_SCENE_RECT.height).toBe(126);
-    expect(TENANT_CAT_LOVE_SCENE_RECT.y).toBe(132);
+    expect(TENANT_CAT_LOVE_SCENE_RECT.y).toBe(154);
     expect(TENANT_CAT_LOVE_SCENE_RECT.y + TENANT_CAT_LOVE_SCENE_RECT.height - TENANT_CAT_SCENE_RECT.y).toBe(
       50
     );

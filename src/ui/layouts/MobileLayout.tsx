@@ -96,6 +96,7 @@ export function MobileLayout({ game, t }: MobileLayoutProps) {
               selectedRoomId={game.selectedRoomId}
               onRoomClick={game.clickRoom}
               onTenantCatClick={game.triggerCatIncident}
+              hasStrangeCat={game.strangeCatOwned}
               ariaLabel={t.stationView}
             />
           </Suspense>

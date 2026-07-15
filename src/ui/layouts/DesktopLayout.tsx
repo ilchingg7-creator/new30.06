@@ -91,6 +91,7 @@ export function DesktopLayout({ game, t }: DesktopLayoutProps) {
               selectedRoomId={game.selectedRoomId}
               onRoomClick={game.clickRoom}
               onTenantCatClick={game.triggerCatIncident}
+              hasStrangeCat={game.strangeCatOwned}
               ariaLabel={t.stationView}
             />
           </Suspense>
