@@ -2269,6 +2269,7 @@ input {
 
 .incident-card .panel-copy {
   margin: 0;
+  color: var(--color-ink);
   font-size: 0.78rem;
   line-height: 1.35;
 }

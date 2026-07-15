@@ -11,6 +11,12 @@ function ruleBody(selector: RegExp): string {
 }
 
 describe('visitor and incident responsive layouts', () => {
+  it('uses high-contrast ink for incident descriptions', () => {
+    const descriptionRule = ruleBody(/\.incident-card \.panel-copy\s*\{([^}]*)\}/s);
+
+    expect(descriptionRule).toContain('color: var(--color-ink)');
+  });
+
   it('makes the decline action noticeably narrower than accept', () => {
     const rule = ruleBody(/\.visitor-actions\s*\{([^}]*)\}/s);
 
